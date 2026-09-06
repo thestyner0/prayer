@@ -25,7 +25,10 @@ h1{font-size:21px;font-weight:800;letter-spacing:-.02em}
 .tb{font:inherit;font-size:12.5px;font-weight:700;background:var(--panel);border:1px solid var(--line);color:var(--muted);padding:7px 12px;border-radius:999px;cursor:pointer}
 .tb.on{background:var(--gold);border-color:var(--gold);color:#241a05}
 .tb:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
-.status{font-size:11px;color:var(--dim);padding:6px 4px;white-space:nowrap}
+.status{font-size:11px;color:var(--dim);padding:6px 4px;max-width:46vw;text-align:right}
+.banner{display:none;margin:10px 0 0;padding:12px 14px;border:1px solid var(--danger);border-radius:12px;background:var(--panel);font-size:13px;line-height:1.6}
+.banner.on{display:block}
+.banner code{font-size:12px;word-break:break-all}
 .status.busy{color:var(--gold)} .status.err{color:var(--danger)}
 nav{display:flex;gap:7px;overflow-x:auto;padding:10px 0 12px;scrollbar-width:none}
 nav::-webkit-scrollbar{display:none}
@@ -111,10 +114,11 @@ body.editing .addrow{display:flex;gap:6px;flex-wrap:wrap}
   </div>
   <div class="tools">
     <span class="status" id="status"></span>
-    <button class="tb" id="editBtn" type="button" hidden>✎ 편집</button>
-    <button class="tb" id="setBtn" type="button" hidden>⚙</button>
+    <button class="tb" id="editBtn" type="button">✎ 편집</button>
+    <button class="tb" id="setBtn" type="button">⚙</button>
   </div>
 </header>
+<div class="banner" id="banner"></div>
 <div class="settings" id="settings">
   <h3>순환 · 시편 설정</h3>
   <div class="grid">
@@ -232,7 +236,7 @@ async function save(){
     if(keys.indexOf("meta")<0) await DB.doc("prayer/meta").update({rev:STATE.rev,updated:STATE.updated,updatedAt:STATE.updatedAt});
     setStatus("저장됨 · "+now.getHours()+":"+String(now.getMinutes()).padStart(2,"0"),"");
     renderHeader();
-  }catch(e){ setStatus("저장 실패 — 다시 시도합니다","err"); keys.forEach(function(k){DIRTY[k]=true;}); setTimeout(save,3000); }
+  }catch(e){ setStatus("저장 실패("+((e&&(e.code||e.message))||"?")+") — 다시 시도합니다","err"); keys.forEach(function(k){DIRTY[k]=true;}); setTimeout(save,3000); }
 }
 function metaDoc(){ return {rev:STATE.rev,updated:STATE.updated,updatedAt:STATE.updatedAt,anchorMonday:STATE.anchorMonday,anchorWeek:STATE.anchorWeek,meeting:STATE.meeting,commonPrayer:STATE.commonPrayer,dayIndex:STATE.days.map(function(d){return {no:d.no,title:d.title,sub:d.sub||"",accent:d.accent};})}; }
 
@@ -328,9 +332,10 @@ document.getElementById("main").addEventListener("click",function(e){
   if(t.closest('[data-edit="note"]')){ e.preventDefault(); openNoteEditor(); return; }
 });
 document.getElementById("tabs").addEventListener("click",function(e){ var a=e.target.closest(".tab"); if(a){ e.preventDefault(); show(+a.dataset.day); } });
-document.getElementById("editBtn").addEventListener("click",function(){ EDIT=!EDIT; document.body.classList.toggle("editing",EDIT); this.classList.toggle("on",EDIT); this.textContent=EDIT?"✓ 편집 끝":"✎ 편집"; render(); });
+document.getElementById("editBtn").addEventListener("click",function(){ if(!DB){ showBanner(); return; } EDIT=!EDIT; document.body.classList.toggle("editing",EDIT); this.classList.toggle("on",EDIT); this.textContent=EDIT?"✓ 편집 끝":"✎ 편집"; render(); });
 var setBox=document.getElementById("settings");
 document.getElementById("setBtn").addEventListener("click",function(){
+  if(!DB){ showBanner(); return; }
   setBox.classList.toggle("on");
   document.getElementById("s_am").value=STATE.anchorMonday; document.getElementById("s_aw").value=STATE.anchorWeek;
   document.getElementById("s_pm").value=STATE.meeting.psalm.anchorMonday; document.getElementById("s_ps").value=STATE.meeting.psalm.start;
@@ -349,13 +354,22 @@ function applyRemoteMeta(m){
   if(m.dayIndex) m.dayIndex.forEach(function(x){ var d=dayByNo(x.no); if(d){ d.title=x.title; d.sub=x.sub; if(x.accent) d.accent=x.accent; } });
 }
 function applyRemoteDay(no,body){ var i=STATE.days.findIndex(function(d){return d.no===no;}); if(i<0) STATE.days.push(body); else STATE.days[i]=body; }
+var ART_URL="https://claude.ai/code/artifact/0e7f770a-7850-4525-8bda-6643c06d54f1";
+function showBanner(msg){
+  var b=document.getElementById("banner");
+  b.innerHTML=(msg||'<b>이 화면에서는 저장할 수 없습니다.</b><br>편집은 claude.ai 안에서 열었을 때만 됩니다. 브라우저(크롬 등)에서 아래 주소를 열고, 처음에 뜨는 <b>데이터 접근 허용</b>을 눌러 주세요.<br><code>'+ART_URL+'</code><br>상태: <span id="bstat"></span>')+
+    '<div style="margin-top:8px"><button class="btn g" type="button" id="bclose">닫기</button></div>';
+  var bs=b.querySelector("#bstat"); if(bs) bs.textContent=document.getElementById("status").textContent;
+  b.classList.add("on"); b.querySelector("#bclose").onclick=function(){ b.classList.remove("on"); };
+}
 async function connect(){
-  var use=window.claude&&window.claude.use; if(!use){ MODE="viewer"; render(); return; }
+  setStatus("저장소 연결 중…","busy");
+  var use=window.claude&&window.claude.use;
+  if(!use){ MODE="viewer"; setStatus("",""); document.getElementById("editBtn").hidden=true; document.getElementById("setBtn").hidden=true; render(); return; }
   MODE="artifact";
   try{ DB=await window.claude.use("db"); }catch(e){ DB=null; }
-  if(!DB){ render(); return; }
+  if(!DB){ setStatus("저장 불가 — 편집 버튼을 눌러 안내 보기","err"); render(); return; }
   MODE="editor";
-  document.getElementById("editBtn").hidden=false; document.getElementById("setBtn").hidden=false;
   try{
     var ms=await DB.doc("prayer/meta").get();
     if(ms.exists){ applyRemoteMeta(ms.data());
@@ -369,7 +383,7 @@ async function connect(){
       for(var i=0;i<STATE.days.length;i++) await DB.doc("prayer/meta/days/"+STATE.days[i].no).set(STATE.days[i]);
       setStatus("처음 저장됨","");
     }
-  }catch(e){ setStatus("동기화 실패 — 이 기기 내용으로 표시","err"); }
+  }catch(e){ var code=(e&&(e.code||e.message))||"unknown"; setStatus("동기화 실패: "+code,"err"); if(code==="not_granted") showBanner('<b>데이터 접근이 허용되지 않았습니다.</b><br>페이지를 새로고침한 뒤 뜨는 <b>데이터 접근 허용</b>을 눌러 주세요. (허용 안 함을 눌렀다면 새로고침하면 다시 물어봅니다)'); }
   render();
   // 실시간 반영: 다른 기기의 저장을 받아옵니다 (편집 중인 화면은 건드리지 않음)
   DB.doc("prayer/meta").onSnapshot(function(s){ var m=s.data(); if(!m||m.rev===STATE.rev) return; if(editingKey||document.querySelector(".ed")) return; applyRemoteMeta(m); render(); setStatus("다른 기기에서 갱신됨",""); });
