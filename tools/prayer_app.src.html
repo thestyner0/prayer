@@ -136,17 +136,17 @@ body.editing .addrow{display:flex;gap:6px;flex-wrap:wrap}
 <div class="settings" id="settings">
   <h3>순환 · 시편 설정</h3>
   <div class="grid">
-    <div><label>기준 월요일 (이 주에)</label><input id="s_am" type="date"></div>
+    <div><label>기준 주일 (이 주에)</label><input id="s_am" type="date"></div>
     <div><label>이 주차를 기도 (1~6)</label><input id="s_aw" type="number" min="1" max="6"></div>
-    <div><label>시편 기준 월요일</label><input id="s_pm" type="date"></div>
+    <div><label>시편 기준 주일</label><input id="s_pm" type="date"></div>
     <div><label>그 주 시편 편수</label><input id="s_ps" type="number" min="1" max="150"></div>
   </div>
-  <p>1~6주차는 매주 월요일 다음 주차로 넘어가고, 긴급·중보는 매주 함께 기도합니다. 시편은 기준 주에서 매주 1편씩 올라갑니다.</p>
+  <p>한 주는 주일에 시작합니다. 1~6주차는 매주 주일에 다음 주차로 넘어가고, 긴급·중보는 매주 함께 기도합니다. 시편은 기준 주에서 매주 1편씩 올라갑니다.</p>
   <div class="ed" style="margin:8px 0 0;border-color:var(--line)"><div class="btns"><button class="btn p" id="s_save" type="button">저장</button><button class="btn g" id="s_close" type="button">닫기</button></div></div>
 </div>
 <nav id="tabs"></nav>
 <main id="main"></main>
-<div class="foot">매주 월요일에 다음 주차로 자동으로 넘어갑니다 · 긴급 · 중보기도는 매주 함께합니다<br><span id="foot2"></span></div>
+<div class="foot">매주 주일에 다음 주차로 자동으로 넘어갑니다 · 긴급 · 중보기도는 매주 함께합니다<br><span id="foot2"></span></div>
 </div>
 
 <script id="seed" type="application/json">__SEED__</script>
@@ -161,10 +161,10 @@ var PSALMS=JSON.parse(document.getElementById("psalms").textContent);
 var BOOKS={1:"제1권 (1–41편)",42:"제2권 (42–72편)",73:"제3권 (73–89편)",90:"제4권 (90–106편)",107:"제5권 (107–150편)"};
 
 /* ---------- 날짜 계산 ---------- */
-function mon(x){var t=new Date(x);t.setHours(0,0,0,0);t.setDate(t.getDate()-((t.getDay()+6)%7));return t;}
-function weeksBetween(a,b){return Math.round((mon(a)-mon(b))/6048e5);}
-function todayWeek(){var wk=weeksBetween(new Date(),new Date(STATE.anchorMonday+"T00:00:00"));return ((STATE.anchorWeek-1+((wk%CYCLE)+CYCLE)%CYCLE)%CYCLE)+1;}
-function psalmNow(){var p=STATE.meeting.psalm;var n=p.start+weeksBetween(new Date(),new Date(p.anchorMonday+"T00:00:00"));return ((n-1)%150+150)%150+1;}
+function wk0(x){var t=new Date(x);t.setHours(0,0,0,0);t.setDate(t.getDate()-t.getDay());return t;} // 한 주의 시작 = 주일
+function weeksBetween(a,b){return Math.round((wk0(a)-wk0(b))/6048e5);}
+function todayWeek(){var wk=weeksBetween(new Date(),new Date((STATE.anchorSunday||STATE.anchorMonday)+"T00:00:00"));return ((STATE.anchorWeek-1+((wk%CYCLE)+CYCLE)%CYCLE)%CYCLE)+1;}
+function psalmNow(){var p=STATE.meeting.psalm;var n=p.start+weeksBetween(new Date(),new Date((p.anchorSunday||p.anchorMonday)+"T00:00:00"));return ((n-1)%150+150)%150+1;}
 function psalmHTML(n){
   var vs=PSALMS[String(n)]||[]; if(!vs.length) return '<div class="verses"><p class="v">본문이 없습니다</p></div>';
   var h='<div class="verses">'+(BOOKS[n]?'<p class="bk">'+BOOKS[n]+'</p>':'');
@@ -178,7 +178,7 @@ function psalmHTML(n){
 function psalmBoxHTML(){
   var now=psalmNow(), n=((now-1+PSOFF)%150+150)%150+1, vs=PSALMS[String(n)]||[];
   return '<details class="psbox" open><summary><span class="sp">시편 '+n+'편 전문'+(PSOFF?' <span class="pn">(미리보기 · 이번 주는 '+now+'편)</span>':' <span class="pn">이번 주</span>')+'</span><span class="pn">'+vs.length+'절</span></summary>'
-   +'<div class="psnav"><button class="mini" type="button" data-act="psprev">◀ '+(((n-2)%150+150)%150+1)+'편</button><button class="mini" type="button" data-act="psnext">'+(n%150+1)+'편 ▶</button>'+(PSOFF?'<button class="mini" type="button" data-act="psnow">이번 주로</button>':'')+'<span class="now">매주 월요일 0시에 다음 편으로 넘어갑니다</span></div>'
+   +'<div class="psnav"><button class="mini" type="button" data-act="psprev">◀ '+(((n-2)%150+150)%150+1)+'편</button><button class="mini" type="button" data-act="psnext">'+(n%150+1)+'편 ▶</button>'+(PSOFF?'<button class="mini" type="button" data-act="psnow">이번 주로</button>':'')+'<span class="now">매주 주일 0시에 다음 편으로 넘어갑니다</span></div>'
    +psalmHTML(n)+'</details>';
 }
 function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
@@ -271,7 +271,7 @@ async function save(){
     renderHeader();
   }catch(e){ setStatus("저장 실패("+((e&&(e.code||e.message))||"?")+") — 다시 시도합니다","err"); keys.forEach(function(k){DIRTY[k]=true;}); setTimeout(save,3000); }
 }
-function metaDoc(){ return {rev:STATE.rev,updated:STATE.updated,updatedAt:STATE.updatedAt,anchorMonday:STATE.anchorMonday,anchorWeek:STATE.anchorWeek,meeting:STATE.meeting,commonPrayer:STATE.commonPrayer,dayIndex:STATE.days.map(function(d){return {no:d.no,title:d.title,sub:d.sub||"",accent:d.accent};})}; }
+function metaDoc(){ return {rev:STATE.rev,updated:STATE.updated,updatedAt:STATE.updatedAt,anchorSunday:STATE.anchorSunday||STATE.anchorMonday,anchorWeek:STATE.anchorWeek,meeting:STATE.meeting,commonPrayer:STATE.commonPrayer,dayIndex:STATE.days.map(function(d){return {no:d.no,title:d.title,sub:d.sub||"",accent:d.accent};})}; }
 
 function editorBox(fields, onSave, onDelete){ // fields: [{k,label,val,multi,hint}]
   var h='<div class="ed">'+fields.map(function(f){return '<label>'+f.label+'</label>'+(f.multi?'<textarea data-k="'+f.k+'">'+esc(f.val)+'</textarea>':'<input data-k="'+f.k+'" value="'+esc(f.val)+'">')+(f.hint?'<div class="hint">'+f.hint+'</div>':'');}).join("")
@@ -374,13 +374,13 @@ var setBox=document.getElementById("settings");
 document.getElementById("setBtn").addEventListener("click",function(){
   if(!DB){ showBanner(); return; }
   setBox.classList.toggle("on");
-  document.getElementById("s_am").value=STATE.anchorMonday; document.getElementById("s_aw").value=STATE.anchorWeek;
-  document.getElementById("s_pm").value=STATE.meeting.psalm.anchorMonday; document.getElementById("s_ps").value=STATE.meeting.psalm.start;
+  document.getElementById("s_am").value=STATE.anchorSunday||STATE.anchorMonday; document.getElementById("s_aw").value=STATE.anchorWeek;
+  document.getElementById("s_pm").value=STATE.meeting.psalm.anchorSunday||STATE.meeting.psalm.anchorMonday; document.getElementById("s_ps").value=STATE.meeting.psalm.start;
 });
 document.getElementById("s_close").addEventListener("click",function(){ setBox.classList.remove("on"); });
 document.getElementById("s_save").addEventListener("click",function(){
   var am=document.getElementById("s_am").value, aw=+document.getElementById("s_aw").value, pm=document.getElementById("s_pm").value, ps=+document.getElementById("s_ps").value;
-  if(am) STATE.anchorMonday=am; if(aw>=1&&aw<=CYCLE) STATE.anchorWeek=aw; if(pm) STATE.meeting.psalm.anchorMonday=pm; if(ps>=1) STATE.meeting.psalm.start=ps;
+  if(am){ STATE.anchorSunday=am; delete STATE.anchorMonday; } if(aw>=1&&aw<=CYCLE) STATE.anchorWeek=aw; if(pm){ STATE.meeting.psalm.anchorSunday=pm; delete STATE.meeting.psalm.anchorMonday; } if(ps>=1) STATE.meeting.psalm.start=ps;
   markDirty(null); setBox.classList.remove("on"); render();
 });
 
@@ -388,7 +388,7 @@ document.getElementById("s_save").addEventListener("click",function(){
 /* ---------- 원격 데이터 (db) ---------- */
 function applyRemoteMeta(m){
   if(!m) return;
-  ["rev","updated","updatedAt","anchorMonday","anchorWeek","meeting","commonPrayer"].forEach(function(k){ if(m[k]!==undefined) STATE[k]=m[k]; });
+  ["rev","updated","updatedAt","anchorSunday","anchorMonday","anchorWeek","meeting","commonPrayer"].forEach(function(k){ if(m[k]!==undefined) STATE[k]=m[k]; });
   if(m.dayIndex) m.dayIndex.forEach(function(x){ var d=dayByNo(x.no); if(d){ d.title=x.title; d.sub=x.sub; if(x.accent) d.accent=x.accent; } });
 }
 function applyRemoteDay(no,body){ var i=STATE.days.findIndex(function(d){return d.no===no;}); if(i<0) STATE.days.push(body); else STATE.days[i]=body; }
