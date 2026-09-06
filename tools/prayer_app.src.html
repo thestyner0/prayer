@@ -39,6 +39,8 @@ nav::-webkit-scrollbar{display:none}
 .tab.every{border-color:var(--gold);color:#F2D18A}.tab.every.on{background:var(--gold);border-color:var(--gold);color:#241a05}
 .tab .ev{font-size:9.5px;font-weight:800;letter-spacing:.06em;margin-left:5px;background:rgba(216,169,74,.22);color:#F2D18A;border-radius:99px;padding:2px 6px;vertical-align:1px}
 .tab.every.on .ev{background:rgba(0,0,0,.16);color:#241a05}
+.secctl{display:flex;gap:6px;justify-content:flex-end;margin:0 0 8px}
+.secctl .mini{padding:6px 11px;font-size:12px}
 .dayhead{border-left:3px solid var(--ac);padding:2px 0 2px 12px;margin:14px 0}
 .dayhead .t{font-size:19px;font-weight:800;letter-spacing:-.02em}
 .dayhead .s{font-size:12.5px;color:var(--muted);margin-top:3px}
@@ -157,6 +159,7 @@ body.editing .addrow{display:flex;gap:6px;flex-wrap:wrap}
 var CYCLE=6, WD=["일","월","화","수","목","금","토"];
 var STATE=JSON.parse(document.getElementById("seed").textContent);
 var DB=null, EDIT=false, SEL=null, DIRTY={}, saveTimer=null, editingKey=null, MODE="viewer", PSOFF=0;
+var SECOPEN=true; try{ if(localStorage.getItem("prayer.secopen")==="0") SECOPEN=false; }catch(e){}
 var PSALMS=JSON.parse(document.getElementById("psalms").textContent);
 var BOOKS={1:"제1권 (1–41편)",42:"제2권 (42–72편)",73:"제3권 (73–89편)",90:"제4권 (90–106편)",107:"제5권 (107–150편)"};
 
@@ -213,7 +216,7 @@ function itemHTML(it,ii,si){
 }
 function sectionHTML(s,si){
   var items=s.items.map(function(it,ii){return itemHTML(it,ii,si);}).join("");
-  return '<details class="sec" open data-s="'+si+'"><summary>'+(s.kicker?'<span class="k">'+esc(s.kicker)+'</span>':'')
+  return '<details class="sec"'+(SECOPEN?' open':'')+' data-s="'+si+'"><summary>'+(s.kicker?'<span class="k">'+esc(s.kicker)+'</span>':'')
    +'<span class="t" data-edit="sec">'+esc(s.title)+'</span><span class="cnt">'+s.items.length+'</span>'+ctl("sec",si)+'</summary>'
    +'<div class="secbody">'+(s.sub?'<div class="sub">'+esc(s.sub)+'</div>':'')+items
    +'<div class="addrow"><button class="add" type="button" data-act="additem" data-s="'+si+'">+ 기도제목 추가</button></div>'
@@ -238,6 +241,7 @@ function dayHTML(d){
   var secs=d.sections.map(sectionHTML).join("");
   return '<section class="day on" data-day="'+d.no+'"><div class="dayhead" data-edit="day"><div class="t">'+(d.no<=CYCLE?d.no+"주차 · ":"")+esc(d.title)+'</div>'
    +'<div class="s">'+esc(d.sub||"")+'</div><div class="meta">'+d.sections.length+'개 주제 · 기도제목 '+total+'개</div></div>'
+   +'<div class="secctl"><button class="mini" type="button" data-act="collapse">모두 접기 — 제목만</button><button class="mini" type="button" data-act="expand">모두 펼치기</button></div>'
    +secs+'<div class="addrow"><button class="add" type="button" data-act="addsec">+ 주제(섹션) 추가</button><button class="add" type="button" data-act="renum" style="flex:0 0 auto">번호 다시 매기기</button></div></section>';
 }
 function render(){
@@ -341,6 +345,7 @@ document.getElementById("main").addEventListener("click",function(e){
   if(b){
     e.preventDefault(); e.stopPropagation();
     var act=b.dataset.act, wrapC=b.closest("[data-ctl]"), d=dayByNo(SEL);
+    if(act==="collapse"||act==="expand"){ SECOPEN=(act==="expand"); document.querySelectorAll("#main .sec").forEach(function(d){ d.open=SECOPEN; }); try{ localStorage.setItem("prayer.secopen",SECOPEN?"1":"0"); }catch(e){} return; }
     if(act==="psprev"){ PSOFF--; render(); return; }
     if(act==="psnext"){ PSOFF++; render(); return; }
     if(act==="psnow"){ PSOFF=0; render(); return; }
