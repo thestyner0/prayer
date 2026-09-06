@@ -122,6 +122,9 @@ body.editing .addrow{display:flex;gap:6px;flex-wrap:wrap}
 .mvol{width:90px;accent-color:var(--gold)}
 .mnote{font-size:11px;color:var(--dim);flex-basis:100%}
 .mlink{font-size:12px;color:var(--ac);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:6px 10px}
+a.mbtn{text-decoration:none;display:inline-block}
+.ytbox{flex-basis:100%;margin-top:4px}
+.ytbox iframe{width:100%;max-width:420px;height:150px;border:0;border-radius:10px;background:#000;display:block}
 </style>
 </head>
 <body>
@@ -189,12 +192,22 @@ function psalmBoxHTML(){
    +'<div class="psnav"><button class="mini" type="button" data-act="psprev">◀ '+(((n-2)%150+150)%150+1)+'편</button><button class="mini" type="button" data-act="psnext">'+(n%150+1)+'편 ▶</button>'+(PSOFF?'<button class="mini" type="button" data-act="psnow">이번 주로</button>':'')+'<span class="now">매주 월요일 0시에 다음 편으로 넘어갑니다</span></div>'
    +psalmHTML(n)+'</details>';
 }
+function ytId(u){ var m=/(?:youtu\.be\/|[?&]v=|\/embed\/|\/shorts\/)([A-Za-z0-9_-]{6,})/.exec(u||""); return m?m[1]:null; }
+var YT=false;
 function musicHTML(){
-  var u=STATE.meeting.musicUrl;
-  return '<div class="music"><button class="mbtn'+(MUSIC.playing?" on":"")+'" type="button" data-act="music">'+(MUSIC.playing?"■ 배경음악 끄기":"♪ 배경음악 (가사 없음)")+'</button>'
-   +'<input class="mvol" type="range" min="0" max="100" value="'+Math.round(MUSIC.vol*100)+'" data-act="mvol" aria-label="음량">'
-   +(u?'<a class="mlink" href="'+esc(u)+'" target="_blank" rel="noopener">↗ 외부 음악</a>':'')
-   +'<span class="mnote">잔잔한 피아노·패드 음악이 이 화면 안에서 계속 재생됩니다 (인터넷 불필요)</span></div>';
+  var u=STATE.meeting.musicUrl, id=ytId(u), h='<div class="music">';
+  if(id){
+    if(MODE==="viewer"){
+      h+='<button class="mbtn'+(YT?" on":"")+'" type="button" data-act="yt">'+(YT?"■ 배경음악 끄기":"▶ 배경음악 (피아노 연주)")+'</button>';
+    } else {
+      h+='<a class="mbtn" href="'+esc(u)+'" target="_blank" rel="noopener">▶ 배경음악 (새 창)</a>';
+    }
+  }
+  h+='<button class="mbtn'+(MUSIC.playing?" on":"")+'" type="button" data-act="music" style="opacity:.85">'+(MUSIC.playing?"■ 내장 음악 끄기":"♪ 내장 음악")+'</button>'
+   +'<input class="mvol" type="range" min="0" max="100" value="'+Math.round(MUSIC.vol*100)+'" data-act="mvol" aria-label="내장 음악 음량">'
+   +(id&&YT&&MODE==="viewer"?'<div class="ytbox"><iframe src="https://www.youtube-nocookie.com/embed/'+id+'?autoplay=1&loop=1&playlist='+id+'&rel=0&playsinline=1" allow="autoplay; encrypted-media" allowfullscreen title="배경음악"></iframe><div class="mnote">소리가 안 나면 화면 안의 ▶를 한 번 눌러 주세요 (아이폰은 첫 재생에 터치가 필요합니다)</div></div>':'')
+   +'<span class="mnote">'+(id?'배경음악은 유튜브 재생목록(가사 없는 피아노)이고, 내장 음악은 인터넷 없이도 나오는 잔잔한 패드입니다':'내장 음악은 인터넷 없이 이 화면 안에서 생성되는 잔잔한 피아노·패드입니다')+'</span></div>';
+  return h;
 }
 function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
 function dayByNo(n){for(var i=0;i<STATE.days.length;i++) if(STATE.days[i].no===n) return STATE.days[i]; return null;}
@@ -360,6 +373,7 @@ document.getElementById("main").addEventListener("click",function(e){
     if(act==="psnext"){ PSOFF++; render(); return; }
     if(act==="psnow"){ PSOFF=0; render(); return; }
     if(act==="music"){ MUSIC.toggle(); render(); return; }
+    if(act==="yt"){ YT=!YT; if(YT&&MUSIC.playing) MUSIC.toggle(); render(); return; }
     if(act==="mvol"){ return; }
     if(act==="additem"){ var s=d.sections[+b.dataset.s]; s.items.push({t:"",d:[]}); render(); openItemEditor(+b.dataset.s,s.items.length-1); return; }
     if(act==="addsec"){ d.sections.push({kicker:"",title:"새 주제",sub:"",items:[],guide:""}); renumber(d); markDirty(d.no); render(); openSectionEditor(d.sections.length-1); return; }
@@ -375,7 +389,7 @@ document.getElementById("main").addEventListener("click",function(e){
     }
     return;
   }
-  if(t.closest(".mvol,.mlink,.psbox")) return;
+  if(t.closest(".mvol,.mlink,.mbtn,.ytbox,.psbox")) return;
   if(!EDIT) return;
   if(t.closest(".ed")) return;
   var it=t.closest(".it"); if(it){ e.preventDefault(); openItemEditor(+it.dataset.s,+it.dataset.i); return; }
