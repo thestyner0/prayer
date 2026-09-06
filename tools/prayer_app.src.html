@@ -115,16 +115,6 @@ body.editing .addrow{display:flex;gap:6px;flex-wrap:wrap}
 .verses .vn{display:inline-block;min-width:22px;font-size:10.5px;font-weight:800;color:var(--gold);text-indent:0;vertical-align:2px;margin-right:4px}
 .verses .sup{display:block;font-size:12px;color:var(--muted);text-indent:0;padding-left:0;margin-bottom:6px;font-style:italic}
 .verses .bk{font-size:11px;color:var(--dim);margin:2px 0 8px;text-indent:0;padding-left:0}
-.music{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:8px 0 2px}
-.mbtn{font:inherit;font-size:12.5px;font-weight:800;background:rgba(216,169,74,.16);border:1px solid rgba(216,169,74,.45);color:#F2D18A;padding:7px 12px;border-radius:999px;cursor:pointer;line-height:1.2}
-.mbtn.on{background:var(--gold);border-color:var(--gold);color:#241a05}
-.mbtn:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
-.mvol{width:90px;accent-color:var(--gold)}
-.mnote{font-size:11px;color:var(--dim);flex-basis:100%}
-.mlink{font-size:12px;color:var(--ac);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:6px 10px}
-a.mbtn{text-decoration:none;display:inline-block}
-.ytbox{flex-basis:100%;margin-top:4px}
-.ytbox iframe{width:100%;max-width:420px;height:150px;border:0;border-radius:10px;background:#000;display:block}
 </style>
 </head>
 <body>
@@ -150,7 +140,6 @@ a.mbtn{text-decoration:none;display:inline-block}
     <div><label>이 주차를 기도 (1~6)</label><input id="s_aw" type="number" min="1" max="6"></div>
     <div><label>시편 기준 월요일</label><input id="s_pm" type="date"></div>
     <div><label>그 주 시편 편수</label><input id="s_ps" type="number" min="1" max="150"></div>
-    <div style="grid-column:1/-1"><label>배경음악 외부 링크 (선택 · 유튜브 등, 새 창으로 열림)</label><input id="s_mu" type="url" placeholder="https://"></div>
   </div>
   <p>1~6주차는 매주 월요일 다음 주차로 넘어가고, 긴급·중보는 매주 함께 기도합니다. 시편은 기준 주에서 매주 1편씩 올라갑니다.</p>
   <div class="ed" style="margin:8px 0 0;border-color:var(--line)"><div class="btns"><button class="btn p" id="s_save" type="button">저장</button><button class="btn g" id="s_close" type="button">닫기</button></div></div>
@@ -191,23 +180,6 @@ function psalmBoxHTML(){
   return '<details class="psbox" open><summary><span class="sp">시편 '+n+'편 전문'+(PSOFF?' <span class="pn">(미리보기 · 이번 주는 '+now+'편)</span>':' <span class="pn">이번 주</span>')+'</span><span class="pn">'+vs.length+'절</span></summary>'
    +'<div class="psnav"><button class="mini" type="button" data-act="psprev">◀ '+(((n-2)%150+150)%150+1)+'편</button><button class="mini" type="button" data-act="psnext">'+(n%150+1)+'편 ▶</button>'+(PSOFF?'<button class="mini" type="button" data-act="psnow">이번 주로</button>':'')+'<span class="now">매주 월요일 0시에 다음 편으로 넘어갑니다</span></div>'
    +psalmHTML(n)+'</details>';
-}
-function ytId(u){ var m=/(?:youtu\.be\/|[?&]v=|\/embed\/|\/shorts\/)([A-Za-z0-9_-]{6,})/.exec(u||""); return m?m[1]:null; }
-var YT=false;
-function musicHTML(){
-  var u=STATE.meeting.musicUrl, id=ytId(u), h='<div class="music">';
-  if(id){
-    if(MODE==="viewer"){
-      h+='<button class="mbtn'+(YT?" on":"")+'" type="button" data-act="yt">'+(YT?"■ 배경음악 끄기":"▶ 배경음악 (피아노 연주)")+'</button>';
-    } else {
-      h+='<a class="mbtn" href="'+esc(u)+'" target="_blank" rel="noopener">▶ 배경음악 (새 창)</a>';
-    }
-  }
-  h+='<button class="mbtn'+(MUSIC.playing?" on":"")+'" type="button" data-act="music" style="opacity:.85">'+(MUSIC.playing?"■ 내장 음악 끄기":"♪ 내장 음악")+'</button>'
-   +'<input class="mvol" type="range" min="0" max="100" value="'+Math.round(MUSIC.vol*100)+'" data-act="mvol" aria-label="내장 음악 음량">'
-   +(id&&YT&&MODE==="viewer"?'<div class="ytbox"><iframe src="https://www.youtube-nocookie.com/embed/'+id+'?autoplay=1&loop=1&playlist='+id+'&rel=0&playsinline=1" allow="autoplay; encrypted-media" allowfullscreen title="배경음악"></iframe><div class="mnote">소리가 안 나면 화면 안의 ▶를 한 번 눌러 주세요 (아이폰은 첫 재생에 터치가 필요합니다)</div></div>':'')
-   +'<span class="mnote">'+(id?'배경음악은 유튜브 재생목록(가사 없는 피아노)이고, 내장 음악은 인터넷 없이도 나오는 잔잔한 패드입니다':'내장 음악은 인터넷 없이 이 화면 안에서 생성되는 잔잔한 피아노·패드입니다')+'</span></div>';
-  return h;
 }
 function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
 function dayByNo(n){for(var i=0;i<STATE.days.length;i++) if(STATE.days[i].no===n) return STATE.days[i]; return null;}
@@ -252,7 +224,7 @@ function orderHTML(){
   var steps=m.steps.map(function(s,i){
     var isP=/말씀묵상/.test(s), isC=/공통기도/.test(s);
     return '<div class="st" data-step="'+i+'"><span class="n">'+(i+1)+'</span><span class="tx" data-edit="step">'+esc(s)
-      +(isP?' <b>시편 '+psalmNow()+'편</b>'+musicHTML()+psalmBoxHTML():'')
+      +(isP?' <b>시편 '+psalmNow()+'편</b>'+psalmBoxHTML():'')
       +(isC?cp.cards.map(function(c,ci){return '<div class="cc" data-card="'+ci+'"><div class="h">'+esc(c.t)+'</div>'+(c.ref?'<div class="r">'+esc(c.ref)+'</div>':'')+'<div class="d">'+esc(c.d)+'</div>'+ctl("card",ci)+'</div>';}).join("")
         +'<div class="addrow"><button class="add" type="button" data-act="addcard">+ 공통기도 카드 추가</button></div>':'')
       +'</span>'+ctl("step",i)+'</div>';
@@ -372,9 +344,6 @@ document.getElementById("main").addEventListener("click",function(e){
     if(act==="psprev"){ PSOFF--; render(); return; }
     if(act==="psnext"){ PSOFF++; render(); return; }
     if(act==="psnow"){ PSOFF=0; render(); return; }
-    if(act==="music"){ MUSIC.toggle(); render(); return; }
-    if(act==="yt"){ YT=!YT; if(YT&&MUSIC.playing) MUSIC.toggle(); render(); return; }
-    if(act==="mvol"){ return; }
     if(act==="additem"){ var s=d.sections[+b.dataset.s]; s.items.push({t:"",d:[]}); render(); openItemEditor(+b.dataset.s,s.items.length-1); return; }
     if(act==="addsec"){ d.sections.push({kicker:"",title:"새 주제",sub:"",items:[],guide:""}); renumber(d); markDirty(d.no); render(); openSectionEditor(d.sections.length-1); return; }
     if(act==="renum"){ renumber(d); markDirty(d.no); render(); return; }
@@ -389,7 +358,7 @@ document.getElementById("main").addEventListener("click",function(e){
     }
     return;
   }
-  if(t.closest(".mvol,.mlink,.mbtn,.ytbox,.psbox")) return;
+  if(t.closest(".psbox")) return;
   if(!EDIT) return;
   if(t.closest(".ed")) return;
   var it=t.closest(".it"); if(it){ e.preventDefault(); openItemEditor(+it.dataset.s,+it.dataset.i); return; }
@@ -399,7 +368,6 @@ document.getElementById("main").addEventListener("click",function(e){
   if(t.closest('[data-edit="day"]')){ e.preventDefault(); openDayEditor(); return; }
   if(t.closest('[data-edit="note"]')){ e.preventDefault(); openNoteEditor(); return; }
 });
-document.getElementById("main").addEventListener("input",function(e){ if(e.target.dataset.act==="mvol"){ MUSIC.setVol(e.target.value/100); } });
 document.getElementById("tabs").addEventListener("click",function(e){ var a=e.target.closest(".tab"); if(a){ e.preventDefault(); show(+a.dataset.day); } });
 document.getElementById("editBtn").addEventListener("click",function(){ if(!DB){ showBanner(); return; } EDIT=!EDIT; document.body.classList.toggle("editing",EDIT); this.classList.toggle("on",EDIT); this.textContent=EDIT?"✓ 편집 끝":"✎ 편집"; render(); });
 var setBox=document.getElementById("settings");
@@ -407,65 +375,15 @@ document.getElementById("setBtn").addEventListener("click",function(){
   if(!DB){ showBanner(); return; }
   setBox.classList.toggle("on");
   document.getElementById("s_am").value=STATE.anchorMonday; document.getElementById("s_aw").value=STATE.anchorWeek;
-  document.getElementById("s_pm").value=STATE.meeting.psalm.anchorMonday; document.getElementById("s_ps").value=STATE.meeting.psalm.start; document.getElementById("s_mu").value=STATE.meeting.musicUrl||"";
+  document.getElementById("s_pm").value=STATE.meeting.psalm.anchorMonday; document.getElementById("s_ps").value=STATE.meeting.psalm.start;
 });
 document.getElementById("s_close").addEventListener("click",function(){ setBox.classList.remove("on"); });
 document.getElementById("s_save").addEventListener("click",function(){
   var am=document.getElementById("s_am").value, aw=+document.getElementById("s_aw").value, pm=document.getElementById("s_pm").value, ps=+document.getElementById("s_ps").value;
-  if(am) STATE.anchorMonday=am; if(aw>=1&&aw<=CYCLE) STATE.anchorWeek=aw; if(pm) STATE.meeting.psalm.anchorMonday=pm; if(ps>=1) STATE.meeting.psalm.start=ps; STATE.meeting.musicUrl=document.getElementById("s_mu").value.trim();
+  if(am) STATE.anchorMonday=am; if(aw>=1&&aw<=CYCLE) STATE.anchorWeek=aw; if(pm) STATE.meeting.psalm.anchorMonday=pm; if(ps>=1) STATE.meeting.psalm.start=ps;
   markDirty(null); setBox.classList.remove("on"); render();
 });
 
-
-/* ---------- 배경음악: Web Audio 생성 앰비언트 (가사·파일 없음) ---------- */
-var MUSIC=(function(){
-  var ctx=null, master=null, nodes=[], timer=null, playing=false, vol=0.6, step=0, wet=null;
-  var CHORDS=[[0,4,7,11],[9,0,4,7],[5,9,0,4],[7,11,2,5],[0,4,7,11],[2,5,9,0],[5,9,0,4],[7,11,2,5]]; // Cmaj7 Am7 Fmaj7 G7 ...
-  var BASE=130.81; // C3
-  function f(semi,oct){ return BASE*Math.pow(2,(semi+12*(oct||0))/12); }
-  function reverb(){
-    var len=ctx.sampleRate*3.2, buf=ctx.createBuffer(2,len,ctx.sampleRate);
-    for(var c=0;c<2;c++){ var d=buf.getChannelData(c); for(var i=0;i<len;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.6); }
-    var cv=ctx.createConvolver(); cv.buffer=buf; return cv;
-  }
-  function pad(freq,t0,dur){
-    var g=ctx.createGain(); g.gain.setValueAtTime(0,t0); g.gain.linearRampToValueAtTime(0.055,t0+dur*0.35); g.gain.setValueAtTime(0.055,t0+dur*0.6); g.gain.linearRampToValueAtTime(0,t0+dur);
-    var lp=ctx.createBiquadFilter(); lp.type="lowpass"; lp.frequency.value=900; lp.Q.value=0.4;
-    [-6,0,6].forEach(function(cents){ var o=ctx.createOscillator(); o.type="triangle"; o.frequency.value=freq; o.detune.value=cents; o.connect(lp); o.start(t0); o.stop(t0+dur+0.1); nodes.push(o); });
-    lp.connect(g); g.connect(master); g.connect(wet);
-  }
-  function pluck(freq,t0){
-    var g=ctx.createGain(); g.gain.setValueAtTime(0,t0); g.gain.linearRampToValueAtTime(0.16,t0+0.012); g.gain.exponentialRampToValueAtTime(0.0008,t0+3.2);
-    var o=ctx.createOscillator(); o.type="sine"; o.frequency.value=freq;
-    var o2=ctx.createOscillator(); o2.type="sine"; o2.frequency.value=freq*2; var g2=ctx.createGain(); g2.gain.value=0.18;
-    o.connect(g); o2.connect(g2); g2.connect(g); g.connect(master); g.connect(wet);
-    o.start(t0); o2.start(t0); o.stop(t0+3.4); o2.stop(t0+3.4); nodes.push(o,o2);
-  }
-  function bar(){
-    var t=ctx.currentTime+0.05, ch=CHORDS[step%CHORDS.length], dur=9;
-    ch.forEach(function(semi,i){ pad(f(semi, i===0?0:1), t, dur+1.5); });
-    pad(f(ch[0],-1), t, dur+1.5);
-    var scale=[ch[0],ch[1],ch[2],ch[3],ch[0]+12,ch[1]+12,ch[2]+12], k=2+Math.floor(Math.random()*3), used=[];
-    for(var i=0;i<k;i++){ var at=t+0.6+Math.random()*(dur-2.5), n=scale[Math.floor(Math.random()*scale.length)]; if(used.indexOf(n)>=0) continue; used.push(n); pluck(f(n,1),at); }
-    step++;
-    nodes=nodes.slice(-80);
-    timer=setTimeout(bar,dur*1000);
-  }
-  function start(){
-    try{ ctx=ctx||new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ return false; }
-    if(ctx.state==="suspended") ctx.resume();
-    if(!master){ master=ctx.createGain(); master.gain.value=vol; var comp=ctx.createDynamicsCompressor(); comp.threshold.value=-18; comp.ratio.value=3; master.connect(comp); comp.connect(ctx.destination);
-      wet=ctx.createGain(); wet.gain.value=0.9; var rv=reverb(); wet.connect(rv); var rg=ctx.createGain(); rg.gain.value=0.55; rv.connect(rg); rg.connect(comp); }
-    master.gain.cancelScheduledValues(ctx.currentTime); master.gain.setValueAtTime(0,ctx.currentTime); master.gain.linearRampToValueAtTime(vol,ctx.currentTime+2.5);
-    step=0; playing=true; bar(); return true;
-  }
-  function stop(){
-    if(!ctx||!playing) return; playing=false; clearTimeout(timer);
-    var t=ctx.currentTime; master.gain.cancelScheduledValues(t); master.gain.setValueAtTime(master.gain.value,t); master.gain.linearRampToValueAtTime(0,t+1.8);
-    setTimeout(function(){ nodes.forEach(function(o){ try{o.stop();}catch(e){} }); nodes=[]; },2000);
-  }
-  return { toggle:function(){ playing?stop():start(); }, setVol:function(v){ vol=v; if(master&&playing) master.gain.setTargetAtTime(v,ctx.currentTime,0.1); }, get playing(){return playing;}, get vol(){return vol;} };
-})();
 
 /* ---------- 원격 데이터 (db) ---------- */
 function applyRemoteMeta(m){
