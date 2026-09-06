@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#161d47">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="주일기도모임">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="icon-192.png">
+<title>주일기도모임 · 아침기도</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;background:#161d47;color:#f1f4fb;
+ font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif}
+.gate{min-height:100%;display:flex;align-items:center;justify-content:center;padding:24px}
+.box{width:100%;max-width:360px}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.16em;color:#9BD0E8;margin-bottom:6px}
+h1{font-size:22px;font-weight:800;letter-spacing:-.02em;margin-bottom:6px}
+p.s{font-size:13px;color:#a8b6e0;margin-bottom:22px;line-height:1.5}
+label.f{display:block;font-size:12px;color:#a8b6e0;margin-bottom:6px}
+input[type=password]{width:100%;font:inherit;font-size:22px;letter-spacing:.3em;text-align:center;
+ padding:13px 14px;border-radius:12px;border:1px solid #3a4a8f;background:#233166;color:#f1f4fb;outline:none}
+input[type=password]:focus{border-color:#9BD0E8}
+.row{display:flex;align-items:center;gap:8px;margin:14px 0 18px;font-size:13px;color:#a8b6e0}
+.row input{width:17px;height:17px;accent-color:#9BD0E8}
+button{width:100%;font:inherit;font-size:15px;font-weight:800;padding:13px;border:0;border-radius:12px;
+ background:#9BD0E8;color:#12193c;cursor:pointer}
+button:disabled{opacity:.5}
+.err{min-height:20px;font-size:12.5px;color:#f2a3a3;margin-top:12px;text-align:center}
+.foot{margin-top:26px;font-size:11px;color:#7c8ac0;text-align:center;line-height:1.7}
+.foot b{color:#a8b6e0;font-weight:600}
+</style>
+</head>
+<body>
+<div class="gate"><form class="box" id="f" autocomplete="off">
+  <div class="eyebrow">주일기도모임 · 아침기도</div>
+  <h1>기도제목 대시보드</h1>
+  <p class="s">모임에서 안내한 비밀번호를 입력하세요. 내용은 이 기기 안에서만 풀립니다.</p>
+  <label class="f" for="pw">비밀번호</label>
+  <input id="pw" type="password" inputmode="numeric" autocomplete="current-password" autofocus>
+  <label class="row"><input type="checkbox" id="rem" checked> 이 기기에서 기억하기</label>
+  <button id="go" type="submit">열기</button>
+  <div class="err" id="err"></div>
+  <div class="foot">홈 화면에 추가하면 앱처럼 열립니다<br><b>업데이트 __BUILT__</b></div>
+</form></div>
+<script>
+(function(){
+var SALT="__SALT__", IV="__IV__", ITER=__ITER__, DATA="__DATA__", KS="prayer.key.v1";
+function b64(s){var b=atob(s),a=new Uint8Array(b.length);for(var i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return a;}
+var enc=b64(DATA), iv=b64(IV), salt=b64(SALT);
+var f=document.getElementById("f"), pw=document.getElementById("pw"), err=document.getElementById("err"),
+    go=document.getElementById("go"), rem=document.getElementById("rem");
+function show(html){ document.open(); document.write(html); document.close(); }
+async function keyFrom(pass){
+  var base=await crypto.subtle.importKey("raw",new TextEncoder().encode(pass),"PBKDF2",false,["deriveKey"]);
+  return crypto.subtle.deriveKey({name:"PBKDF2",salt:salt,iterations:ITER,hash:"SHA-256"},base,
+    {name:"AES-GCM",length:256},true,["decrypt"]);
+}
+async function open(key){
+  var plain=await crypto.subtle.decrypt({name:"AES-GCM",iv:iv},key,enc);
+  return new TextDecoder().decode(plain);
+}
+async function tryRemembered(){
+  try{
+    var jwk=JSON.parse(localStorage.getItem(KS)||"null"); if(!jwk) return false;
+    var key=await crypto.subtle.importKey("jwk",jwk,{name:"AES-GCM"},true,["decrypt"]);
+    show(await open(key)); return true;
+  }catch(e){ try{localStorage.removeItem(KS);}catch(_){} return false; }
+}
+f.addEventListener("submit",async function(e){
+  e.preventDefault(); err.textContent=""; go.disabled=true; go.textContent="확인 중…";
+  try{
+    var key=await keyFrom(pw.value.trim());
+    var html=await open(key);
+    if(rem.checked){ try{ localStorage.setItem(KS, JSON.stringify(await crypto.subtle.exportKey("jwk",key))); }catch(_){} }
+    show(html);
+  }catch(ex){
+    err.textContent="비밀번호가 맞지 않습니다."; pw.value=""; pw.focus();
+    go.disabled=false; go.textContent="열기";
+  }
+});
+if("serviceWorker" in navigator){ try{ navigator.serviceWorker.register("sw.js"); }catch(e){} }
+tryRemembered();
+})();
+</script>
+</body>
+</html>
