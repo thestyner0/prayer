@@ -62,7 +62,8 @@ async function keyFrom(pass){
 }
 async function open(key){
   var plain=await crypto.subtle.decrypt({name:"AES-GCM",iv:iv},key,enc);
-  return new TextDecoder().decode(plain);
+  if(typeof DecompressionStream==="undefined") throw new Error("nods");
+  return await new Response(new Blob([plain]).stream().pipeThrough(new DecompressionStream("gzip"))).text();
 }
 async function tryRemembered(){
   try{
@@ -79,7 +80,7 @@ f.addEventListener("submit",async function(e){
     if(rem.checked){ try{ localStorage.setItem(KS, JSON.stringify(await crypto.subtle.exportKey("jwk",key))); }catch(_){} }
     show(html);
   }catch(ex){
-    err.textContent="비밀번호가 맞지 않습니다."; pw.value=""; pw.focus();
+    err.textContent=(ex&&ex.message==="nods")?"이 브라우저는 지원되지 않습니다. 최신 Safari/Chrome으로 열어 주세요.":"비밀번호가 맞지 않습니다."; pw.value=""; pw.focus();
     go.disabled=false; go.textContent="열기";
   }
 });
