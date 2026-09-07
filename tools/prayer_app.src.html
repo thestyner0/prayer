@@ -163,6 +163,11 @@ body.editing .amedit{display:block}
 @media (prefers-color-scheme: dark){#dev{--bg:#1c1b18;--ink:#e9e4d8;--ink-soft:#a8a294;--ink-faint:#736e61;--accent:#c9a86a;--line:#35322b;--hl:#2a2822}}
 #dev .dwrap{max-width:1120px;margin:0 auto;padding:36px 20px 72px}
 #dev .verses{max-height:none;overflow:visible;padding:0}
+/* 사이트(뷰어)에서는 묵상·암송 글자를 조금 작게 */
+body.site #dev .verses{font-size:15.5px;line-height:1.85}
+body.site #dev h1.ref{font-size:22px}
+body.site #dev .date{font-size:11.5px}
+body.site #dev .guide-body{font-size:14.5px}
 #dev .loading{max-width:620px;margin:60px auto;text-align:center;color:var(--ink-faint);font-size:14px}
 #dev .dwrap{max-width: 1120px; margin: 0 auto; padding: 56px 32px 72px;}
 #dev #schedule, #dev header{max-width: 620px; margin-left: auto; margin-right: auto;}
@@ -796,7 +801,7 @@ function showBanner(msg){
 async function connect(){
   setStatus("저장소 연결 중…","busy");
   var use=window.claude&&window.claude.use;
-  if(!use){ MODE="viewer"; setStatus("",""); document.getElementById("editBtn").hidden=true; document.getElementById("setBtn").hidden=true; render(); return; }
+  if(!use){ MODE="viewer"; document.body.classList.add("site"); setStatus("",""); document.getElementById("editBtn").hidden=true; document.getElementById("setBtn").hidden=true; render(); return; }
   MODE="artifact";
   try{ DB=await window.claude.use("db"); }catch(e){ DB=null; }
   if(!DB){ setStatus("저장 불가 — 편집 버튼을 눌러 안내 보기","err"); render(); return; }
