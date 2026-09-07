@@ -1,6 +1,6 @@
 {
- "name": "묵상 · 기도",
- "short_name": "묵상·기도",
+ "name": "묵상과 기도",
+ "short_name": "묵상과 기도",
  "start_url": "./",
  "scope": "./",
  "display": "standalone",
