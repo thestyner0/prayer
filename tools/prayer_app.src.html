@@ -347,7 +347,7 @@ body.site #dev .amnote-body p{font-size:13.5px}
       <header>
         <h1 class="ref" id="amref"></h1>
         <div class="rule"></div>
-        <div class="amctl" id="amctl"><a id="amtolist">☰ 암송 목록</a><a id="amstate" class="amctl-db">—</a><span class="amview" id="amview" style="display:none"><a data-v="orig">원본</a><a data-v="sec" class="on">단락</a></span></div>
+        <div class="amctl" id="amctl"><a id="amtolist">☰ 암송 목록</a><span class="amview amstate amctl-db" id="amstate"><a data-s="cur">외우는 중</a><a data-s="done">완료</a></span><span class="amview" id="amview" style="display:none"><a data-v="orig">원본</a><a data-v="sec" class="on">단락</a></span></div>
       </header>
       <main class="verses" id="amverses"></main>
       <footer>
@@ -845,7 +845,7 @@ function initDevotion(){
     var it=amItem(id); if(!it){ id=AMSEL||amState().current; it=amItem(id)||amItem(amState().current)||AMCATALOG[0]; id=it.id; } AMSEL=id;
     var st=amState(), stt=amStatus(id), wrap=$("amverses"); wrap.innerHTML="";
     $("amref").textContent=amTitle(it);
-    var sb=$("amstate"); sb.className="amctl-db "+(stt==="cur"?"cur":stt==="done"?"done":""); sb.textContent=stt==="done"?"✓ 외웠음 "+amShort(st.done[id]):stt==="cur"?"외우는 중":"외우기 시작";
+    var _sa=$("amstate").querySelectorAll("a"); for(var q=0;q<_sa.length;q++){ _sa[q].classList.toggle("on",_sa[q].dataset.s===stt); } _sa[1].textContent=stt==="done"?"✓ 완료 "+amShort(st.done[id]):"완료";
     var allsecs=AMSECTIONS[id]||[], secs=AMVIEW==="sec"?allsecs:[], si=0;
     $("amview").style.display=allsecs.length?"flex":"none"; var _va=$("amview").querySelectorAll("a"); for(var k=0;k<_va.length;k++){ _va[k].classList.toggle("on",_va[k].dataset.v===AMVIEW); }
     if(it.grp==="72"){
@@ -862,10 +862,10 @@ function initDevotion(){
   }
   $("amview").onclick=function(e){ var a=e.target.closest("a[data-v]"); if(!a) return; AMVIEW=a.dataset.v; try{ localStorage.setItem("amview.v1",AMVIEW); }catch(e2){} var nb=$("amnotebody"), wasOpen=nb.style.display!=="none"; renderAmsong(AMSEL); if(wasOpen){ nb.style.display="block"; $("amnotetog").textContent="강해 · 분석 닫기 ▴"; } };
   $("amnotetog").onclick=function(){ var nb=$("amnotebody"), open=nb.style.display==="none"; nb.style.display=open?"block":"none"; this.textContent=open?"강해 · 분석 닫기 ▴":"강해 · 분석 보기 ▾"; if(open){ try{ nb.scrollIntoView({behavior:"smooth",block:"start"}); }catch(e){} } };
-  $("amstate").onclick=function(){ if(!DB){ showBanner(); return; } var st=amState(), stt=amStatus(AMSEL), it=amItem(AMSEL);
-    if(stt==="todo"){ st.current=AMSEL; setStatus("외우는 중: "+amTitle(it),"busy"); }
-    else if(stt==="cur"){ st.done[AMSEL]=new Date().toISOString().slice(0,10); var nx=amNextId(AMSEL); if(nx) st.current=nx; setStatus("다 외웠음 ✓ — "+amTitle(it),"busy"); }
-    else { delete st.done[AMSEL]; setStatus("완료 표시를 취소했습니다","busy"); }
+  $("amstate").onclick=function(e){ var a=e.target.closest("a[data-s]"); if(!a) return; if(!DB){ showBanner(); return; } var st=amState(), stt=amStatus(AMSEL), it=amItem(AMSEL), want=a.dataset.s;
+    if(want===stt){ if(stt==="cur") st.current=null; else delete st.done[AMSEL]; setStatus("표시를 지웠습니다","busy"); }
+    else if(want==="cur"){ delete st.done[AMSEL]; st.current=AMSEL; setStatus("외우는 중: "+amTitle(it),"busy"); }
+    else { st.done[AMSEL]=new Date().toISOString().slice(0,10); if(st.current===AMSEL){ var nx=amNextId(AMSEL); st.current=nx||null; } setStatus("완료 ✓ — "+amTitle(it),"busy"); }
     markDirty("dev"); renderAmsong(AMSEL); };
   function showAmsong(id){ hideAll(); $("amsongview").style.display="block"; $("amlistview").style.display="none"; $("ampass").style.display="block"; setTab("am"); renderAmsong(id||AMSEL||amState().current); try{history.replaceState(null,"","#am");}catch(e){} window.scrollTo(0,0); }
   function showAmList(){ hideAll(); $("amsongview").style.display="block"; $("ampass").style.display="none"; $("amlistview").style.display="block"; setTab("am"); renderAmList(); window.scrollTo(0,0); }
