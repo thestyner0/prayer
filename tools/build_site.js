@@ -12,7 +12,7 @@ const {meta,days}=findJson(dataDir);
 if(!meta||!days.length) { console.error("data not found in", dataDir); process.exit(1); }
 const PLAN=JSON.parse(fs.readFileSync(path.join(__dirname,"devotion_plan.json"),"utf8"));
 const dev=Object.assign({start:"2026-08-02",amsong:[],rev:0},findJson(dataDir).dev||{});
-const D={devotion:{start:dev.start,amsong:dev.amsong,rev:dev.rev,plan:PLAN},rev:meta.rev,updated:meta.updated,updatedAt:meta.updatedAt,anchorSunday:meta.anchorSunday||meta.anchorMonday,anchorWeek:meta.anchorWeek,meeting:meta.meeting,commonPrayer:meta.commonPrayer,days};
+const D={devotion:{start:dev.start,amsong:dev.amsong,amsongState:dev.amsongState||{current:"psa139",done:{}},rev:dev.rev,plan:PLAN},rev:meta.rev,updated:meta.updated,updatedAt:meta.updatedAt,anchorSunday:meta.anchorSunday||meta.anchorMonday,anchorWeek:meta.anchorWeek,meeting:meta.meeting,commonPrayer:meta.commonPrayer,days};
 (meta.dayIndex||[]).forEach(x=>{const d=days.find(y=>y.no===x.no); if(d){d.title=x.title; d.sub=x.sub; if(x.accent)d.accent=x.accent;}});
 const seed=JSON.stringify(D).replace(/<\/script/g,"<\\/script");
 const html=fs.readFileSync(path.join(__dirname,"prayer_app.src.html"),"utf8").replace("__SEED__",seed);
