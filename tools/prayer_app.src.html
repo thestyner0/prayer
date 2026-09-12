@@ -71,6 +71,7 @@ body.compact .it.hasd.show .dsc{display:block}
 .it .dsc i.urg{color:#F7A8A8}
 .it .dsc i.urg:before{content:"!";color:#F08A8A;font-weight:800}
 .it .tx b.urg{color:#F7A8A8;font-weight:inherit}
+#prayer .real{color:#F08A8A}
 .guide{font-size:12px;color:var(--muted);background:rgba(255,255,255,.05);border-left:2px solid var(--ac);padding:9px 11px;margin:2px 0 4px}
 .guide b{color:var(--ac);font-weight:700}
 .st{display:flex;gap:9px;align-items:flex-start;background:var(--panel2);border-radius:9px;padding:9px 11px;margin-bottom:5px}
@@ -515,7 +516,7 @@ function psalmBoxHTML(){
    +psalmHTML(n)+'</details>';
 }
 function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
-function urg(x,tag){ x=String(x==null?"":x); var u=/^!\s*/.test(x); if(u) x=x.replace(/^!\s*/,""); if(tag) return "<"+tag+(u?" class=\"urg\"":"")+">"+esc(x)+"</"+tag+">"; return u?'<b class="urg">'+esc(x)+"</b>":esc(x); }
+function urg(x,tag){ x=String(x==null?"":x); var u=/^!\s*/.test(x); if(u) x=x.replace(/^!\s*/,""); var h=esc(x).replace(/《([^》]+)》/g,'<span class="real">$1</span>'); /* 《…》 = 실제 사건·실명 → 붉은색 */ if(tag) return "<"+tag+(u?" class=\"urg\"":"")+">"+h+"</"+tag+">"; return u?'<b class="urg">'+h+"</b>":h; }
 function dayByNo(n){for(var i=0;i<STATE.days.length;i++) if(STATE.days[i].no===n) return STATE.days[i]; return null;}
 
 /* ---------- 렌더 ---------- */
