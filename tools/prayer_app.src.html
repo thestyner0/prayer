@@ -46,6 +46,7 @@ body.compact .it.hasd{cursor:pointer}
 body.compact .it.hasd .tx::after{content:" ⌄";color:var(--dim);font-size:12px}
 body.compact .it.hasd.show .tx::after{content:" ⌃"}
 body.compact .it.hasd.show .dsc{display:block}
+#prayer .mir{display:inline-block;font-size:10.5px;letter-spacing:.04em;color:var(--ac);border:1px solid var(--line);border-radius:999px;padding:1px 8px;margin-left:8px;vertical-align:middle;opacity:.85}
 .secctl .mini{padding:6px 11px;font-size:12px}
 .dayhead{border-left:3px solid var(--ac);padding:2px 0 2px 12px;margin:14px 0}
 .dayhead .t{font-size:19px;font-weight:800;letter-spacing:-.02em}
@@ -538,10 +539,15 @@ function ctl(kind,idx){ // 편집 컨트롤
    +'<button class="mini" type="button" data-act="down" title="아래로">↓</button>'
    +'<button class="mini del" type="button" data-act="del" title="삭제">✕</button></span>';
 }
+function mirrorOf(it){ // {mirror:{day,sec,item}} → 다른 날짜의 기도제목 설명을 그대로 가져와 항상 연동
+  if(!it||!it.mirror) return null; var m=it.mirror, d=dayByNo(m.day); if(!d) return null;
+  for(var i=0;i<d.sections.length;i++){ var sc=d.sections[i]; if(m.sec&&(sc.title||"").indexOf(m.sec)<0) continue;
+    for(var j=0;j<sc.items.length;j++){ if((sc.items[j].t||"").indexOf(m.item)===0) return sc.items[j]; } }
+  return null; }
 function itemHTML(it,ii,si){
-  var dd=it.d||[];
+  var src=mirrorOf(it), dd=src?(src.d||[]):(it.d||[]);
   return '<div class="it'+(dd.length?' hasd':'')+'" data-i="'+ii+'" data-s="'+si+'"><span class="no">'+(ii+1)+'</span>'
-   +'<span class="tx">'+urg(it.t)+(dd.length?'<span class="dsc">'+dd.map(function(x){return urg(x,'i');}).join("")+'</span>':'')+'</span>'
+   +'<span class="tx">'+urg(it.t)+(src?'<span class="mir">↔ '+esc(it.mirror.day===7?"내 기도":it.mirror.day+"주차")+' · '+esc(it.mirror.item)+' 연동</span>':'')+(dd.length?'<span class="dsc">'+dd.map(function(x){return urg(x,'i');}).join("")+'</span>':'')+'</span>'
    +ctl("item",ii)+'</div>';
 }
 function sectionHTML(s,si){
