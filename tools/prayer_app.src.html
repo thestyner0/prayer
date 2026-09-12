@@ -539,15 +539,16 @@ function ctl(kind,idx){ // 편집 컨트롤
    +'<button class="mini" type="button" data-act="down" title="아래로">↓</button>'
    +'<button class="mini del" type="button" data-act="del" title="삭제">✕</button></span>';
 }
-function mirrorOf(it){ // {mirror:{day,sec,item}} → 다른 날짜의 기도제목 설명을 그대로 가져와 항상 연동
+function mirrorOf(it){ // {mirror:{day,sec,item?,line?}} → 다른 날짜의 기도제목을 그대로 가져와 항상 연동. item 없으면 그 주제의 기도제목 전체, line 있으면 그 글자가 든 설명 줄만
   if(!it||!it.mirror) return null; var m=it.mirror, d=dayByNo(m.day); if(!d) return null;
   for(var i=0;i<d.sections.length;i++){ var sc=d.sections[i]; if(m.sec&&(sc.title||"").indexOf(m.sec)<0) continue;
-    for(var j=0;j<sc.items.length;j++){ if((sc.items[j].t||"").indexOf(m.item)===0) return sc.items[j]; } }
+    if(!m.item){ return {t:sc.title, d:sc.items.map(function(x){ return x.t; })}; }
+    for(var j=0;j<sc.items.length;j++){ var x=sc.items[j]; if((x.t||"").indexOf(m.item)===0){ var dd=x.d||[]; if(m.line) dd=dd.filter(function(l){ return l.indexOf(m.line)>=0; }); return {t:x.t, d:dd}; } } }
   return null; }
 function itemHTML(it,ii,si){
   var src=mirrorOf(it), dd=src?(src.d||[]):(it.d||[]);
   return '<div class="it'+(dd.length?' hasd':'')+'" data-i="'+ii+'" data-s="'+si+'"><span class="no">'+(ii+1)+'</span>'
-   +'<span class="tx">'+urg(it.t)+(src?'<span class="mir">↔ '+esc(it.mirror.day===7?"내 기도":it.mirror.day+"주차")+' · '+esc(it.mirror.item)+' 연동</span>':'')+(dd.length?'<span class="dsc">'+dd.map(function(x){return urg(x,'i');}).join("")+'</span>':'')+'</span>'
+   +'<span class="tx">'+urg(it.t)+(src?'<span class="mir">↔ '+esc(it.mirror.label||((it.mirror.day===7?"내 기도":it.mirror.day+"주차")+" · "+(it.mirror.item||it.mirror.sec)))+' 연동</span>':'')+(dd.length?'<span class="dsc">'+dd.map(function(x){return urg(x,'i');}).join("")+'</span>':'')+'</span>'
    +ctl("item",ii)+'</div>';
 }
 function sectionHTML(s,si){
