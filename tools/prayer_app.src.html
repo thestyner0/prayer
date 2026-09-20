@@ -15,11 +15,12 @@ body{background:var(--bg);color:var(--body);min-height:100vh;line-height:1.5;
  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
  padding-bottom:calc(56px + env(safe-area-inset-bottom))}
 #prayer .wrap{max-width:760px;margin:0 auto;padding:0 14px}
-#prayer header{padding:18px 0 8px;display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap}
+#prayer header{padding:18px 0 8px;display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap;position:relative}
 #prayer header .hl{flex:1;min-width:200px}
 .eyebrow{font-size:11px;font-weight:700;letter-spacing:.16em;color:var(--ac);margin-bottom:5px}
 #prayer h1{font-size:21px;font-weight:800;letter-spacing:-.02em}
-.datetag{font-size:12px;color:var(--dim);margin-top:4px}
+.whentag{font-size:15px;font-weight:700;color:#F2D18A;margin-top:6px;letter-spacing:-.01em}
+.updtag{position:absolute;top:18px;right:0;font-size:10.5px;color:var(--dim);white-space:nowrap}
 .thisweek{display:inline-block;margin-top:9px;background:var(--ac);color:#12193c;font-size:12px;font-weight:800;padding:5px 11px;border-radius:999px}
 .tools{display:flex;gap:6px;align-items:center;padding-top:6px}
 .tb{font:inherit;font-size:12.5px;font-weight:700;background:var(--panel);border:1px solid var(--line);color:var(--muted);padding:7px 12px;border-radius:999px;cursor:pointer}
@@ -470,9 +471,10 @@ body.site #dev .amnote-body p{font-size:13.5px}
   <div class="hl">
     <div class="eyebrow">주일기도모임 · 아침기도</div>
     <h1>중보기도</h1>
-    <div class="datetag" id="datetag"></div>
+    <div class="whentag" id="whentag"></div>
     <div class="thisweek" id="weektag"></div>
   </div>
+  <div class="updtag" id="updtag"></div>
 </header>
 <nav id="tabs"></nav>
 <main id="main"></main>
@@ -522,9 +524,10 @@ function dayByNo(n){for(var i=0;i<STATE.days.length;i++) if(STATE.days[i].no===n
 /* ---------- 렌더 ---------- */
 function renderHeader(){
   var now=new Date(), tw=todayWeek(), d=dayByNo(tw);
-  document.getElementById("datetag").textContent=now.getFullYear()+"년 "+(now.getMonth()+1)+"월 "+now.getDate()+"일 "+WD[now.getDay()]+"요일 · 기도제목 업데이트 "+(STATE.updated||"");
+  document.getElementById("whentag").textContent=(STATE.meeting&&STATE.meeting.when)||"";
+  document.getElementById("updtag").textContent="기도제목 업데이트 "+(STATE.updated||"");
   document.getElementById("weektag").textContent="이번 주 · "+tw+"주차 · "+(d?d.title:"");
-  document.getElementById("foot2").textContent=MODE==="editor"?"편집 내용은 저장 즉시 모든 기기에 반영됩니다":"";
+  document.getElementById("foot2").textContent="";
 }
 function renderTabs(){
   var tw=todayWeek(), h='<a class="tab order'+(SEL===0?" on":"")+'" data-day="0">기도모임 순서</a>';
