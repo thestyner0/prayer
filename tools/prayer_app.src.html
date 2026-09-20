@@ -476,7 +476,7 @@ body.site #dev .amnote-body p{font-size:13.5px}
 </header>
 <nav id="tabs"></nav>
 <main id="main"></main>
-<div class="foot">매주 주일에 다음 주차로 자동으로 넘어갑니다 · 긴급 · 중보기도는 매주 함께합니다<br><span id="foot2"></span></div>
+<div class="foot">매주 진행되는 나라를 위한 중보기도 모임입니다.<br>기도모임이나 이 사이트에 대해서 문의가 있으신 분은 <a href="mailto:thestyner@hotmail.com" style="color:inherit;text-decoration:underline">thestyner@hotmail.com</a>으로 문의주세요.<br><span id="foot2"></span></div>
 </div>
 </section>
 <script id="seed" type="application/json">__SEED__</script>
@@ -570,7 +570,7 @@ function orderHTML(){
         +'<div class="addrow"><button class="add" type="button" data-act="addcard">+ 공통기도 카드 추가</button></div>':'')
       +'</span>'+ctl("step",i)+'</div>';
   }).join("");
-  return '<section class="day on" data-day="0"><div class="dayhead"><div class="t">기도모임 순서</div><div class="s">모이면 이 순서로 기도합니다</div></div>'
+  return '<section class="day on" data-day="0"><div class="dayhead"><div class="t">기도모임 순서</div><div class="s">'+esc(m.when||"모이면 이 순서로 기도합니다")+'</div></div>'
    +steps+'<div class="addrow"><button class="add" type="button" data-act="addstep">+ 순서 항목 추가</button></div>'
    +'<div class="onote" data-edit="note">'+esc(m.note||"")+'</div></section>';
 }
