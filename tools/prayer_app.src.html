@@ -48,6 +48,11 @@ body.compact .it.hasd .tx::after{content:" ⌄";color:var(--dim);font-size:12px}
 body.compact .it.hasd.show .tx::after{content:" ⌃"}
 body.compact .it.hasd.show .dsc{display:block}
 #prayer .mir{display:inline-block;font-size:10.5px;letter-spacing:.04em;color:var(--ac);border:1px solid var(--line);border-radius:999px;padding:1px 8px;margin-left:8px;vertical-align:middle;opacity:.85}
+#prayer .mir.lock{color:#F2D18A;border-color:rgba(216,169,74,.5);cursor:pointer}
+.lockbox{max-width:360px;margin:28px auto 40px;text-align:center}.lockbox .lk{font-size:34px;margin-bottom:8px}.lockbox h2{font-size:17px;font-weight:800;margin-bottom:6px}.lockbox p{font-size:12.5px;color:var(--muted);line-height:1.6;margin-bottom:16px}
+.lockbox input[type=password]{width:100%;font:inherit;font-size:22px;letter-spacing:.3em;text-align:center;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--panel);color:var(--fg);outline:none}.lockbox input[type=password]:focus{border-color:var(--gold)}
+.lockbox .row{display:flex;align-items:center;justify-content:center;gap:8px;font-size:12.5px;color:var(--muted);margin:12px 0}.lockbox .row input{width:17px;height:17px;accent-color:var(--gold)}
+.lockbox button{width:100%;font:inherit;font-size:15px;font-weight:800;padding:13px;border:0;border-radius:12px;background:var(--gold);color:#241a05;cursor:pointer}.lockbox button:disabled{opacity:.5}.lockbox .err{min-height:20px;font-size:12.5px;color:#f2a3a3;margin-top:12px}
 .secctl .mini{padding:6px 11px;font-size:12px}
 .dayhead{border-left:3px solid var(--ac);padding:2px 0 2px 12px;margin:14px 0}
 .dayhead .t{font-size:19px;font-weight:800;letter-spacing:-.02em}
@@ -534,6 +539,7 @@ function renderTabs(){
     if(d.no<=CYCLE) h+='<a class="tab'+(SEL===d.no?" on":"")+'" data-day="'+d.no+'"><span class="n">'+d.no+'</span>주차</a>';
     else h+='<a class="tab every'+(SEL===d.no?" on":"")+'" data-day="'+d.no+'">긴급 · 중보<span class="ev">매주</span></a>';
   });
+  if(STATE.locked7&&!dayByNo(7)) h+='<a class="tab every'+(SEL===7?" on":"")+'" data-day="7">긴급 · 중보<span class="ev">🔒</span></a>';
   document.getElementById("tabs").innerHTML=h;
 }
 function ctl(kind,idx){ // 편집 컨트롤
@@ -543,13 +549,15 @@ function ctl(kind,idx){ // 편집 컨트롤
    +'<button class="mini del" type="button" data-act="del" title="삭제">✕</button></span>';
 }
 function mirrorOf(it){ // {mirror:{day,sec,item?,line?}} → 다른 날짜의 기도제목을 그대로 가져와 항상 연동. item 없으면 그 주제의 기도제목 전체, line 있으면 그 글자가 든 설명 줄만
-  if(!it||!it.mirror) return null; var m=it.mirror, d=dayByNo(m.day); if(!d) return null;
+  if(!it||!it.mirror) return null; var m=it.mirror, d=dayByNo(m.day); if(!d){ if(m.day===7&&STATE.locked7) return {locked:true}; return null; }
   for(var i=0;i<d.sections.length;i++){ var sc=d.sections[i]; if(m.sec&&(sc.title||"").indexOf(m.sec)<0) continue;
-    if(!m.item){ return {t:sc.title, d:sc.items.map(function(x){ return x.t; })}; }
+    if(!m.item){ var its=sc.items; if(m.match) its=its.filter(function(x){ return (x.t||"").indexOf(m.match)>=0; }); // match: 제목에 그 글자가 든 항목만(예: 선교사 나라)
+      return {t:sc.title, d:its.map(function(x){ var dd=x.d||[]; return dd.length?x.t+" — "+dd.join(" · "):x.t; })}; }
     for(var j=0;j<sc.items.length;j++){ var x=sc.items[j]; if((x.t||"").indexOf(m.item)===0){ var dd=x.d||[]; if(m.line) dd=dd.filter(function(l){ return l.indexOf(m.line)>=0; }); return {t:x.t, d:dd}; } } }
   return null; }
 function itemHTML(it,ii,si){
   var src=mirrorOf(it), dd=src?(src.d||[]):(it.d||[]);
+  if(src&&src.locked) return '<div class="it" data-i="'+ii+'" data-s="'+si+'"><span class="no">'+(ii+1)+'</span><span class="tx">'+urg(it.t)+'<span class="mir lock" data-act="unlock7">🔒 긴급·중보 비밀번호 입력 후 표시</span></span>'+ctl("item",ii)+'</div>';
   return '<div class="it'+(dd.length?' hasd':'')+'" data-i="'+ii+'" data-s="'+si+'"><span class="no">'+(ii+1)+'</span>'
    +'<span class="tx">'+urg(it.t)+(src?'<span class="mir">↔ '+esc(it.mirror.label||((it.mirror.day===7?"내 기도":it.mirror.day+"주차")+" · "+(it.mirror.item||it.mirror.sec)))+' 연동</span>':'')+(dd.length?'<span class="dsc">'+dd.map(function(x){return urg(x,'i');}).join("")+'</span>':'')+'</span>'
    +ctl("item",ii)+'</div>';
@@ -588,9 +596,51 @@ function render(){
   renderHeader(); renderTabs();
   var main=document.getElementById("main");
   if(SEL===0) main.innerHTML=orderHTML();
-  else { var d=dayByNo(SEL); main.innerHTML=d?dayHTML(d):""; }
-  document.documentElement.style.setProperty("--ac", SEL===0?"#D8A94A":(dayByNo(SEL)||{}).accent||"#9BD0E8");
+  else { var d=dayByNo(SEL); main.innerHTML=d?dayHTML(d):(SEL===7&&STATE.locked7?lockHTML():""); }
+  document.documentElement.style.setProperty("--ac", SEL===0?"#D8A94A":(dayByNo(SEL)||{}).accent||(SEL===7?"#D8A94A":"#9BD0E8"));
+  if(SEL===7&&!d&&STATE.locked7) bindLock();
   window.scrollTo({top:0});
+}
+/* ---------- 긴급·중보(7일차) 잠금 — 공개 사이트에서는 7일차만 AES-GCM으로 암호화되어 있고, 비밀번호를 넣으면 이 화면 안에서 풀립니다 ---------- */
+var LK7="prayer.key7.v1";
+function lockHTML(){
+  return '<section class="day on" data-day="7"><div class="dayhead"><div class="t">긴급 · 중보기도</div><div class="s">기도모임 식구들만 볼 수 있는 기도제목입니다</div></div>'
+   +'<form class="lockbox" id="lock7" autocomplete="off"><div class="lk">🔒</div><h2>비밀번호를 입력해 주세요</h2><p>긴급기도 · 중보기도 · 선교사님 기도제목은 실명이 들어 있어 비밀번호로 보호합니다.<br>비밀번호는 기도모임에서 안내해 드립니다.</p>'
+   +'<input type="password" id="pw7" inputmode="numeric" placeholder="비밀번호" autofocus><label class="row"><input type="checkbox" id="rem7" checked> 이 기기에서 기억하기</label>'
+   +'<button type="submit" id="go7">열기</button><div class="err" id="err7"></div></form></section>';
+}
+function apply7(obj){ // 암호화된 7일차 {day, hidden:[{no,si,ii,it}]} 를 STATE에 넣고, 가려 두었던 연동 항목 원본을 되돌림
+  var day=obj&&obj.day?obj.day:obj; applyRemoteDay(day.no,day); STATE.days.sort(function(a,b){return a.no-b.no;});
+  (STATE.dayIndex||[]).forEach(function(x){ var d=dayByNo(x.no); if(d){ d.title=x.title; d.sub=x.sub; if(x.accent) d.accent=x.accent; } });
+  (obj.hidden||[]).forEach(function(h){ var d=dayByNo(h.no); try{ if(h.it) d.sections[h.si].items[h.ii]=h.it; else d.sections[h.si].items[h.ii].t=h.t; }catch(e){} });
+}
+function b64u8(s){ var b=atob(s),a=new Uint8Array(b.length); for(var i=0;i<b.length;i++) a[i]=b.charCodeAt(i); return a; }
+async function key7From(pass){
+  var L=STATE.locked7, base=await crypto.subtle.importKey("raw",new TextEncoder().encode(pass),"PBKDF2",false,["deriveKey"]);
+  return crypto.subtle.deriveKey({name:"PBKDF2",salt:b64u8(L.salt),iterations:L.iter,hash:"SHA-256"},base,{name:"AES-GCM",length:256},true,["decrypt"]);
+}
+async function open7(key){
+  var L=STATE.locked7, plain=await crypto.subtle.decrypt({name:"AES-GCM",iv:b64u8(L.iv)},key,b64u8(L.ct));
+  var obj=JSON.parse(new TextDecoder().decode(plain)); apply7(obj);
+  try{ sessionStorage.setItem("prayer.p7",JSON.stringify(obj)); }catch(e){}
+}
+async function tryRemembered7(){
+  try{ var c=sessionStorage.getItem("prayer.p7"); if(c){ apply7(JSON.parse(c)); return true; } }catch(e){}
+  try{ var jwk=JSON.parse(localStorage.getItem(LK7)||"null"); if(!jwk) return false;
+    var key=await crypto.subtle.importKey("jwk",jwk,{name:"AES-GCM"},true,["decrypt"]); await open7(key); return true;
+  }catch(e){ try{localStorage.removeItem(LK7);}catch(_){} return false; }
+}
+function bindLock(){
+  var f=document.getElementById("lock7"); if(!f) return;
+  f.addEventListener("submit",async function(e){
+    e.preventDefault(); var pw=document.getElementById("pw7"), go=document.getElementById("go7"), err=document.getElementById("err7"), rem=document.getElementById("rem7");
+    err.textContent=""; go.disabled=true; go.textContent="확인 중…";
+    try{ var key=await key7From(pw.value.trim()); await open7(key);
+      if(rem.checked){ try{ localStorage.setItem(LK7, JSON.stringify(await crypto.subtle.exportKey("jwk",key))); }catch(_){} }
+      render();
+    }catch(ex){ err.textContent=(!window.crypto||!crypto.subtle)?"이 브라우저는 지원되지 않습니다. 최신 Safari/Chrome으로 열어 주세요.":"비밀번호가 맞지 않습니다."; pw.value=""; pw.focus(); go.disabled=false; go.textContent="열기"; }
+  });
+  setTimeout(function(){ var pw=document.getElementById("pw7"); if(pw) pw.focus(); },50);
 }
 function show(n){ SEL=n; editingKey=null; try{history.replaceState(null,"","#day"+n);}catch(e){} render(); }
 
@@ -706,6 +756,8 @@ document.getElementById("main").addEventListener("click",function(e){
     return;
   }
   if(t.closest(".psbox")) return;
+  if(t.closest('[data-act="unlock7"]')){ e.preventDefault(); show(7); return; }
+  if(t.closest("#lock7")) return;
   if(!EDIT){ if(COMPACT){ var ci=t.closest(".it.hasd"); if(ci) ci.classList.toggle("show"); } return; }
   if(t.closest(".ed")) return;
   var it=t.closest(".it"); if(it){ e.preventDefault(); openItemEditor(+it.dataset.s,+it.dataset.i); return; }
@@ -915,7 +967,10 @@ function showBanner(msg){
 async function connect(){
   setStatus("저장소 연결 중…","busy");
   var use=window.claude&&window.claude.use;
-  if(!use){ MODE="viewer"; document.body.classList.add("site"); setStatus("",""); document.getElementById("editBtn").hidden=true; document.getElementById("setBtn").hidden=true; render(); return; }
+  if(!use){ MODE="viewer"; document.body.classList.add("site"); setStatus("",""); document.getElementById("editBtn").hidden=true; document.getElementById("setBtn").hidden=true;
+    if(STATE.locked7){ try{ await tryRemembered7(); }catch(e){} }
+    if("serviceWorker" in navigator&&/^https?:/.test(location.protocol)){ try{ navigator.serviceWorker.register("sw.js").catch(function(){}); }catch(e){} }
+    render(); return; }
   MODE="artifact";
   try{ DB=await window.claude.use("db"); }catch(e){ DB=null; }
   if(!DB){ setStatus("저장 불가 — 편집 버튼을 눌러 안내 보기","err"); render(); return; }
