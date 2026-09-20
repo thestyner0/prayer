@@ -58,6 +58,9 @@ body.compact .it.hasd.show .dsc{display:block}
 .dayhead .t{font-size:19px;font-weight:800;letter-spacing:-.02em}
 .dayhead .s{font-size:12.5px;color:var(--muted);margin-top:3px}
 .dayhead .meta{font-size:11px;color:var(--dim);margin-top:6px}
+.region{display:flex;align-items:center;gap:10px;margin:22px 0 10px;scroll-margin-top:64px}.region:first-of-type{margin-top:6px}
+.region .rt{font-size:13px;font-weight:800;letter-spacing:.12em;color:#F2D18A;white-space:nowrap}.region .rc{font-size:11px;color:var(--dim)}.region::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba(216,169,74,.55),transparent)}
+.regnav{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 12px}.regnav a{font-size:11.5px;font-weight:700;color:#F2D18A;background:rgba(216,169,74,.12);border:1px solid rgba(216,169,74,.35);border-radius:999px;padding:4px 10px;cursor:pointer;text-decoration:none}.regnav a:hover{background:rgba(216,169,74,.25)}
 .sec{background:var(--panel);border:1px solid var(--line);border-radius:13px;margin-bottom:10px;overflow:hidden}
 .sec summary{display:flex;align-items:center;gap:8px;padding:13px 14px;cursor:pointer;list-style:none;flex-wrap:wrap}
 .sec summary::-webkit-details-marker{display:none}
@@ -586,11 +589,19 @@ function orderHTML(){
 }
 function dayHTML(d){
   var total=0; d.sections.forEach(function(s){total+=s.items.length;});
-  var secs=d.sections.map(sectionHTML).join("");
+  var regOf=function(s){ var m=/^(.+?)\s*·\s*\d+/.exec(s.kicker||""); return m?m[1].trim():""; }; // "동아시아 · 05" → 동아시아
+  var regs=[]; d.sections.forEach(function(s){ var r=regOf(s); if(r&&regs.indexOf(r)<0) regs.push(r); });
+  var grouped=regs.length>=2, secs="", last=null, regnav="";
+  if(grouped){ regnav='<div class="regnav">'+regs.map(function(r,i){ return '<a data-act="region" data-r="'+i+'">'+esc(r)+'</a>'; }).join("")+'</div>'; }
+  d.sections.forEach(function(s,si){
+    var r=regOf(s);
+    if(grouped&&r&&r!==last){ var cnt=d.sections.filter(function(x){return regOf(x)===r;}).length; secs+='<div class="region" id="reg'+regs.indexOf(r)+'"><span class="rt">'+esc(r)+'</span><span class="rc">'+cnt+'개 나라·주제</span></div>'; last=r; }
+    secs+=sectionHTML(s,si);
+  });
   return '<section class="day on" data-day="'+d.no+'"><div class="dayhead" data-edit="day"><div class="t">'+(d.no<=CYCLE?d.no+"주차 · ":"")+esc(d.title)+'</div>'
    +'<div class="s">'+esc(d.sub||"")+'</div><div class="meta">'+d.sections.length+'개 주제 · 기도제목 '+total+'개</div></div>'
    +'<div class="secctl"><button class="mini'+(COMPACT?" on":"")+'" type="button" data-act="collapse">설명 접기 — 기도제목만</button><button class="mini'+(COMPACT?"":" on")+'" type="button" data-act="expand">설명 펼치기</button></div>'
-   +secs+'<div class="addrow"><button class="add" type="button" data-act="addsec">+ 주제(섹션) 추가</button><button class="add" type="button" data-act="renum" style="flex:0 0 auto">번호 다시 매기기</button></div></section>';
+   +regnav+secs+'<div class="addrow"><button class="add" type="button" data-act="addsec">+ 주제(섹션) 추가</button><button class="add" type="button" data-act="renum" style="flex:0 0 auto">번호 다시 매기기</button></div></section>';
 }
 function render(){
   renderHeader(); renderTabs();
@@ -757,6 +768,7 @@ document.getElementById("main").addEventListener("click",function(e){
   }
   if(t.closest(".psbox")) return;
   if(t.closest('[data-act="unlock7"]')){ e.preventDefault(); show(7); return; }
+  var rg=t.closest('a[data-act="region"]'); if(rg){ e.preventDefault(); var el=document.getElementById("reg"+rg.dataset.r); if(el) el.scrollIntoView({behavior:"smooth",block:"start"}); return; }
   if(t.closest("#lock7")) return;
   if(!EDIT){ if(COMPACT){ var ci=t.closest(".it.hasd"); if(ci) ci.classList.toggle("show"); } return; }
   if(t.closest(".ed")) return;
