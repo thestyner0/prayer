@@ -49,6 +49,8 @@ const html=fs.readFileSync(path.join(__dirname,"prayer_app.src.html"),"utf8").re
 // 공개 원문에 7일차 실명(선교사 목록 등)이 새지 않는지 확인
 const names=[]; day7.sections.forEach(s=>{ if(/^[가-힣]{2,4}$/.test(s.title)) names.push(s.title); s.items.forEach(it=>{ if(/^[가-힣]{2,4} \(/.test(it.t)) names.push(it.t.split(" (")[0]); }); }); hidden.forEach(h=>{ const n=/^사명자\s*:\s*(\S+)/.exec(h.it.t); if(n) names.push(n[1]); });
 const pubJson=JSON.stringify(pubDays);
+// 잠긴 연동 항목의 실제 내용(환아 이름 등)이 공개 원문에 없는지도 확인
+hidden.forEach(h=>{ const src=mirrorOf(h.it); (src?src.d:[]).forEach(l=>{ if(l&&l.length>6&&html.indexOf(l)>=0&&!pubJson.includes(l)) names.push(l.slice(0,30)); }); });
 const leak=names.filter(n=>html.indexOf(n)>=0 && !pubJson.includes(n));
 const leak2=names.filter(n=>pubJson.includes(n)); if(leak2.length) console.warn("note: day-7 names also present in public days (intended?):",[...new Set(leak2)].join(", "));
 if(leak.length){ console.error("LEAK? day-7 names found in public html:", leak); process.exit(2); }
