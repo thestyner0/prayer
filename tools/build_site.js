@@ -21,9 +21,16 @@ const dev=Object.assign({start:"2026-08-02",amsong:[],rev:0},findJson(dataDir).d
 const dayByNo=n=>days.find(d=>d.no===n)||null;
 function mirrorOf(it){
   if(!it||!it.mirror) return null; const m=it.mirror, d=dayByNo(m.day); if(!d) return null;
-  for(const sc of d.sections){ if(m.sec&&(sc.title||"").indexOf(m.sec)<0) continue;
-    if(!m.item){ let its=sc.items; if(m.match) its=its.filter(x=>(x.t||"").indexOf(m.match)>=0); return {t:sc.title,d:its.map(x=>{const dd=x.d||[]; return dd.length?x.t+" — "+dd.join(" · "):x.t;})}; }
-    for(const x of sc.items){ if((x.t||"").indexOf(m.item)===0){ let dd=x.d||[]; if(m.line) dd=dd.filter(l=>l.indexOf(m.line)>=0); return {t:x.t,d:dd}; } } }
+  const secs=m.secs||(m.sec?[m.sec]:null); const out=[]; let first=null;
+  for(const sc of d.sections){
+    if(secs&&!secs.some(q=>(sc.title||"").indexOf(q)>=0)) continue;
+    if(!m.item){ let its=sc.items; if(m.match) its=its.filter(x=>(x.t||"").indexOf(m.match)>=0);
+      if(m.brief){ let bs=its.filter(x=>x.b); if(!bs.length) bs=its; if(secs&&secs.length>1) out.push(sc.title); bs.forEach(x=>out.push((secs&&secs.length>1?"- ":"")+(x.b||x.t))); if(!first) first=sc.title; if(secs&&secs.length>1) continue; return {t:sc.title,d:out}; }
+      return {t:sc.title,d:its.map(x=>{const dd=x.d||[]; return dd.length?x.t+" — "+dd.join(" · "):x.t;})}; }
+    for(const x of sc.items){ if((x.t||"").indexOf(m.item)===0){ let dd=x.d||[];
+      if(m.block){ const res=[]; let on=false; for(const L of dd){ const isSub=/^-\s+/.test(L); if(!isSub){ on=(L.replace(/^!\s*/,"").indexOf(m.block)===0); continue; } if(on) res.push(L.replace(/^-\s+/,"")); } return {t:x.t,d:res}; }
+      if(m.line) dd=dd.filter(l=>l.indexOf(m.line)>=0); return {t:x.t,d:dd}; } } }
+  if(out.length) return {t:first||"",d:out};
   return null;
 }
 const pubDays=days.filter(d=>d.no!==7).map(d=>JSON.parse(JSON.stringify(d)));

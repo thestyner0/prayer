@@ -526,7 +526,7 @@ function psalmBoxHTML(){
    +psalmHTML(n)+'</details>';
 }
 function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
-function urg(x,tag){ x=String(x==null?"":x); var u=/^!\s*/.test(x); if(u) x=x.replace(/^!\s*/,""); var sub=/^-\s+/.test(x); if(sub) x=x.replace(/^-\s+/,""); /* "- " 로 시작하는 줄 = 하위 항목(들여쓰기) */ var h=esc(x).replace(/《([^》]+)》/g,'<span class="real">$1</span>'); /* 《…》 = 실제 사건·실명 → 붉은색 */ var cls=(u?"urg ":"")+(sub?"lv2":""); cls=cls.trim(); if(tag) return "<"+tag+(cls?' class="'+cls+'"':"")+">"+h+"</"+tag+">"; return u?'<b class="urg">'+h+"</b>":h; }
+function urg(x,tag){ x=String(x==null?"":x); var sub=/^-\s+/.test(x); if(sub) x=x.replace(/^-\s+/,""); var u=/^!\s*/.test(x); if(u) x=x.replace(/^!\s*/,""); if(!sub&&/^-\s+/.test(x)){ sub=true; x=x.replace(/^-\s+/,""); } /* "- " 로 시작하는 줄 = 하위 항목(들여쓰기) */ var h=esc(x).replace(/《([^》]+)》/g,'<span class="real">$1</span>'); /* 《…》 = 실제 사건·실명 → 붉은색 */ var cls=(u?"urg ":"")+(sub?"lv2":""); cls=cls.trim(); if(tag) return "<"+tag+(cls?' class="'+cls+'"':"")+">"+h+"</"+tag+">"; return u?'<b class="urg">'+h+"</b>":h; }
 function dayByNo(n){for(var i=0;i<STATE.days.length;i++) if(STATE.days[i].no===n) return STATE.days[i]; return null;}
 
 /* ---------- 렌더 ---------- */
@@ -552,12 +552,19 @@ function ctl(kind,idx){ // 편집 컨트롤
    +'<button class="mini" type="button" data-act="down" title="아래로">↓</button>'
    +'<button class="mini del" type="button" data-act="del" title="삭제">✕</button></span>';
 }
-function mirrorOf(it){ // {mirror:{day,sec,item?,line?}} → 다른 날짜의 기도제목을 그대로 가져와 항상 연동. item 없으면 그 주제의 기도제목 전체, line 있으면 그 글자가 든 설명 줄만
+function mirrorOf(it){ // {mirror:{day,sec|secs,item?,line?,block?,match?,brief?}} → 다른 날짜의 기도제목을 그대로 가져와 항상 연동
+  // item 없음: 그 주제의 기도제목 전체(match: 제목에 그 글자가 든 항목만 · brief: 각 항목의 b(짧은 사례) 만, secs가 여럿이면 주제명을 머리글로) / item 있음: 그 항목의 설명 줄(line: 그 글자가 든 줄만 · block: "block" 머리글 아래 "- " 하위 줄들만)
   if(!it||!it.mirror) return null; var m=it.mirror, d=dayByNo(m.day); if(!d){ if(m.day===7&&STATE.locked7) return {locked:true}; return null; }
-  for(var i=0;i<d.sections.length;i++){ var sc=d.sections[i]; if(m.sec&&(sc.title||"").indexOf(m.sec)<0) continue;
-    if(!m.item){ var its=sc.items; if(m.match) its=its.filter(function(x){ return (x.t||"").indexOf(m.match)>=0; }); // match: 제목에 그 글자가 든 항목만(예: 선교사 나라)
+  var secs=m.secs||(m.sec?[m.sec]:null), out=[], first=null;
+  for(var i=0;i<d.sections.length;i++){ var sc=d.sections[i];
+    if(secs){ var ok=false; for(var q=0;q<secs.length;q++) if((sc.title||"").indexOf(secs[q])>=0) ok=true; if(!ok) continue; }
+    if(!m.item){ var its=sc.items; if(m.match) its=its.filter(function(x){ return (x.t||"").indexOf(m.match)>=0; });
+      if(m.brief){ var bs=its.filter(function(x){ return x.b; }); if(!bs.length) bs=its; if(secs&&secs.length>1) out.push(sc.title); bs.forEach(function(x){ out.push((secs&&secs.length>1?"- ":"")+(x.b||x.t)); }); if(!first) first=sc.title; if(secs&&secs.length>1) continue; return {t:sc.title, d:out}; }
       return {t:sc.title, d:its.map(function(x){ var dd=x.d||[]; return dd.length?x.t+" — "+dd.join(" · "):x.t; })}; }
-    for(var j=0;j<sc.items.length;j++){ var x=sc.items[j]; if((x.t||"").indexOf(m.item)===0){ var dd=x.d||[]; if(m.line) dd=dd.filter(function(l){ return l.indexOf(m.line)>=0; }); return {t:x.t, d:dd}; } } }
+    for(var j=0;j<sc.items.length;j++){ var x=sc.items[j]; if((x.t||"").indexOf(m.item)===0){ var dd=x.d||[];
+      if(m.block){ var res=[], on=false; for(var k=0;k<dd.length;k++){ var L=dd[k], isSub=/^-\s+/.test(L); if(!isSub){ on=(L.replace(/^!\s*/,"").indexOf(m.block)===0); continue; } if(on) res.push(L.replace(/^-\s+/,"")); } return {t:x.t, d:res}; }
+      if(m.line) dd=dd.filter(function(l){ return l.indexOf(m.line)>=0; }); return {t:x.t, d:dd}; } } }
+  if(out.length) return {t:first||"", d:out};
   return null; }
 function itemHTML(it,ii,si){
   var src=mirrorOf(it), dd=src?(src.d||[]):(it.d||[]);
