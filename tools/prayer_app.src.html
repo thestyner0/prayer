@@ -77,6 +77,7 @@ body.compact .it.hasd.show .dsc{display:block}
 .it .dsc{display:block;margin-top:5px;padding-top:5px;border-top:1px solid rgba(255,255,255,.09)}
 .it .dsc i{display:block;font-size:12.5px;font-style:normal;color:var(--muted);line-height:1.5;padding-left:9px;position:relative;margin-top:3px}
 .it .dsc i:before{content:"·";position:absolute;left:0;color:var(--ac)}
+.it .dsc i.lv2{padding-left:24px}.it .dsc i.lv2:before{content:"–";left:12px}
 .it .dsc i.urg{color:#F7A8A8}
 .it .dsc i.urg:before{content:"!";color:#F08A8A;font-weight:800}
 .it .tx b.urg{color:#F7A8A8;font-weight:inherit}
@@ -525,7 +526,7 @@ function psalmBoxHTML(){
    +psalmHTML(n)+'</details>';
 }
 function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
-function urg(x,tag){ x=String(x==null?"":x); var u=/^!\s*/.test(x); if(u) x=x.replace(/^!\s*/,""); var h=esc(x).replace(/《([^》]+)》/g,'<span class="real">$1</span>'); /* 《…》 = 실제 사건·실명 → 붉은색 */ if(tag) return "<"+tag+(u?" class=\"urg\"":"")+">"+h+"</"+tag+">"; return u?'<b class="urg">'+h+"</b>":h; }
+function urg(x,tag){ x=String(x==null?"":x); var u=/^!\s*/.test(x); if(u) x=x.replace(/^!\s*/,""); var sub=/^-\s+/.test(x); if(sub) x=x.replace(/^-\s+/,""); /* "- " 로 시작하는 줄 = 하위 항목(들여쓰기) */ var h=esc(x).replace(/《([^》]+)》/g,'<span class="real">$1</span>'); /* 《…》 = 실제 사건·실명 → 붉은색 */ var cls=(u?"urg ":"")+(sub?"lv2":""); cls=cls.trim(); if(tag) return "<"+tag+(cls?' class="'+cls+'"':"")+">"+h+"</"+tag+">"; return u?'<b class="urg">'+h+"</b>":h; }
 function dayByNo(n){for(var i=0;i<STATE.days.length;i++) if(STATE.days[i].no===n) return STATE.days[i]; return null;}
 
 /* ---------- 렌더 ---------- */
@@ -696,7 +697,7 @@ function editorBox(fields, onSave, onDelete){ // fields: [{k,label,val,multi,hin
 }
 function openItemEditor(si,ii){
   var d=dayByNo(SEL), s=d.sections[si], it=s.items[ii], node=document.querySelector('.it[data-s="'+si+'"][data-i="'+ii+'"]');
-  var box=editorBox([{k:"txt",label:"기도제목 (첫 줄) · 종속 내용 (둘째 줄부터)",val:[it.t].concat(it.d||[]).join("\n"),multi:true,hint:"첫 줄이 기도제목, 아래 줄들은 그 제목에 딸린 내용으로 들여쓰기됩니다. 줄 앞에 ! 를 붙이면 긴급(빨간색)으로 표시됩니다."}],
+  var box=editorBox([{k:"txt",label:"기도제목 (첫 줄) · 종속 내용 (둘째 줄부터)",val:[it.t].concat(it.d||[]).join("\n"),multi:true,hint:"첫 줄이 기도제목, 아래 줄들은 그 제목에 딸린 내용으로 들여쓰기됩니다. 줄 앞에 \"- \"를 붙이면 한 단계 더 들여쓴 하위 항목이 됩니다. 줄 앞에 ! 를 붙이면 긴급(빨간색)으로 표시됩니다."}],
     function(v){ var L=v.txt.split("\n").map(function(x){return x.trim();}).filter(Boolean); if(!L.length){render();return;} it.t=L[0]; it.d=L.slice(1); markDirty(d.no); render(); },
     function(){ s.items.splice(ii,1); markDirty(d.no); render(); });
   node.replaceWith(box); box.querySelector("textarea").focus();
