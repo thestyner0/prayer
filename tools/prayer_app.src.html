@@ -571,7 +571,7 @@ function itemHTML(it,ii,si){
   var src=mirrorOf(it), dd=src?(src.d||[]):(it.d||[]);
   if(src&&src.locked) return '<div class="it" data-i="'+ii+'" data-s="'+si+'"><span class="no">'+(ii+1)+'</span><span class="tx">'+urg(it.t)+'<span class="mir lock" data-act="unlock7">🔒 긴급·중보 비밀번호 입력 후 표시</span></span>'+ctl("item",ii)+'</div>';
   return '<div class="it'+(dd.length?' hasd':'')+'" data-i="'+ii+'" data-s="'+si+'"><span class="no">'+(ii+1)+'</span>'
-   +'<span class="tx">'+urg(it.t)+(src?'<span class="mir">↔ '+esc(it.mirror.label||((it.mirror.day===7?"내 기도":it.mirror.day+"주차")+" · "+(it.mirror.item||it.mirror.sec)))+' 연동</span>':'')+(dd.length?'<span class="dsc">'+dd.map(function(x){return urg(x,'i');}).join("")+'</span>':'')+'</span>'
+   +'<span class="tx">'+urg(it.t)+(it.link?'<a class="mir lnk" href="'+esc(it.link)+'" target="_blank" rel="noopener">'+esc(it.linkLabel||"🔗 기도편지")+'</a>':'')+(src?'<span class="mir">↔ '+esc(it.mirror.label||((it.mirror.day===7?"내 기도":it.mirror.day+"주차")+" · "+(it.mirror.item||it.mirror.sec)))+' 연동</span>':'')+(dd.length?'<span class="dsc">'+dd.map(function(x){return urg(x,'i');}).join("")+'</span>':'')+'</span>'
    +ctl("item",ii)+'</div>';
 }
 function sectionHTML(s,si){
@@ -705,8 +705,8 @@ function editorBox(fields, onSave, onDelete){ // fields: [{k,label,val,multi,hin
 }
 function openItemEditor(si,ii){
   var d=dayByNo(SEL), s=d.sections[si], it=s.items[ii], node=document.querySelector('.it[data-s="'+si+'"][data-i="'+ii+'"]');
-  var box=editorBox([{k:"txt",label:"기도제목 (첫 줄) · 종속 내용 (둘째 줄부터)",val:[it.t].concat(it.d||[]).join("\n"),multi:true,hint:"첫 줄이 기도제목, 아래 줄들은 그 제목에 딸린 내용으로 들여쓰기됩니다. 줄 앞에 \"- \"를 붙이면 한 단계 더 들여쓴 하위 항목이 됩니다. 줄 앞에 ! 를 붙이면 긴급(빨간색)으로 표시됩니다."}],
-    function(v){ var L=v.txt.split("\n").map(function(x){return x.trim();}).filter(Boolean); if(!L.length){render();return;} it.t=L[0]; it.d=L.slice(1); markDirty(d.no); render(); },
+  var box=editorBox([{k:"txt",label:"기도제목 (첫 줄) · 종속 내용 (둘째 줄부터)",val:[it.t].concat(it.d||[]).join("\n"),multi:true,hint:"첫 줄이 기도제목, 아래 줄들은 그 제목에 딸린 내용으로 들여쓰기됩니다. 줄 앞에 \"- \"를 붙이면 한 단계 더 들여쓴 하위 항목이 됩니다. 줄 앞에 ! 를 붙이면 긴급(빨간색)으로 표시됩니다."},{k:"link",label:"첨부 링크 (URL · 선택)",val:it.link||""},{k:"linkLabel",label:"링크 표시 이름 (선택)",val:it.linkLabel||""}],
+    function(v){ var L=v.txt.split("\n").map(function(x){return x.trim();}).filter(Boolean); if(!L.length){render();return;} it.t=L[0]; it.d=L.slice(1); it.link=v.link.trim(); it.linkLabel=v.linkLabel.trim(); if(!it.link){delete it.link;delete it.linkLabel;} markDirty(d.no); render(); },
     function(){ s.items.splice(ii,1); markDirty(d.no); render(); });
   node.replaceWith(box); box.querySelector("textarea").focus();
 }
