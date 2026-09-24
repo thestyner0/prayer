@@ -48,6 +48,7 @@ body.compact .it.hasd .tx::after{content:" ⌄";color:var(--dim);font-size:12px}
 body.compact .it.hasd.show .tx::after{content:" ⌃"}
 body.compact .it.hasd.show .dsc{display:block}
 #prayer .mir{display:inline-block;font-size:10.5px;letter-spacing:.04em;color:var(--ac);border:1px solid var(--line);border-radius:999px;padding:1px 8px;margin-left:8px;vertical-align:middle;opacity:.85}
+#prayer .mir.lnk{color:#F2D18A;border-color:rgba(216,169,74,.5);text-decoration:none;margin-left:6px}
 #prayer .mir.lock{color:#F2D18A;border-color:rgba(216,169,74,.5);cursor:pointer}
 .lockbox{max-width:360px;margin:28px auto 40px;text-align:center}.lockbox .lk{font-size:34px;margin-bottom:8px}.lockbox h2{font-size:17px;font-weight:800;margin-bottom:6px}.lockbox p{font-size:12.5px;color:var(--muted);line-height:1.6;margin-bottom:16px}
 .lockbox input[type=password]{width:100%;font:inherit;font-size:22px;letter-spacing:.3em;text-align:center;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--panel);color:var(--fg);outline:none}.lockbox input[type=password]:focus{border-color:var(--gold)}
@@ -576,7 +577,7 @@ function itemHTML(it,ii,si){
 function sectionHTML(s,si){
   var items=s.items.map(function(it,ii){return itemHTML(it,ii,si);}).join("");
   return '<details class="sec" open data-s="'+si+'"><summary>'+(s.kicker?'<span class="k">'+esc(s.kicker)+'</span>':'')
-   +'<span class="t" data-edit="sec">'+esc(s.title)+'</span><span class="cnt">'+s.items.length+'</span>'+ctl("sec",si)+'</summary>'
+   +'<span class="t" data-edit="sec">'+esc(s.title)+'</span><span class="cnt">'+s.items.length+'</span>'+(s.link?'<a class="mir lnk" href="'+esc(s.link)+'" target="_blank" rel="noopener" onclick="event.stopPropagation()">'+esc(s.linkLabel||"🖼 이미지")+'</a>':'')+ctl("sec",si)+'</summary>'
    +'<div class="secbody">'+(s.sub?'<div class="sub">'+esc(s.sub)+'</div>':'')+items
    +'<div class="addrow"><button class="add" type="button" data-act="additem" data-s="'+si+'">+ 기도제목 추가</button></div>'
    +(s.guide?'<div class="guide"><b>인도</b>&nbsp; '+esc(s.guide)+'</div>':'')+'</div></details>';
@@ -711,8 +712,8 @@ function openItemEditor(si,ii){
 }
 function openSectionEditor(si){
   var d=dayByNo(SEL), s=d.sections[si], node=document.querySelector('.sec[data-s="'+si+'"]');
-  var box=editorBox([{k:"kicker",label:"작은 제목 (예: 1주차 · 01 | 말씀)",val:s.kicker||""},{k:"title",label:"주제 제목",val:s.title},{k:"sub",label:"부제",val:s.sub||""},{k:"guide",label:"인도 메모",val:s.guide||"",multi:true}],
-    function(v){ s.kicker=v.kicker.trim(); s.title=v.title.trim()||s.title; s.sub=v.sub.trim(); s.guide=v.guide.trim(); markDirty(d.no); render(); },
+  var box=editorBox([{k:"kicker",label:"작은 제목 (예: 1주차 · 01 | 말씀)",val:s.kicker||""},{k:"title",label:"주제 제목",val:s.title},{k:"sub",label:"부제",val:s.sub||""},{k:"link",label:"첨부 링크 (URL)",val:s.link||""},{k:"linkLabel",label:"첨부 링크 표시 이름",val:s.linkLabel||""},{k:"guide",label:"인도 메모",val:s.guide||"",multi:true}],
+    function(v){ s.kicker=v.kicker.trim(); s.title=v.title.trim()||s.title; s.sub=v.sub.trim(); s.link=v.link.trim(); s.linkLabel=v.linkLabel.trim(); if(!s.link){delete s.link;delete s.linkLabel;} s.guide=v.guide.trim(); markDirty(d.no); render(); },
     function(){ d.sections.splice(si,1); markDirty(d.no); render(); });
   node.replaceWith(box); box.querySelector("input[data-k=title]").focus();
 }
