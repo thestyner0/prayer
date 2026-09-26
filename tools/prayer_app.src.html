@@ -166,33 +166,7 @@ body.mode-dev .btn.p{background:#8a6d3b;color:#fff} body.mode-dev .btn.g{backgro
   body.mode-dev .banner,body.mode-dev .settings{background:#2a2822;color:#e9e4d8;border-color:#35322b}
   body.mode-dev .settings input,body.mode-dev .settings textarea{background:#1c1b18;color:#e9e4d8;border-color:#35322b}
 }
-#dev,#prayer,#thanks{display:none} body.mode-dev #dev{display:block} body.mode-pray #prayer{display:block} body.mode-thanks #thanks{display:block}
-/* ---- 감사 ---- */
-#thanks .wrap{max-width:760px;margin:0 auto;padding:0 14px}
-#thanks header{padding:18px 0 10px}
-#thanks h1{font-size:21px;font-weight:800;letter-spacing:-.02em}
-#thanks .tsub{font-size:12.5px;color:var(--muted);margin-top:4px}
-.tform{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:14px;margin:12px 0 18px}
-.tform .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
-.tform select,.tform input,.tform textarea{font:inherit;font-size:14.5px;color:var(--body);background:#12193c;border:1px solid var(--line);border-radius:8px;padding:8px 10px}
-.tform select{flex:0 0 auto;min-width:140px}
-.tform input.oname{flex:1;min-width:120px}
-.tform .dt{font-size:12.5px;color:var(--dim);margin-left:auto}
-.tform textarea{width:100%;min-height:76px;resize:vertical;line-height:1.5}
-.tform .btns{display:flex;gap:8px;align-items:center;margin-top:8px}
-.tform .msg{font-size:12px;color:var(--dim);flex:1}
-.tform .msg.err{color:var(--danger)}
-.tgate{background:var(--panel);border:1px solid var(--gold);border-radius:13px;padding:16px;margin:12px 0 18px;font-size:13.5px;line-height:1.6}
-.tgate .btn{margin-top:8px}
-.tweek{display:flex;align-items:center;gap:10px;margin:18px 0 8px}.tweek .rt{font-size:13px;font-weight:800;letter-spacing:.08em;color:#F2D18A;white-space:nowrap}.tweek::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba(216,169,74,.55),transparent)}
-.tk{display:flex;gap:10px;align-items:flex-start;background:var(--panel2);border-radius:9px;padding:10px 12px;margin-bottom:6px}
-.tk .who{flex:0 0 auto;min-width:64px;font-size:12.5px;font-weight:800;color:var(--ac);padding-top:2px}
-.tk .who small{display:block;font-weight:600;color:var(--dim);font-size:11px;margin-top:2px}
-.tk .tx{flex:1;font-size:15px;white-space:pre-wrap;word-break:break-word}
-.tk .del{flex:0 0 auto;font:inherit;font-size:12px;background:transparent;border:1px solid var(--line);color:var(--dim);border-radius:7px;padding:2px 7px;cursor:pointer}
-.tk .del:hover{color:var(--danger);border-color:var(--danger)}
-.tempty{font-size:13px;color:var(--dim);text-align:center;padding:26px 0}
-body.mode-thanks .modes .tb{display:none}
+#dev,#prayer{display:none} body.mode-dev #dev{display:block} body.mode-pray #prayer{display:block}
 .settings textarea{width:100%;font:inherit;font-size:14px;color:var(--body);background:#12193c;border:1px solid var(--line);border-radius:7px;padding:7px 9px;min-height:70px}
 .settings .sect{font-size:12px;font-weight:800;letter-spacing:.08em;color:var(--gold);margin:14px 0 6px;padding-top:10px;border-top:1px dashed var(--line)}
 .amedit{max-width:620px;margin:0 auto 18px;display:none}
@@ -330,7 +304,7 @@ body.site #dev .amnote-body p{font-size:13.5px}
 </head>
 <body>
 <nav class="modes" id="modes"><div class="in">
-  <a data-mode="dev">묵상</a><a data-mode="pray">중보기도</a><a data-mode="thanks">감사</a><span class="sp"></span>
+  <a data-mode="dev">묵상</a><a data-mode="pray">중보기도</a><span class="sp"></span>
   <div class="tools">
     <span class="status" id="status"></span>
     <button class="tb" id="editBtn" type="button">✎ 편집</button>
@@ -348,11 +322,6 @@ body.site #dev .amnote-body p{font-size:13.5px}
     <div><label>그 주 시편 편수</label><input id="s_ps" type="number" min="1" max="150"></div>
   </div>
   <p>한 주는 주일에 시작합니다. 1~6주차는 매주 주일에 다음 주차로 넘어가고, 긴급·중보는 매주 함께 기도합니다. 시편은 기준 주에서 매주 1편씩 올라갑니다.</p>
-  <div class="sect">감사 설정</div>
-  <div class="grid">
-    <div><label>감사 저장소 주소 (Apps Script 웹앱 URL)</label><input id="t_api" type="url" placeholder="https://script.google.com/macros/s/…/exec"></div>
-    <div><label>이름 목록 (쉼표로 구분)</label><input id="t_members" type="text"></div>
-  </div>
   <div class="sect">묵상 설정</div>
   <div class="grid">
     <div><label>묵상 플랜 시작일 (1일째)</label><input id="d_start" type="date"></div>
@@ -505,10 +474,6 @@ body.site #dev .amnote-body p{font-size:13.5px}
     </header>
     <div id="schedlist" style="margin-top:34px"></div>
   </div>
-</div></section>
-<section id="thanks"><div class="wrap">
-<header><h1>감사제목</h1><div class="tsub">한 주간 하나님이 하신 일을 나눕니다 · 이름을 고르고 감사한 일을 적어 주세요 (날짜는 자동)</div></header>
-<div id="tbody"><div class="tempty">불러오는 중…</div></div>
 </div></section>
 <section id="prayer">
 <div class="wrap">
@@ -668,7 +633,6 @@ function apply7(obj){ // 암호화된 7일차 {day, hidden:[{no,si,ii,it}]} 를 
   var day=obj&&obj.day?obj.day:obj; applyRemoteDay(day.no,day); STATE.days.sort(function(a,b){return a.no-b.no;});
   (STATE.dayIndex||[]).forEach(function(x){ var d=dayByNo(x.no); if(d){ d.title=x.title; d.sub=x.sub; if(x.accent) d.accent=x.accent; } });
   (obj.hidden||[]).forEach(function(h){ var d=dayByNo(h.no); try{ if(h.it) d.sections[h.si].items[h.ii]=h.it; else d.sections[h.si].items[h.ii].t=h.t; }catch(e){} });
-  if(obj.thanksMembers&&obj.thanksMembers.length){ STATE.thanks=STATE.thanks||{}; STATE.thanks.members=obj.thanksMembers; }
 }
 function b64u8(s){ var b=atob(s),a=new Uint8Array(b.length); for(var i=0;i<b.length;i++) a[i]=b.charCodeAt(i); return a; }
 async function key7From(pass){
@@ -692,7 +656,6 @@ function bindLock(){
     e.preventDefault(); var pw=document.getElementById("pw7"), go=document.getElementById("go7"), err=document.getElementById("err7"), rem=document.getElementById("rem7");
     err.textContent=""; go.disabled=true; go.textContent="확인 중…";
     try{ var key=await key7From(pw.value.trim()); await open7(key);
-      try{ localStorage.setItem(TK,await thanksTok(pw.value.trim())); }catch(_){}
       if(rem.checked){ try{ localStorage.setItem(LK7, JSON.stringify(await crypto.subtle.exportKey("jwk",key))); }catch(_){} }
       render();
     }catch(ex){ err.textContent=(!window.crypto||!crypto.subtle)?"이 브라우저는 지원되지 않습니다. 최신 Safari/Chrome으로 열어 주세요.":"비밀번호가 맞지 않습니다."; pw.value=""; pw.focus(); go.disabled=false; go.textContent="열기"; }
@@ -724,7 +687,7 @@ async function save(){
     renderHeader();
   }catch(e){ setStatus("저장 실패("+((e&&(e.code||e.message))||"?")+") — 다시 시도합니다","err"); keys.forEach(function(k){DIRTY[k]=true;}); setTimeout(save,3000); }
 }
-function metaDoc(){ return {rev:STATE.rev,updated:STATE.updated,updatedAt:STATE.updatedAt,anchorSunday:STATE.anchorSunday||STATE.anchorMonday,anchorWeek:STATE.anchorWeek,meeting:STATE.meeting,commonPrayer:STATE.commonPrayer,thanks:STATE.thanks||{},dayIndex:STATE.days.map(function(d){return {no:d.no,title:d.title,sub:d.sub||"",accent:d.accent};})}; }
+function metaDoc(){ return {rev:STATE.rev,updated:STATE.updated,updatedAt:STATE.updatedAt,anchorSunday:STATE.anchorSunday||STATE.anchorMonday,anchorWeek:STATE.anchorWeek,meeting:STATE.meeting,commonPrayer:STATE.commonPrayer,dayIndex:STATE.days.map(function(d){return {no:d.no,title:d.title,sub:d.sub||"",accent:d.accent};})}; }
 
 function editorBox(fields, onSave, onDelete){ // fields: [{k,label,val,multi,hint}]
   var h='<div class="ed">'+fields.map(function(f){return '<label>'+f.label+'</label>'+(f.multi?'<textarea data-k="'+f.k+'">'+esc(f.val)+'</textarea>':'<input data-k="'+f.k+'" value="'+esc(f.val)+'">')+(f.hint?'<div class="hint">'+f.hint+'</div>':'');}).join("")
@@ -834,7 +797,6 @@ document.getElementById("setBtn").addEventListener("click",function(){
   document.getElementById("s_am").value=STATE.anchorSunday||STATE.anchorMonday; document.getElementById("s_aw").value=STATE.anchorWeek;
   document.getElementById("s_pm").value=STATE.meeting.psalm.anchorSunday||STATE.meeting.psalm.anchorMonday; document.getElementById("s_ps").value=STATE.meeting.psalm.start;
   document.getElementById("d_start").value=STATE.devotion.start;
-  document.getElementById("t_api").value=(STATE.thanks&&STATE.thanks.api)||""; document.getElementById("t_members").value=((STATE.thanks&&STATE.thanks.members)||[]).join(", ");
 });
 document.getElementById("s_close").addEventListener("click",function(){ setBox.classList.remove("on"); });
 document.getElementById("s_save").addEventListener("click",function(){
@@ -843,8 +805,7 @@ document.getElementById("s_save").addEventListener("click",function(){
   var ds=document.getElementById("d_start").value;
   var devChanged=false; if(ds&&ds!==STATE.devotion.start){ STATE.devotion.start=ds; devChanged=true; }
   if(devChanged){ markDirty("dev"); devRefresh(); }
-  STATE.thanks=STATE.thanks||{}; STATE.thanks.api=document.getElementById("t_api").value.trim(); STATE.thanks.members=document.getElementById("t_members").value.split(",").map(function(x){return x.trim();}).filter(Boolean);
-  markDirty(null); setBox.classList.remove("on"); render(); renderThanks();
+  markDirty(null); setBox.classList.remove("on"); render();
 });
 
 
@@ -1012,7 +973,7 @@ function initDevotion(){
 function thaw(x){ return (x===undefined||x===null)?x:JSON.parse(JSON.stringify(x)); } // db 스냅샷은 frozen 객체 — 편집 가능하도록 복사
 function applyRemoteMeta(m){
   if(!m) return; m=thaw(m);
-  ["rev","updated","updatedAt","anchorSunday","anchorMonday","anchorWeek","meeting","commonPrayer","thanks"].forEach(function(k){ if(m[k]!==undefined) STATE[k]=m[k]; });
+  ["rev","updated","updatedAt","anchorSunday","anchorMonday","anchorWeek","meeting","commonPrayer"].forEach(function(k){ if(m[k]!==undefined) STATE[k]=m[k]; });
   if(m.dayIndex) m.dayIndex.forEach(function(x){ var d=dayByNo(x.no); if(d){ d.title=x.title; d.sub=x.sub; if(x.accent) d.accent=x.accent; } });
 }
 function applyRemoteDay(no,body){ body=thaw(body); var i=STATE.days.findIndex(function(d){return d.no===no;}); if(i<0) STATE.days.push(body); else STATE.days[i]=body; }
@@ -1059,81 +1020,10 @@ async function connect(){
 }
 
 var h=/^#day([0-7])$/.exec(location.hash); SEL=h?+h[1]:todayWeek();
-if(h) VIEW="pray"; else if(location.hash==="#thanks") VIEW="thanks"; else VIEW="dev";
-/* ---------- 감사제목 ---------- */
-var TK="prayer.thanks.tok", TMINE="prayer.thanks.mine", TCACHE="prayer.thanks.cache";
-var THANKS=null, TBUSY=false;
-async function thanksTok(pw){ var d=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(pw+"|thanks")); return Array.prototype.map.call(new Uint8Array(d),function(b){return ("0"+b.toString(16)).slice(-2);}).join(""); }
-function tTok(){ if(STATE.thanksTok) return STATE.thanksTok; try{ return localStorage.getItem(TK)||""; }catch(e){ return ""; } }
-function tApi(){ return (STATE.thanks&&STATE.thanks.api)||""; }
-function tMembers(){ var m=(STATE.thanks&&STATE.thanks.members)||[]; return m.length?m:["박일근"]; }
-function tMine(){ try{ return JSON.parse(localStorage.getItem(TMINE)||"[]"); }catch(e){ return []; } }
-function tAddMine(id){ try{ var a=tMine(); a.push(id); localStorage.setItem(TMINE,JSON.stringify(a.slice(-200))); }catch(e){} }
-function kstToday(){ var d=new Date(Date.now()+9*3600e3); return d.toISOString().slice(0,10); }
-function tWeekLabel(ds){ var d=new Date(ds+"T00:00:00"); if(isNaN(d)) return ds; var s=new Date(d); s.setDate(d.getDate()-d.getDay()); return (s.getMonth()+1)+"월 "+s.getDate()+"일 주"; }
-function tUnlocked(){ return MODE!=="viewer" || !STATE.locked7 || !!dayByNo(7); }
-async function loadThanks(){
-  var api=tApi(); if(!api||!tTok()) return;
-  try{ var c=JSON.parse(localStorage.getItem(TCACHE)||"null"); if(c&&!THANKS){ THANKS=c; renderThanks(); } }catch(e){}
-  try{ var r=await fetch(api+"?tok="+encodeURIComponent(tTok())+"&t="+Date.now(),{cache:"no-store"}); var j=await r.json(); if(j&&j.ok){ THANKS=j.items||[]; try{ localStorage.setItem(TCACHE,JSON.stringify(THANKS)); }catch(e){} renderThanks(); } }
-  catch(e){ if(!THANKS){ THANKS="err"; renderThanks(); } }
-}
-async function postThanks(body){
-  body.tok=tTok(); var r=await fetch(tApi(),{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(body)}); return r.json();
-}
-function renderThanks(){
-  var box=document.getElementById("tbody"); if(!box) return;
-  var api=tApi();
-  if(!api){ box.innerHTML='<div class="tgate">감사 저장소가 아직 연결되지 않았습니다.'+(MODE==="viewer"?"":" ⚙ 설정에서 Apps Script 웹앱 주소를 넣어 주세요.")+'</div>'; return; }
-  var h="";
-  if(!tUnlocked()){
-    h+='<div class="tgate">감사제목을 쓰거나 보려면 먼저 <b>긴급·중보 비밀번호</b>를 입력해 주세요.<br><button class="btn p" type="button" data-act="tgo7">비밀번호 입력하러 가기</button></div>';
-    box.innerHTML=h; return;
-  }
-  var tok=tTok();
-  if(!tok){
-    h+='<div class="tgate"><form id="tpwf">감사 글쓰기를 위해 비밀번호를 한 번만 더 확인합니다.<div class="row" style="margin-top:8px"><input id="tpw" type="password" inputmode="numeric" placeholder="비밀번호" style="font:inherit;font-size:16px;padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:#12193c;color:var(--body)"> <button class="btn p" type="submit">확인</button></div></form></div>';
-  } else {
-    var mem=tMembers(), sel=""; try{ sel=localStorage.getItem("prayer.thanks.name")||""; }catch(e){}
-    h+='<form class="tform" id="tform"><div class="row"><select id="tname">'+mem.map(function(n){return '<option value="'+esc(n)+'"'+(n===sel?" selected":"")+'>'+esc(n)+'</option>';}).join("")+'<option value="__etc"'+(sel==="__etc"?" selected":"")+'>직접 입력…</option></select>'
-      +'<input class="oname" id="tname2" type="text" placeholder="이름" maxlength="20" style="display:'+(sel==="__etc"?"block":"none")+'"><span class="dt">'+kstToday()+'</span></div>'
-      +'<textarea id="ttext" placeholder="감사한 일을 적어 주세요" maxlength="1000"></textarea>'
-      +'<div class="btns"><span class="msg" id="tmsg"></span><button class="btn p" type="submit" id="tsend">감사 올리기</button></div></form>';
-  }
-  if(THANKS==="err") h+='<div class="tempty">감사 목록을 불러오지 못했습니다'+(MODE!=="viewer"?' — 이 화면에서는 외부 저장소 연결이 막혀 있을 수 있습니다. <a href="https://thestyner0.github.io/prayer/#thanks" target="_blank" rel="noopener" style="color:var(--ac)">사이트에서 열기</a>':'')+'</div>';
-  else if(!THANKS) h+='<div class="tempty">불러오는 중…</div>';
-  else if(!THANKS.length) h+='<div class="tempty">아직 올라온 감사제목이 없습니다. 첫 감사를 나눠 주세요.</div>';
-  else {
-    var mine=tMine(), items=THANKS.slice().sort(function(a,b){ return (b.date||"").localeCompare(a.date||"") || (b.ts||"").localeCompare(a.ts||""); }), lastW="";
-    items.forEach(function(it){ var w=tWeekLabel(it.date||""); if(w!==lastW){ lastW=w; h+='<div class="tweek"><span class="rt">'+esc(w)+'</span></div>'; }
-      var md=(it.date||"").slice(5).replace("-","/");
-      h+='<div class="tk" data-id="'+esc(it.id)+'"><span class="who">'+esc(it.name||"익명")+'<small>'+esc(md)+'</small></span><span class="tx">'+esc(it.text||"")+'</span>'+(mine.indexOf(it.id)>=0||MODE!=="viewer"?'<button class="del" type="button" data-act="tdel" title="삭제">✕</button>':'')+'</div>'; });
-  }
-  box.innerHTML=h;
-}
-document.getElementById("tbody").addEventListener("change",function(e){ if(e.target.id==="tname"){ var v=e.target.value; try{ localStorage.setItem("prayer.thanks.name",v); }catch(_){} document.getElementById("tname2").style.display=v==="__etc"?"block":"none"; if(v==="__etc") document.getElementById("tname2").focus(); } });
-document.getElementById("tbody").addEventListener("click",async function(e){
-  var b=e.target.closest("[data-act]"); if(!b) return;
-  if(b.dataset.act==="tgo7"){ setView("pray"); show(7); return; }
-  if(b.dataset.act==="tdel"){ var row=b.closest(".tk"), id=row.dataset.id; if(!b.dataset.armed){ b.dataset.armed="1"; b.textContent="정말 삭제"; setTimeout(function(){ b.dataset.armed=""; b.textContent="✕"; },3000); return; }
-    b.disabled=true; try{ var j=await postThanks({action:"del",id:id}); if(j&&j.ok){ THANKS=(THANKS||[]).filter(function(x){return x.id!==id;}); renderThanks(); } else { b.textContent="실패"; } }catch(ex){ b.textContent="실패"; } }
-});
-document.getElementById("tbody").addEventListener("submit",async function(e){
-  var f=e.target; e.preventDefault();
-  if(f.id==="tpwf"){ var pw=document.getElementById("tpw").value.trim(); if(!pw) return; try{ localStorage.setItem(TK,await thanksTok(pw)); }catch(_){} renderThanks(); loadThanks(); return; }
-  if(f.id!=="tform"||TBUSY) return;
-  var sel=document.getElementById("tname").value, name=sel==="__etc"?document.getElementById("tname2").value.trim():sel, text=document.getElementById("ttext").value.trim(), msg=document.getElementById("tmsg"), btn=document.getElementById("tsend");
-  if(!name){ msg.className="msg err"; msg.textContent="이름을 골라 주세요"; return; } if(!text){ msg.className="msg err"; msg.textContent="감사한 일을 적어 주세요"; return; }
-  TBUSY=true; btn.disabled=true; msg.className="msg"; msg.textContent="올리는 중…";
-  try{ var j=await postThanks({action:"add",name:name,text:text,date:kstToday()});
-    if(j&&j.ok){ tAddMine(j.id); THANKS=(THANKS==="err"||!THANKS)?[]:THANKS; THANKS.push({id:j.id,name:name,text:text,date:kstToday(),ts:new Date().toISOString()}); try{ localStorage.setItem(TCACHE,JSON.stringify(THANKS)); }catch(_){} renderThanks(); }
-    else { msg.className="msg err"; msg.textContent=(j&&j.err==="auth")?"비밀번호가 맞지 않습니다 — 새로고침 후 다시 입력해 주세요":"저장 실패"; if(j&&j.err==="auth"){ try{ localStorage.removeItem(TK); }catch(_){} } }
-  }catch(ex){ msg.className="msg err"; msg.textContent="연결 실패 — 잠시 후 다시 시도해 주세요"; }
-  TBUSY=false; btn.disabled=false;
-});
-function setView(v){ VIEW=v; document.body.classList.toggle("mode-dev",v==="dev"); document.body.classList.toggle("mode-pray",v==="pray"); document.body.classList.toggle("mode-thanks",v==="thanks");
+if(h) VIEW="pray"; else VIEW="dev";
+function setView(v){ VIEW=v; document.body.classList.toggle("mode-dev",v==="dev"); document.body.classList.toggle("mode-pray",v!=="dev");
   document.querySelectorAll("#modes a[data-mode]").forEach(function(a){ a.classList.toggle("on",a.dataset.mode===v); });
-  if(v==="dev"){ try{history.replaceState(null,"",location.hash==="#am"?"#am":"#dev");}catch(e){} } else if(v==="thanks"){ try{history.replaceState(null,"","#thanks");}catch(e){} renderThanks(); loadThanks(); } else { try{history.replaceState(null,"","#day"+SEL);}catch(e){} }
+  if(v==="dev"){ try{history.replaceState(null,"",location.hash==="#am"?"#am":"#dev");}catch(e){} } else { try{history.replaceState(null,"","#day"+SEL);}catch(e){} }
   window.scrollTo({top:0}); }
 document.getElementById("modes").addEventListener("click",function(e){ var a=e.target.closest("a[data-mode]"); if(a) setView(a.dataset.mode); });
 setView(VIEW);
