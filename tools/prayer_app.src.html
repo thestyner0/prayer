@@ -166,7 +166,43 @@ body.mode-dev .btn.p{background:#8a6d3b;color:#fff} body.mode-dev .btn.g{backgro
   body.mode-dev .banner,body.mode-dev .settings{background:#2a2822;color:#e9e4d8;border-color:#35322b}
   body.mode-dev .settings input,body.mode-dev .settings textarea{background:#1c1b18;color:#e9e4d8;border-color:#35322b}
 }
-#dev,#prayer{display:none} body.mode-dev #dev{display:block} body.mode-pray #prayer{display:block}
+#dev,#prayer,#song{display:none} body.mode-dev #dev{display:block} body.mode-pray #prayer{display:block} body.mode-song #song{display:block}
+/* ---- 찬양 ---- */
+#song .wrap{max-width:760px;margin:0 auto;padding:0 14px 30px}
+#song header{padding:18px 0 6px}
+#song h1{font-size:21px;font-weight:800;letter-spacing:-.02em}
+#song .ssub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.sbar{position:sticky;top:53px;z-index:15;background:var(--bg);padding:8px 0 6px}
+.sbar input{width:100%;font:inherit;font-size:15px;color:var(--body);background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:10px 12px;outline:none}
+.sbar input:focus{border-color:var(--ac)}
+.schips{display:flex;gap:6px;overflow-x:auto;padding:8px 0 2px;scrollbar-width:none}.schips::-webkit-scrollbar{display:none}
+.schip{flex:0 0 auto;font:inherit;font-size:12.5px;font-weight:700;background:var(--panel);border:1px solid var(--line);color:var(--muted);padding:6px 11px;border-radius:999px;cursor:pointer;white-space:nowrap}
+.schip.on{background:var(--ac);border-color:var(--ac);color:#12193c}
+.schip.th{border-color:rgba(216,169,74,.4);color:#F2D18A;background:rgba(216,169,74,.1)}
+.sgrp{display:flex;align-items:center;gap:10px;margin:18px 0 8px;scroll-margin-top:150px}.sgrp .rt{font-size:13px;font-weight:800;letter-spacing:.08em;color:#F2D18A;white-space:nowrap}.sgrp .rc{font-size:11px;color:var(--dim)}.sgrp::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba(216,169,74,.55),transparent)}
+.srow{display:flex;align-items:center;gap:9px;background:var(--panel2);border-radius:9px;padding:10px 12px;margin-bottom:5px;cursor:pointer}
+.srow:hover{background:#34458a}
+.srow .fv{flex:0 0 18px;text-align:center;font-size:14px}
+.srow .no{flex:0 0 auto;font-size:11px;font-weight:800;color:#12193c;background:#cdd8f5;border-radius:6px;padding:2px 6px}
+.srow .tt{flex:1;min-width:0;font-size:15px}
+.srow .tt small{display:block;font-size:11.5px;color:var(--dim);margin-top:1px}
+.srow .oh{flex:0 0 auto;font-size:10.5px;font-weight:700;color:#F2D18A;border:1px solid rgba(216,169,74,.45);border-radius:999px;padding:1px 7px}
+.srow .sc{flex:0 0 auto;font-size:12px;opacity:.9}
+.snone{font-size:13px;color:var(--dim);text-align:center;padding:30px 0}
+#sview{position:fixed;inset:0;z-index:60;background:#0d1230;display:none;flex-direction:column}
+#sview.on{display:flex}
+#sview .shd{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--line);padding-top:calc(10px + env(safe-area-inset-top))}
+#sview .shd .st{flex:1;min-width:0;font-size:16px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#sview .shd .st small{font-size:12px;color:var(--dim);font-weight:600;margin-left:6px}
+#sview .sbd{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding:10px;text-align:center}
+#sview .sbd img{max-width:100%;background:#fff;border-radius:6px;margin:0 auto 10px;display:block}
+#sview .sbd img.fit{max-height:calc(100vh - 150px);object-fit:contain}
+#sview .sph{color:var(--muted);font-size:14px;line-height:1.7;padding:50px 16px}
+#sview .sph b{color:#F2D18A}
+#sview .sft{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--line);padding-bottom:calc(10px + env(safe-area-inset-bottom));flex-wrap:wrap}
+#sview .sft .btn{flex:1}
+#sview .yt{width:100%;aspect-ratio:16/9;border:0;border-radius:8px;margin-top:4px;background:#000}
+body.sview-open{overflow:hidden}
 .settings textarea{width:100%;font:inherit;font-size:14px;color:var(--body);background:#12193c;border:1px solid var(--line);border-radius:7px;padding:7px 9px;min-height:70px}
 .settings .sect{font-size:12px;font-weight:800;letter-spacing:.08em;color:var(--gold);margin:14px 0 6px;padding-top:10px;border-top:1px dashed var(--line)}
 .amedit{max-width:620px;margin:0 auto 18px;display:none}
@@ -304,7 +340,7 @@ body.site #dev .amnote-body p{font-size:13.5px}
 </head>
 <body>
 <nav class="modes" id="modes"><div class="in">
-  <a data-mode="dev">묵상</a><a data-mode="pray">중보기도</a><span class="sp"></span>
+  <a data-mode="dev">묵상</a><a data-mode="pray">중보기도</a><a data-mode="song">찬양</a><span class="sp"></span>
   <div class="tools">
     <span class="status" id="status"></span>
     <button class="tb" id="editBtn" type="button">✎ 편집</button>
@@ -475,6 +511,12 @@ body.site #dev .amnote-body p{font-size:13.5px}
     <div id="schedlist" style="margin-top:34px"></div>
   </div>
 </div></section>
+<section id="song"><div class="wrap">
+<header><h1>찬양</h1><div class="ssub">곡을 누르면 악보가 열립니다 · ▶ 영상은 악보 아래에서</div></header>
+<div class="sbar"><input id="sq" type="search" placeholder="제목 · 장수 · 초성(ㅈㅇㅂㅎ)으로 찾기" autocomplete="off"><div class="schips" id="sfil"></div></div>
+<div id="slist"></div>
+</div></section>
+<div id="sview"><div class="shd"><button class="tb" type="button" id="sx">✕</button><div class="st" id="stt"></div><button class="tb" type="button" id="sfav" hidden>☆</button></div><div class="sbd" id="sbd"></div><div class="sft" id="sft"></div></div>
 <section id="prayer">
 <div class="wrap">
 <header>
@@ -612,7 +654,7 @@ function dayHTML(d){
    +'<div class="secctl"><button class="mini'+(COMPACT?" on":"")+'" type="button" data-act="collapse">설명 접기 — 기도제목만</button><button class="mini'+(COMPACT?"":" on")+'" type="button" data-act="expand">설명 펼치기</button></div>'
    +regnav+secs+'<div class="addrow"><button class="add" type="button" data-act="addsec">+ 주제(섹션) 추가</button><button class="add" type="button" data-act="renum" style="flex:0 0 auto">번호 다시 매기기</button></div></section>';
 }
-function render(){
+function render(){ if(VIEW==="song"){ try{ renderSongs(); }catch(e){} }
   renderHeader(); renderTabs();
   var main=document.getElementById("main");
   if(SEL===0) main.innerHTML=orderHTML();
@@ -633,6 +675,7 @@ function apply7(obj){ // 암호화된 7일차 {day, hidden:[{no,si,ii,it}]} 를 
   var day=obj&&obj.day?obj.day:obj; applyRemoteDay(day.no,day); STATE.days.sort(function(a,b){return a.no-b.no;});
   (STATE.dayIndex||[]).forEach(function(x){ var d=dayByNo(x.no); if(d){ d.title=x.title; d.sub=x.sub; if(x.accent) d.accent=x.accent; } });
   (obj.hidden||[]).forEach(function(h){ var d=dayByNo(h.no); try{ if(h.it) d.sections[h.si].items[h.ii]=h.it; else d.sections[h.si].items[h.ii].t=h.t; }catch(e){} });
+  if(obj.sk) STATE.sk=obj.sk;
 }
 function b64u8(s){ var b=atob(s),a=new Uint8Array(b.length); for(var i=0;i<b.length;i++) a[i]=b.charCodeAt(i); return a; }
 async function key7From(pass){
@@ -687,7 +730,7 @@ async function save(){
     renderHeader();
   }catch(e){ setStatus("저장 실패("+((e&&(e.code||e.message))||"?")+") — 다시 시도합니다","err"); keys.forEach(function(k){DIRTY[k]=true;}); setTimeout(save,3000); }
 }
-function metaDoc(){ return {rev:STATE.rev,updated:STATE.updated,updatedAt:STATE.updatedAt,anchorSunday:STATE.anchorSunday||STATE.anchorMonday,anchorWeek:STATE.anchorWeek,meeting:STATE.meeting,commonPrayer:STATE.commonPrayer,dayIndex:STATE.days.map(function(d){return {no:d.no,title:d.title,sub:d.sub||"",accent:d.accent};})}; }
+function metaDoc(){ return {rev:STATE.rev,updated:STATE.updated,updatedAt:STATE.updatedAt,anchorSunday:STATE.anchorSunday||STATE.anchorMonday,anchorWeek:STATE.anchorWeek,meeting:STATE.meeting,commonPrayer:STATE.commonPrayer,songs:STATE.songs||null,dayIndex:STATE.days.map(function(d){return {no:d.no,title:d.title,sub:d.sub||"",accent:d.accent};})}; }
 
 function editorBox(fields, onSave, onDelete){ // fields: [{k,label,val,multi,hint}]
   var h='<div class="ed">'+fields.map(function(f){return '<label>'+f.label+'</label>'+(f.multi?'<textarea data-k="'+f.k+'">'+esc(f.val)+'</textarea>':'<input data-k="'+f.k+'" value="'+esc(f.val)+'">')+(f.hint?'<div class="hint">'+f.hint+'</div>':'');}).join("")
@@ -973,7 +1016,7 @@ function initDevotion(){
 function thaw(x){ return (x===undefined||x===null)?x:JSON.parse(JSON.stringify(x)); } // db 스냅샷은 frozen 객체 — 편집 가능하도록 복사
 function applyRemoteMeta(m){
   if(!m) return; m=thaw(m);
-  ["rev","updated","updatedAt","anchorSunday","anchorMonday","anchorWeek","meeting","commonPrayer"].forEach(function(k){ if(m[k]!==undefined) STATE[k]=m[k]; });
+  ["rev","updated","updatedAt","anchorSunday","anchorMonday","anchorWeek","meeting","commonPrayer","songs"].forEach(function(k){ if(m[k]!==undefined) STATE[k]=m[k]; });
   if(m.dayIndex) m.dayIndex.forEach(function(x){ var d=dayByNo(x.no); if(d){ d.title=x.title; d.sub=x.sub; if(x.accent) d.accent=x.accent; } });
 }
 function applyRemoteDay(no,body){ body=thaw(body); var i=STATE.days.findIndex(function(d){return d.no===no;}); if(i<0) STATE.days.push(body); else STATE.days[i]=body; }
@@ -1020,10 +1063,63 @@ async function connect(){
 }
 
 var h=/^#day([0-7])$/.exec(location.hash); SEL=h?+h[1]:todayWeek();
-if(h) VIEW="pray"; else VIEW="dev";
-function setView(v){ VIEW=v; document.body.classList.toggle("mode-dev",v==="dev"); document.body.classList.toggle("mode-pray",v!=="dev");
+if(h) VIEW="pray"; else if(location.hash==="#song") VIEW="song"; else VIEW="dev";
+/* ---------- 찬양 ---------- */
+var SFIL="all", SQ="";
+var CHO="ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ";
+function choOf(s){ var o=""; for(var i=0;i<s.length;i++){ var c=s.charCodeAt(i)-0xAC00; o+=(c>=0&&c<11172)?CHO[Math.floor(c/588)]:s[i]; } return o; }
+function songs(){ return (STATE.songs&&STATE.songs.items)||[]; }
+function favMark(f){ return f==="love"?"♥":f==="star"?"★":""; }
+function sortSongs(a,b){ var fr={love:0,star:1}; var fa=fr[a.fav]!=null?fr[a.fav]:2, fb=fr[b.fav]!=null?fr[b.fav]:2; if(fa!==fb) return fa-fb; var oa=a.oh||0, ob=b.oh||0; if(oa!==ob) return ob-oa; return a.t.localeCompare(b.t,"ko"); }
+function songMatch(it,q){ if(!q) return true; q=q.replace(/\s+/g,"").replace(/장$/,""); var t=(it.t+(it.alt||"")).replace(/\s+/g,""); if(/^\d+$/.test(q)) return it.no&&String(it.no)===q; if(t.indexOf(q)>=0) return true; if(/^[ㄱ-ㅎ]+$/.test(q)) return choOf(t).indexOf(q)>=0; return false; }
+function songPass(it){ if(SFIL==="fav") return !!it.fav; if(SFIL==="oh") return !!it.oh; if(SFIL==="hymn") return !!it.no; if(SFIL==="score") return !!(it.sc&&it.sc.length); return true; }
+function renderSongs(){
+  var box=document.getElementById("slist"); if(!box) return;
+  var ths=(STATE.songs&&STATE.songs.themes)||{}, all=songs();
+  var fil=[["all","전체 "+all.length],["fav","♥★ 내 찬양"],["oh","오정현 선곡"],["hymn","찬송가"],["score","악보 있음"]];
+  document.getElementById("sfil").innerHTML=fil.map(function(f){return '<button class="schip'+(SFIL===f[0]?" on":"")+'" type="button" data-f="'+f[0]+'">'+esc(f[1])+'</button>';}).join("")
+    +(SQ?"":Object.keys(ths).map(function(k){return '<button class="schip th" type="button" data-th="'+k+'">'+esc(ths[k].split("·")[0])+'</button>';}).join(""));
+  var list=all.filter(function(it){ return songPass(it)&&songMatch(it,SQ); });
+  if(!list.length){ box.innerHTML='<div class="snone">'+(all.length?"찾는 곡이 없습니다":"찬양 목록이 아직 없습니다")+'</div>'; return; }
+  var h="";
+  Object.keys(ths).forEach(function(k){ var g=list.filter(function(it){return String(it.th)===k;}).sort(sortSongs); if(!g.length) return;
+    h+='<div class="sgrp" id="sth'+k+'"><span class="rt">'+esc(ths[k])+'</span><span class="rc">'+g.length+'</span></div>';
+    g.forEach(function(it){ h+='<div class="srow" data-sid="'+esc(it.id)+'"><span class="fv">'+favMark(it.fav)+'</span>'+(it.no?'<span class="no">'+it.no+'</span>':'')+'<span class="tt">'+esc(it.t)+(it.alt?'<small>'+esc(it.alt)+'</small>':'')+'</span>'+(it.sc&&it.sc.length?'<span class="sc" title="악보">🎼</span>':'')+(it.oh?'<span class="oh">오정현</span>':'')+'</div>'; });
+  });
+  box.innerHTML=h;
+}
+document.getElementById("sq").addEventListener("input",function(e){ SQ=e.target.value.trim(); renderSongs(); });
+document.getElementById("sfil").addEventListener("click",function(e){ var b=e.target.closest("button"); if(!b) return; if(b.dataset.f){ SFIL=b.dataset.f; renderSongs(); } else if(b.dataset.th){ var g=document.getElementById("sth"+b.dataset.th); if(g) g.scrollIntoView({behavior:"smooth"}); } });
+document.getElementById("slist").addEventListener("click",function(e){ var r=e.target.closest(".srow"); if(r) openSong(r.dataset.sid); });
+var SKEY=null, SURLS=[];
+async function scoreKey(){ if(SKEY) return SKEY; if(!STATE.sk) return null; SKEY=await crypto.subtle.importKey("raw",b64u8(STATE.sk),{name:"AES-GCM"},false,["decrypt"]); return SKEY; }
+async function loadScore(f,mime){ var k=await scoreKey(); if(!k) throw new Error("lock"); var base=MODE==="viewer"?"":"https://thestyner0.github.io/prayer/"; var r=await fetch(base+f+"?v="+encodeURIComponent(STATE.rev||""),{cache:"force-cache"}); if(!r.ok) throw new Error("http "+r.status); var b=new Uint8Array(await r.arrayBuffer()); var pt=await crypto.subtle.decrypt({name:"AES-GCM",iv:b.slice(0,12)},k,b.slice(12)); var u=URL.createObjectURL(new Blob([pt],{type:mime||"image/jpeg"})); SURLS.push(u); return u; }
+function ytId(it){ return it.yt||""; }
+async function openSong(id){
+  var it=songs().find(function(x){return x.id===id;}); if(!it) return;
+  var v=document.getElementById("sview"), bd=document.getElementById("sbd"), ft=document.getElementById("sft");
+  document.getElementById("stt").innerHTML=(it.no?it.no+"장 ":"")+esc(it.t)+(it.alt?'<small>'+esc(it.alt)+'</small>':'');
+  var fb=document.getElementById("sfav"); fb.hidden=!(MODE==="editor"); fb.textContent=it.fav==="love"?"♥":it.fav==="star"?"★":"☆"; fb.dataset.sid=id;
+  v.classList.add("on"); document.body.classList.add("sview-open");
+  var yid=ytId(it);
+  ft.innerHTML=(yid?'<button class="btn p" type="button" id="syt">▶ 영상</button><a class="btn g" style="text-align:center;text-decoration:none" href="https://www.youtube.com/watch?v='+esc(yid)+'" target="_blank" rel="noopener">YouTube 앱에서 열기</a>':'<a class="btn g" style="text-align:center;text-decoration:none" href="https://www.youtube.com/results?search_query='+encodeURIComponent((it.no?"새찬송가 "+it.no+"장 ":"")+it.t)+'" target="_blank" rel="noopener">YouTube에서 찾기</a>');
+  if(it.yt2) ft.innerHTML+='<a class="btn g" style="text-align:center;text-decoration:none;flex-basis:100%" href="https://www.youtube.com/watch?v='+esc(it.yt2)+'" target="_blank" rel="noopener">▶ '+esc(it.yt2l||"다른 버전")+'</a>';
+  var sy=document.getElementById("syt"); if(sy) sy.onclick=function(){ var ex=bd.querySelector("iframe.yt"); if(ex){ ex.remove(); sy.textContent="▶ 영상"; return; } var f=document.createElement("iframe"); f.className="yt"; f.allow="autoplay; encrypted-media; picture-in-picture"; f.allowFullscreen=true; f.src="https://www.youtube-nocookie.com/embed/"+yid+"?autoplay=1&rel=0&playsinline=1"; bd.appendChild(f); f.scrollIntoView({behavior:"smooth"}); sy.textContent="■ 영상 닫기"; };
+  if(!(it.sc&&it.sc.length)){ bd.innerHTML='<div class="sph">🎼 악보 준비 중입니다<br><span style="font-size:12.5px">악보가 들어오면 여기에 바로 뜹니다</span></div>'; return; }
+  if(!STATE.sk){ bd.innerHTML='<div class="sph">🔒 악보는 <b>긴급·중보 비밀번호</b>를 입력한 기기에서 보입니다<br><button class="btn p" type="button" id="sgo7" style="margin-top:12px">비밀번호 입력하러 가기</button></div>'; var g=document.getElementById("sgo7"); if(g) g.onclick=function(){ closeSong(); setView("pray"); show(7); }; return; }
+  bd.innerHTML='<div class="sph">악보 여는 중…</div>';
+  try{ var urls=[]; for(var i=0;i<it.sc.length;i++) urls.push(await loadScore(it.sc[i][0],it.sc[i][1]));
+    bd.innerHTML=urls.map(function(u){return '<img class="'+(urls.length===1?"fit":"")+'" src="'+u+'" alt="악보">';}).join("");
+  }catch(ex){ bd.innerHTML='<div class="sph">악보를 열지 못했습니다'+(MODE!=="viewer"?' — 이 화면에서는 외부 파일이 막혀 있을 수 있습니다. <a href="https://thestyner0.github.io/prayer/#song" target="_blank" rel="noopener" style="color:var(--ac)">사이트에서 열기</a>':'')+'</div>'; }
+}
+function closeSong(){ var v=document.getElementById("sview"); v.classList.remove("on"); document.body.classList.remove("sview-open"); document.getElementById("sbd").innerHTML=""; SURLS.forEach(function(u){ try{URL.revokeObjectURL(u);}catch(e){} }); SURLS=[]; }
+document.getElementById("sx").addEventListener("click",closeSong);
+document.addEventListener("keydown",function(e){ if(e.key==="Escape"&&document.getElementById("sview").classList.contains("on")) closeSong(); });
+document.getElementById("sfav").addEventListener("click",function(){ var id=this.dataset.sid, it=songs().find(function(x){return x.id===id;}); if(!it) return; it.fav=!it.fav?"star":it.fav==="star"?"love":undefined; if(!it.fav) delete it.fav; this.textContent=it.fav==="love"?"♥":it.fav==="star"?"★":"☆"; markDirty(null); renderSongs(); });
+
+function setView(v){ VIEW=v; document.body.classList.toggle("mode-dev",v==="dev"); document.body.classList.toggle("mode-pray",v==="pray"); document.body.classList.toggle("mode-song",v==="song");
   document.querySelectorAll("#modes a[data-mode]").forEach(function(a){ a.classList.toggle("on",a.dataset.mode===v); });
-  if(v==="dev"){ try{history.replaceState(null,"",location.hash==="#am"?"#am":"#dev");}catch(e){} } else { try{history.replaceState(null,"","#day"+SEL);}catch(e){} }
+  if(v==="dev"){ try{history.replaceState(null,"",location.hash==="#am"?"#am":"#dev");}catch(e){} } else if(v==="song"){ try{history.replaceState(null,"","#song");}catch(e){} renderSongs(); } else { try{history.replaceState(null,"","#day"+SEL);}catch(e){} }
   window.scrollTo({top:0}); }
 document.getElementById("modes").addEventListener("click",function(e){ var a=e.target.closest("a[data-mode]"); if(a) setView(a.dataset.mode); });
 setView(VIEW);

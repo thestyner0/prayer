@@ -43,14 +43,15 @@ pubDays.forEach(d=>d.sections.forEach((s,si)=>s.items.forEach((it,i)=>{
 })));
 const day7=days.find(d=>d.no===7);
 if(!day7){ console.error("day 7 not found"); process.exit(1); }
-const secret=JSON.stringify({day:day7,hidden});
+const SK=crypto.pbkdf2Sync(pw,"prayer-scores-v1",200000,32,"sha256"); // 악보 암호화 키(고정 salt) — 7일차 암호문 안에만 실림
+const secret=JSON.stringify({day:day7,hidden,sk:SK.toString("base64")});
 const salt=crypto.randomBytes(16), iv=crypto.randomBytes(12), ITER=600000;
 const key=crypto.pbkdf2Sync(pw, salt, ITER, 32, "sha256");
 const c=crypto.createCipheriv("aes-256-gcm", key, iv);
 const ct=Buffer.concat([c.update(Buffer.from(secret,"utf8")), c.final(), c.getAuthTag()]);
 const locked7={salt:salt.toString("base64"),iv:iv.toString("base64"),iter:ITER,ct:ct.toString("base64")};
 
-const D={devotion:{start:dev.start,amsong:dev.amsong,amsongState:dev.amsongState||{current:"psa139",done:{}},updatedAt:dev.updatedAt||"",rev:dev.rev,plan:PLAN},rev:meta.rev,updated:meta.updated,updatedAt:meta.updatedAt,anchorSunday:meta.anchorSunday||meta.anchorMonday,anchorWeek:meta.anchorWeek,meeting:meta.meeting,commonPrayer:meta.commonPrayer,dayIndex:meta.dayIndex||[],days:pubDays,locked7};
+const D={devotion:{start:dev.start,amsong:dev.amsong,amsongState:dev.amsongState||{current:"psa139",done:{}},updatedAt:dev.updatedAt||"",rev:dev.rev,plan:PLAN},rev:meta.rev,updated:meta.updated,updatedAt:meta.updatedAt,anchorSunday:meta.anchorSunday||meta.anchorMonday,anchorWeek:meta.anchorWeek,meeting:meta.meeting,commonPrayer:meta.commonPrayer,songs:meta.songs||null,dayIndex:meta.dayIndex||[],days:pubDays,locked7};
 const seed=JSON.stringify(D).replace(/<\/script/g,"<\\/script");
 const html=fs.readFileSync(path.join(__dirname,"prayer_app.src.html"),"utf8").replace("__SEED__",seed);
 // 공개 원문에 7일차 실명(선교사 목록 등)이 새지 않는지 확인
