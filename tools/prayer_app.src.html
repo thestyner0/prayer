@@ -237,6 +237,23 @@ body.mode-dev .btn.p{background:#8a6d3b;color:#fff} body.mode-dev .btn.g{backgro
 .pc .real{color:#c62828}
 .pc b.lb{color:#1c2440;font-weight:800}
 .pc .pfoot{text-align:center;font-size:11.5px;color:#8a90a0;margin-top:14px}
+
+.pc.wide{width:1500px;max-width:none;border-radius:0;padding:44px 46px 34px;line-height:1.62}
+.pc.wide .pwhead{display:grid;grid-template-columns:1fr auto;align-items:end;gap:6px 24px;margin-bottom:18px;border-bottom:2px solid #1c2440;padding-bottom:14px}
+.pc.wide h1{font-size:36px;text-align:left}
+.pc.wide .pdate{text-align:right;margin:0;font-size:14px}
+.pc.wide .pnote{grid-column:1 / -1;margin:6px 0 0;font-size:14.5px;padding:8px 12px}
+.pc.wide .pcols{display:flex;gap:18px;align-items:flex-start}
+.pc.wide .pcol{flex:1;min-width:0}
+.pc.wide .pbox{margin-bottom:16px;padding:16px 18px 10px}
+.pc.wide .phd{flex-wrap:wrap}
+.pc.wide .phd b{font-size:19px;white-space:nowrap}
+.pc.wide .phd small{font-size:12.5px}
+.pc.wide .pg{font-size:13.5px;margin-top:10px}
+.pc.wide li{font-size:15px;padding:6px 0 6px 14px;line-height:1.58}
+.pc.wide li.nn{padding-left:30px}
+.pc.wide li.nn:before{width:21px;height:21px;font-size:11.5px}
+.pc.wide .pfoot{font-size:13px;margin-top:6px}
 #sview{position:fixed;inset:0;z-index:60;background:#0d1230;display:none;flex-direction:column}
 #sview.on{display:flex}
 #sview .shd{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--line);padding-top:calc(10px + env(safe-area-inset-top))}
@@ -832,11 +849,28 @@ var CARD_SI=null;
 function openCard(si){ CARD_SI=si; document.getElementById("pcbody").innerHTML=buildCard(si); document.getElementById("pcout").innerHTML=""; document.getElementById("pcmsg").textContent="현재 기도제목으로 자동 생성"; document.getElementById("pcbody").style.display=""; document.getElementById("pcard").classList.add("on"); document.body.style.overflow="hidden"; }
 function closeCard(){ document.getElementById("pcard").classList.remove("on"); document.body.style.overflow=""; }
 function loadH2C(){ return new Promise(function(ok,no){ if(window.html2canvas) return ok(window.html2canvas); var sc=document.createElement("script"); sc.src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"; sc.onload=function(){ ok(window.html2canvas); }; sc.onerror=function(){ no(new Error("load")); }; document.head.appendChild(sc); }); }
+function buildWide(){ /* 이미지용: 넓은 3단 배치 (폭 1500px) — 상자를 순서대로 높이 균형 맞춰 나눔 */
+  var src=document.querySelector("#pcbody .pc"); if(!src) return null;
+  var old=document.getElementById("pcwide"); if(old) old.remove();
+  var host=document.createElement("div"); host.id="pcwide"; host.style.cssText="position:absolute;left:-20000px;top:0;";
+  var w=document.createElement("div"); w.className="pc wide";
+  var head=document.createElement("div"); head.className="pwhead";
+  ["h1",".pdate",".pnote"].forEach(function(q){ var e=src.querySelector(q); if(e) head.appendChild(e.cloneNode(true)); });
+  w.appendChild(head);
+  var cols=document.createElement("div"); cols.className="pcols"; var C=[0,1,2].map(function(){ var c=document.createElement("div"); c.className="pcol"; cols.appendChild(c); return c; });
+  w.appendChild(cols); var ft=src.querySelector(".pfoot"); if(ft) w.appendChild(ft.cloneNode(true));
+  host.appendChild(w); document.body.appendChild(host);
+  var boxes=[].slice.call(src.querySelectorAll(".pbox")).map(function(b){ return b.cloneNode(true); });
+  /* 높이 측정: 첫 열에 모두 넣어 잰 뒤 순서대로 분배 */
+  boxes.forEach(function(b){ C[0].appendChild(b); }); var hs=boxes.map(function(b){ return b.getBoundingClientRect().height+16; });
+  var total=hs.reduce(function(a,b){return a+b;},0), target=total/3, ci=0, acc=0;
+  boxes.forEach(function(b,i){ if(ci<2&&acc>0&&acc+hs[i]/2>target*(ci+1)) ci++; C[ci].appendChild(b); acc+=hs[i]; });
+  return w; }
 async function saveCard(){ var msg=document.getElementById("pcmsg"), el=document.querySelector("#pcbody .pc"); if(!el) return; msg.textContent="이미지 만드는 중…";
-  try{ var h2c=await loadH2C(); el.style.width="540px"; el.style.maxWidth="none"; var cv; try{ cv=await h2c(el,{scale:2,backgroundColor:"#f6f3ec",useCORS:false,logging:false,windowWidth:620,width:540}); } finally { el.style.width=""; el.style.maxWidth=""; }
+  try{ var h2c=await loadH2C(); var wd=buildWide(); var cv; try{ cv=await h2c(wd,{scale:2,backgroundColor:"#f6f3ec",useCORS:false,logging:false,windowWidth:1600,width:1500}); } finally { var hh=document.getElementById("pcwide"); if(hh) hh.remove(); }
     var url=cv.toDataURL("image/png"), name=(cardPerson(dayByNo(SEL).sections[CARD_SI])||"기도")+"_기도제목_"+new Date().toISOString().slice(0,10)+".png";
     var site=(MODE==="viewer"); document.getElementById("pcout").innerHTML='<p class="hint">'+(site?'휴대폰: 이미지를 길게 눌러 저장 · 컴퓨터: <a href="'+url+'" download="'+esc(name)+'">파일로 받기</a>':'이미지를 길게 누르거나(휴대폰) 우클릭(컴퓨터)해서 저장하세요')+'</p><img alt="기도제목 이미지" src="'+url+'">';
-    document.getElementById("pcbody").style.display="none"; msg.textContent="이미지 완성 (1080px)";
+    document.getElementById("pcbody").style.display="none"; msg.textContent="이미지 완성 (가로 3000px 고화질)";
     try{ var a=document.createElement("a"); a.href=url; a.download=name; if(site&&!/iPhone|iPad|iPod/.test(navigator.userAgent)){ document.body.appendChild(a); a.click(); a.remove(); } }catch(e){}
   }catch(e){ msg.textContent="이미지 만들기 실패 — 화면을 캡처해 주세요"; } }
 function itemHTML(it,ii,si){
