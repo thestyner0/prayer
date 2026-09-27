@@ -347,7 +347,8 @@ body.mode-pray:not(.pdark) .pkh a{color:#1D4EA8}
 #spk .spkc{margin-left:auto;font:inherit;font-size:11px;font-weight:700;border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:999px;padding:3px 9px;cursor:pointer}
 #spk .spkx{font-size:12.5px;font-weight:700;background:#2b6cb0;color:#fff;border-radius:999px;padding:5px 6px 5px 11px;cursor:pointer;display:inline-flex;align-items:center;gap:4px}
 #spk .spkx button{font:inherit;font-size:11px;border:0;background:rgba(255,255,255,.2);color:#fff;border-radius:50%;width:20px;height:20px;cursor:pointer}
-.srow .pkd{font-size:13px;margin-left:4px}
+.srow .pkb{flex:0 0 auto;font:inherit;font-size:11.5px;font-weight:800;border:1px solid #c9d8ec;background:#fff;color:#2b6cb0;border-radius:999px;padding:5px 9px;cursor:pointer;margin-left:4px;white-space:nowrap}
+.srow .pkb.on{background:#2b6cb0;border-color:#2b6cb0;color:#fff}
 #sview #spick.on{background:#2b6cb0;border-color:#2b6cb0;color:#fff}
 body.mode-song{--bg:#f3f7fc;--panel:#ffffff;--panel2:#ffffff;--line:#dde6f2;--body:#1a2a48;--muted:#5d6c88;--dim:#8a97ad;--ac:#2b6cb0;background:#f3f7fc;color:#1a2a48}
 body.mode-song .modes{background:#f3f7fc;border-color:#dde6f2}
@@ -844,7 +845,7 @@ function sectionHTML(s,si){
    +(s.guide?'<div class="guide"><b>인도</b>&nbsp; '+esc(s.guide)+'</div>':'')+'</div></details>';
 }
 /* ---------- 배경 음악 (기도모임 순서) — 영상 없이 소리만, 탭을 옮겨도 계속 ---------- */
-var BGM_DEF=[{key:"word",match:"말씀묵상",label:"묵상 음악",yt:"f742p7mQ0Ic",start:860},{key:"pray",match:"공통기도|이번 ?주 ?기도제목",label:"기도 음악",yt:"ZoP16WzbFMM",start:2492}];
+var BGM_DEF=[{key:"word",match:"말씀묵상",label:"묵상 음악",yt:"f742p7mQ0Ic",start:860},{key:"pray",match:"공통기도|이번 ?주 ?기도제목",label:"기도 음악",yt:"2D1-UOqzz10",start:0}];
 var BGM={key:null,on:false,fr:null};
 function bgmList(){ return (STATE.meeting&&STATE.meeting.bgm)||BGM_DEF; }
 function bgmFor(step){ var L=bgmList(); for(var i=0;i<L.length;i++) if(new RegExp(L[i].match).test(step)) return L[i]; return null; }
@@ -871,7 +872,7 @@ function setPicks(ids){ var v={ids:ids,at:new Date().toISOString().slice(0,10)};
 function togglePick(id){ var ids=pickIds().slice(), i=ids.indexOf(id); if(i>=0) ids.splice(i,1); else ids.push(id); setPicks(ids); }
 var PICKURL={};
 function picksHTML(){ var ids=pickIds(), all=songs(); var L=ids.map(function(id){ return all.find(function(x){return x.id===id;}); }).filter(Boolean);
-  if(!L.length) return '<div class="pk none">찬양 탭에서 곡을 열고 <b>＋ 이번 주 선곡</b>을 누르면 여기에 악보가 뜹니다</div>';
+  if(!L.length) return '<div class="pk none">찬양 탭에서 곡 옆의 <b>＋ 선곡</b>을 누르면 여기에 악보가 뜹니다</div>';
   return '<div class="pk">'+L.map(function(it,i){ return '<div class="pki"><div class="pkh"><span class="pkn">'+(i+1)+'</span><b>'+(it.no?it.no+'장 ':'')+esc(it.t)+'</b>'+(it.yt?'<a href="https://www.youtube.com/watch?v='+esc(it.yt)+'" target="_blank" rel="noopener">▶ 영상</a>':'')+'</div><div class="pks" data-pk="'+esc(it.id)+'">'+(it.sc&&it.sc.length?(STATE.sk?'<span class="pkm">악보 여는 중…</span>':'<button type="button" class="mini" data-act="pick7">🔒 비밀번호 입력하면 악보가 보입니다</button>'):'<span class="pkm">악보 없음</span>')+'</div></div>'; }).join("")+'</div>'; }
 async function fillPicks(){ var els=document.querySelectorAll(".pks[data-pk]"); if(!els.length||!STATE.sk) return;
   for(var n=0;n<els.length;n++){ var el=els[n], it=songs().find(function(x){return x.id===el.dataset.pk;}); if(!it||!(it.sc&&it.sc.length)) continue;
@@ -1348,15 +1349,15 @@ function renderSongs(){
   var fil=[["all","전체 "+all.length],["fav","★ 내 찬양"],["love","♥ 사랑하는 찬양"],["oh","오정현 선곡"],["hymn","찬송가"],["nosc","악보 없음 "+all.filter(function(x){return !(x.sc&&x.sc.length);}).length]].concat(Object.keys(ths).map(function(k){return ["th"+k,thShort(k)];}));
   document.getElementById("sfil").innerHTML=fil.map(function(f){return '<button class="schip'+(/^th/.test(f[0])?" th":"")+(SFIL===f[0]?" on":"")+'" type="button" data-f="'+f[0]+'">'+esc(f[1])+'</button>';}).join("");
   var list=all.filter(songPass).sort(sortSongs), pk=pickIds().map(function(id){return all.find(function(x){return x.id===id;});}).filter(Boolean);
-  var pbox=document.getElementById("spk"); if(pbox) pbox.innerHTML=pk.length?'<div class="spkh">이번 주 선곡 <small>기도모임 순서 · 찬양 아래에 악보가 뜹니다</small><button type="button" class="spkc" data-pkclear="1">모두 비우기</button></div>'+pk.map(function(it,i){return '<span class="spkx" data-sid="'+esc(it.id)+'">'+(i+1)+'. '+esc(it.t)+' <button type="button" data-unpick="'+esc(it.id)+'" aria-label="빼기">✕</button></span>';}).join(""):'<div class="spkh">이번 주 선곡 <small>곡을 열고 ＋ 이번 주 를 누르세요 (2–3곡)</small></div>';
+  var pbox=document.getElementById("spk"); if(pbox) pbox.innerHTML=pk.length?'<div class="spkh">이번 주 선곡 <small>기도모임 순서 · 찬양 아래에 악보가 뜹니다</small><button type="button" class="spkc" data-pkclear="1">모두 비우기</button></div>'+pk.map(function(it,i){return '<span class="spkx" data-sid="'+esc(it.id)+'">'+(i+1)+'. '+esc(it.t)+' <button type="button" data-unpick="'+esc(it.id)+'" aria-label="빼기">✕</button></span>';}).join(""):'<div class="spkh">이번 주 선곡 <small>곡 오른쪽의 ＋ 선곡 을 눌러 2–3곡 고르세요</small></div>';
   if(!list.length){ box.innerHTML='<div class="snone">'+(SFIL==="fav"?"☆를 눌러 내 찬양을 추가하세요":SFIL==="love"?"☆를 두 번 눌러 ♥로 만들면 여기에 모입니다":"해당하는 곡이 없습니다")+'</div>'; return; }
   box.innerHTML=list.map(function(it){ var f=favOf(it);
     return '<div class="srow" data-sid="'+esc(it.id)+'"><button class="fvb'+(f?" on":"")+'" type="button" data-fav="'+esc(it.id)+'" title="내 찬양">'+favIcon(f)+'</button>'+(it.no?'<span class="no">'+it.no+'</span>':'')
       +'<span class="tt">'+esc(it.t)+(it.alt?'<small>'+esc(it.alt)+'</small>':'')+'<span class="tags"><span class="tg th">'+esc(thShort(String(it.th)))+'</span>'+(it.oh?'<span class="tg oh">오정현</span>':'')+'</span></span>'
-      +(pickIds().indexOf(it.id)>=0?'<span class="pkd" title="이번 주 선곡">📌</span>':'')+(it.sc&&it.sc.length?'<span class="sc" title="악보">🎼</span>':'')+'</div>'; }).join("");
+      +'<button type="button" class="pkb'+(pickIds().indexOf(it.id)>=0?' on':'')+'" data-pick="'+esc(it.id)+'" title="이번 주 선곡">'+(pickIds().indexOf(it.id)>=0?'✓ 선곡':'＋ 선곡')+'</button>'+(it.sc&&it.sc.length?'<span class="sc" title="악보">🎼</span>':'')+'</div>'; }).join("");
 }
 document.getElementById("sfil").addEventListener("click",function(e){ var b=e.target.closest("button"); if(!b||!b.dataset.f) return; SFIL=b.dataset.f; renderSongs(); window.scrollTo({top:0}); });
-document.getElementById("slist").addEventListener("click",function(e){ var fb=e.target.closest("[data-fav]"); if(fb){ e.stopPropagation(); var id=fb.dataset.fav, it=songs().find(function(x){return x.id===id;}); var v=nextFav(favOf(it)); setFav(id,v); fb.textContent=favIcon(v); fb.classList.toggle("on",!!v); if((SFIL==="fav"&&!v)||(SFIL==="love"&&v!=="love")) renderSongs(); return; } var r=e.target.closest(".srow"); if(r) openSong(r.dataset.sid); });
+document.getElementById("slist").addEventListener("click",function(e){ var pb=e.target.closest("[data-pick]"); if(pb){ e.stopPropagation(); togglePick(pb.dataset.pick); renderSongs(); return; } var fb=e.target.closest("[data-fav]"); if(fb){ e.stopPropagation(); var id=fb.dataset.fav, it=songs().find(function(x){return x.id===id;}); var v=nextFav(favOf(it)); setFav(id,v); fb.textContent=favIcon(v); fb.classList.toggle("on",!!v); if((SFIL==="fav"&&!v)||(SFIL==="love"&&v!=="love")) renderSongs(); return; } var r=e.target.closest(".srow"); if(r) openSong(r.dataset.sid); });
 var SKEY=null, SURLS=[];
 async function scoreKey(){ if(SKEY) return SKEY; if(!STATE.sk) return null; SKEY=await crypto.subtle.importKey("raw",b64u8(STATE.sk),{name:"AES-GCM"},false,["decrypt"]); return SKEY; }
 async function loadScore(f,mime){ var k=await scoreKey(); if(!k) throw new Error("lock"); var base=MODE==="viewer"?"":"https://thestyner0.github.io/prayer/"; var r=await fetch(base+f+"?v="+encodeURIComponent(STATE.rev||""),{cache:"force-cache"}); if(!r.ok) throw new Error("http "+r.status); var b=new Uint8Array(await r.arrayBuffer()); var pt=await crypto.subtle.decrypt({name:"AES-GCM",iv:b.slice(0,12)},k,b.slice(12)); var u=URL.createObjectURL(new Blob([pt],{type:mime||"image/jpeg"})); SURLS.push(u); return u; }
