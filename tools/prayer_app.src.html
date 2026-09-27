@@ -543,7 +543,7 @@ body.site #dev .amnote-body p{font-size:13.5px}
   </div>
 </div></section>
 <section id="song"><div class="wrap">
-<header><h1>찬양</h1><div class="ssub">곡을 누르면 악보가 열립니다 · ☆를 누르면 내 찬양</div></header>
+<header><h1>찬양</h1><div class="ssub">곡을 누르면 악보가 열립니다 · ☆ 한 번 ★ 내 찬양, 두 번 ♥ 사랑하는 찬양</div></header>
 <div class="sbar"><div class="schips" id="sfil"></div></div>
 <div id="slist"></div>
 </div></section>
@@ -1112,21 +1112,21 @@ function favIcon(f){ return f==="love"?"♥":f==="star"?"★":"☆"; }
 var THS={"1":"경배","2":"십자가·보혈","3":"은혜·감사","4":"성령","5":"신뢰·위로","6":"헌신","7":"기도·부흥","8":"선교·나라"};
 function thShort(k){ return THS[k]||(((STATE.songs&&STATE.songs.themes)||{})[k]||""); }
 function sortSongs(a,b){ return a.t.localeCompare(b.t,"ko"); }
-function songPass(it){ if(SFIL==="all") return true; if(SFIL==="fav") return !!favOf(it); if(SFIL==="oh") return !!it.oh; if(SFIL==="hymn") return !!it.no; if(SFIL==="score") return !!(it.sc&&it.sc.length); if(/^th/.test(SFIL)) return String(it.th)===SFIL.slice(2); return true; }
+function songPass(it){ if(SFIL==="all") return true; if(SFIL==="fav") return !!favOf(it); if(SFIL==="love") return favOf(it)==="love"; if(SFIL==="oh") return !!it.oh; if(SFIL==="hymn") return !!it.no; if(SFIL==="score") return !!(it.sc&&it.sc.length); if(/^th/.test(SFIL)) return String(it.th)===SFIL.slice(2); return true; }
 function renderSongs(){
   var box=document.getElementById("slist"); if(!box) return;
   var ths=(STATE.songs&&STATE.songs.themes)||{}, all=songs();
-  var fil=[["all","전체 "+all.length],["fav","★ 내 찬양"],["oh","오정현 선곡"],["hymn","찬송가"],["score","🎼 악보"]].concat(Object.keys(ths).map(function(k){return ["th"+k,thShort(k)];}));
+  var fil=[["all","전체 "+all.length],["fav","★ 내 찬양"],["love","♥ 사랑하는 찬양"],["oh","오정현 선곡"],["hymn","찬송가"],["score","🎼 악보"]].concat(Object.keys(ths).map(function(k){return ["th"+k,thShort(k)];}));
   document.getElementById("sfil").innerHTML=fil.map(function(f){return '<button class="schip'+(/^th/.test(f[0])?" th":"")+(SFIL===f[0]?" on":"")+'" type="button" data-f="'+f[0]+'">'+esc(f[1])+'</button>';}).join("");
   var list=all.filter(songPass).sort(sortSongs);
-  if(!list.length){ box.innerHTML='<div class="snone">'+(SFIL==="fav"?"☆를 눌러 내 찬양을 추가하세요":"해당하는 곡이 없습니다")+'</div>'; return; }
+  if(!list.length){ box.innerHTML='<div class="snone">'+(SFIL==="fav"?"☆를 눌러 내 찬양을 추가하세요":SFIL==="love"?"☆를 두 번 눌러 ♥로 만들면 여기에 모입니다":"해당하는 곡이 없습니다")+'</div>'; return; }
   box.innerHTML=list.map(function(it){ var f=favOf(it);
     return '<div class="srow" data-sid="'+esc(it.id)+'"><button class="fvb'+(f?" on":"")+'" type="button" data-fav="'+esc(it.id)+'" title="내 찬양">'+favIcon(f)+'</button>'+(it.no?'<span class="no">'+it.no+'</span>':'')
       +'<span class="tt">'+esc(it.t)+(it.alt?'<small>'+esc(it.alt)+'</small>':'')+'<span class="tags"><span class="tg th">'+esc(thShort(String(it.th)))+'</span>'+(it.oh?'<span class="tg oh">오정현</span>':'')+'</span></span>'
       +(it.sc&&it.sc.length?'<span class="sc" title="악보">🎼</span>':'')+'</div>'; }).join("");
 }
 document.getElementById("sfil").addEventListener("click",function(e){ var b=e.target.closest("button"); if(!b||!b.dataset.f) return; SFIL=b.dataset.f; renderSongs(); window.scrollTo({top:0}); });
-document.getElementById("slist").addEventListener("click",function(e){ var fb=e.target.closest("[data-fav]"); if(fb){ e.stopPropagation(); var id=fb.dataset.fav, it=songs().find(function(x){return x.id===id;}); var v=nextFav(favOf(it)); setFav(id,v); fb.textContent=favIcon(v); fb.classList.toggle("on",!!v); if(SFIL==="fav"&&!v) renderSongs(); return; } var r=e.target.closest(".srow"); if(r) openSong(r.dataset.sid); });
+document.getElementById("slist").addEventListener("click",function(e){ var fb=e.target.closest("[data-fav]"); if(fb){ e.stopPropagation(); var id=fb.dataset.fav, it=songs().find(function(x){return x.id===id;}); var v=nextFav(favOf(it)); setFav(id,v); fb.textContent=favIcon(v); fb.classList.toggle("on",!!v); if((SFIL==="fav"&&!v)||(SFIL==="love"&&v!=="love")) renderSongs(); return; } var r=e.target.closest(".srow"); if(r) openSong(r.dataset.sid); });
 var SKEY=null, SURLS=[];
 async function scoreKey(){ if(SKEY) return SKEY; if(!STATE.sk) return null; SKEY=await crypto.subtle.importKey("raw",b64u8(STATE.sk),{name:"AES-GCM"},false,["decrypt"]); return SKEY; }
 async function loadScore(f,mime){ var k=await scoreKey(); if(!k) throw new Error("lock"); var base=MODE==="viewer"?"":"https://thestyner0.github.io/prayer/"; var r=await fetch(base+f+"?v="+encodeURIComponent(STATE.rev||""),{cache:"force-cache"}); if(!r.ok) throw new Error("http "+r.status); var b=new Uint8Array(await r.arrayBuffer()); var pt=await crypto.subtle.decrypt({name:"AES-GCM",iv:b.slice(0,12)},k,b.slice(12)); var u=URL.createObjectURL(new Blob([pt],{type:mime||"image/jpeg"})); SURLS.push(u); return u; }
