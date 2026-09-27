@@ -687,7 +687,7 @@ function mirrorOf(it){ // {mirror:{day,sec|secs,item?,line?,block?,match?,brief?
   if(out.length) return {t:first||"", d:out};
   return null; }
 function cardTxt(x){ x=String(x==null?"":x).replace(/^-\s+/,"").replace(/^!\s*/,""); return kwh(esc(x)).replace(/《([^》]+)》/g,'<span class="real">$1</span>'); }
-function cardPerson(s){ var k=s.kicker||""; return (k.split("|")[1]||"").trim()||(s.title||"").split("—")[0].trim(); }
+function cardPerson(s){ var k=s.kicker||"", m=/^(.+?)\s*·\s*\d+/.exec(k); return (m?m[1].trim():"")||(k.split("|")[1]||"").trim()||(s.title||"").split("—")[0].trim(); }
 function buildCard(si){
   var d=dayByNo(SEL)||dayByNo(7); if(!d) return ""; var s0=d.sections[si]; if(!s0) return ""; var who=cardPerson(s0);
   var secs=d.sections.filter(function(x){ return cardPerson(x)===who; });
@@ -762,7 +762,7 @@ function dayHTML(d){
   if(grouped){ regnav='<div class="regnav">'+regs.map(function(r,i){ return '<a data-act="region" data-r="'+i+'">'+esc(r)+'</a>'; }).join("")+'</div>'; }
   d.sections.forEach(function(s,si){
     var r=regOf(s);
-    if(grouped&&r&&r!==last){ var cnt=d.sections.filter(function(x){return regOf(x)===r;}).length; secs+='<div class="region" id="reg'+regs.indexOf(r)+'"><span class="rt">'+esc(r)+'</span><span class="rc">'+cnt+'개 나라·주제</span></div>'; last=r; }
+    if(grouped&&r&&r!==last){ var cnt=d.sections.filter(function(x){return regOf(x)===r;}).length; secs+='<div class="region" id="reg'+regs.indexOf(r)+'"><span class="rt">'+esc(r)+'</span><span class="rc">'+(d.no<=CYCLE?cnt+'개 나라·주제':(cnt>1?cnt+'개 주제':''))+'</span></div>'; last=r; }
     secs+=sectionHTML(s,si);
   });
   return '<section class="day on" data-day="'+d.no+'"><div class="dayhead" data-edit="day"><div class="t">'+(d.no<=CYCLE?d.no+"주차 · ":"")+esc(d.title)+'</div>'
@@ -906,7 +906,7 @@ function renumber(d){
   var label=d.no<=CYCLE?d.no+"주차":"긴급·중보";
   d.sections.forEach(function(s,i){
     var k=s.kicker||"", cat=(k.split("|")[1]||"").trim(), pre=(k.split("·")[0]||"").trim();
-    if(!pre||/주차|일차|긴급/.test(pre)) pre=label;
+    if(!pre||/주차|일차|^긴급·중보$/.test(pre)) pre=label;
     s.kicker=pre+" · "+String(i+1).padStart(2,"0")+(cat?" | "+cat:"");
   });
 }
