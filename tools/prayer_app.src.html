@@ -252,6 +252,66 @@ body.mode-dev .btn.p{background:#8a6d3b;color:#fff} body.mode-dev .btn.g{backgro
 #sview .yt{width:100%;aspect-ratio:16/9;border:0;border-radius:8px;margin-top:4px;background:#000}
 body.sview-open{overflow:hidden}
 /* 찬양 = 밝은 '새벽 하늘' 테마 */
+
+/* 중보기도 테마: 기본 밝게, ☾ 버튼으로 어둡게 (기기별 저장) */
+#thBtn{display:none;min-width:34px;padding:7px 10px}
+body.mode-pray #thBtn{display:inline-block}
+body.mode-pray:not(.pdark){--bg:#F7F4EE;--panel:#FFFFFF;--panel2:#FBF9F4;--line:#E7E1D4;--body:#1F2433;--muted:#4B5468;--dim:#6B7385;--ac:#1F2A6B;--gold:#B8892B;--danger:#B42318;background:#F7F4EE;color:#1F2433}
+body.mode-pray:not(.pdark) .modes{background:#1F2A6B;border-color:#1F2A6B}
+body.mode-pray:not(.pdark) .modes a{color:#C9D2F0} body.mode-pray:not(.pdark) .modes a.on{background:#fff;color:#1F2A6B}
+body.mode-pray:not(.pdark) .modes .tb{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.25);color:#E6EAF7}
+body.mode-pray:not(.pdark) .whentag{color:#8A6414}
+body.mode-pray:not(.pdark) .thisweek{background:#1F2A6B;color:#fff}
+body.mode-pray:not(.pdark) .tab{background:#fff;border-color:#E7E1D4;color:#4B5468}
+body.mode-pray:not(.pdark) .tab.on{background:#1F2A6B;border-color:#1F2A6B;color:#fff}
+body.mode-pray:not(.pdark) .tab.order{border-color:#C9CFE3;color:#1F2A6B}
+body.mode-pray:not(.pdark) .tab.every{border-color:#D9B45C;color:#8A6414;background:#FFF9EA}
+body.mode-pray:not(.pdark) .tab.every.on{background:#B8892B;border-color:#B8892B;color:#fff}
+body.mode-pray:not(.pdark) .tab .ev{background:#F6ECD2;color:#8A6414}
+body.mode-pray:not(.pdark) .dayhead{border-color:#1F2A6B}
+body.mode-pray:not(.pdark) .sec{background:#fff;border:1px solid #E7E1D4;box-shadow:0 1px 3px rgba(31,36,51,.05)}
+body.mode-pray:not(.pdark) .sec .k{color:#8A6414}
+body.mode-pray:not(.pdark) .it{background:#FBF9F4;border:1px solid #EFEAE0}
+body.mode-pray:not(.pdark) .it .no{background:#1F2A6B;color:#fff}
+body.mode-pray:not(.pdark) .it .tx{font-size:calc(15.5px*var(--fz,1));line-height:1.6}
+body.mode-pray:not(.pdark) .it .dsc{border-top:1px solid #ECE6DA}
+body.mode-pray:not(.pdark) .it .dsc i{font-size:calc(14px*var(--fz,1));line-height:1.65;color:#4B5468}
+body.mode-pray:not(.pdark) .it .dsc i:before{color:#1F2A6B}
+body.mode-pray:not(.pdark) .it .dsc i.urg,body.mode-pray:not(.pdark) .it .tx b.urg{color:#B42318}
+body.mode-pray:not(.pdark) .it .dsc i.urg:before{color:#B42318}
+body.mode-pray:not(.pdark) #prayer .real{color:#B42318}
+body.mode-pray:not(.pdark) #prayer .kw{color:#1D4EA8}
+body.mode-pray:not(.pdark) .region .rt{color:#8A6414}
+body.mode-pray:not(.pdark) .region::after{background:linear-gradient(90deg,rgba(184,137,43,.5),transparent)}
+body.mode-pray:not(.pdark) .regnav a{color:#8A6414;background:#F6ECD2;border-color:#E8D5A6}
+body.mode-pray:not(.pdark) #prayer .mir.lnk,body.mode-pray:not(.pdark) #prayer .mir.lock{color:#8A6414;border-color:#E0C789;background:#FFF9EA}
+body.mode-pray:not(.pdark) .guide{background:#F3EFE6;border-left-color:#1F2A6B;color:#4B5468}
+body.mode-pray:not(.pdark) .mini{background:#fff;border-color:#E7E1D4;color:#4B5468}
+body.mode-pray:not(.pdark) .secctl .mini.on{background:#1F2A6B;border-color:#1F2A6B;color:#fff}
+body.mode-pray:not(.pdark) .secctl .fzc{background:#fff;border-color:#E7E1D4}
+body.mode-pray:not(.pdark) .secctl .fzc button{color:#1F2A6B}
+body.mode-pray:not(.pdark) .st .n{background:#E8ECF8;color:#1F2A6B}
+body.mode-pray:not(.pdark) .st .tx b{color:#8A6414}
+body.mode-pray:not(.pdark) .cc{background:#FBF9F4;border:1px solid #EFEAE0}
+body.mode-pray:not(.pdark) .modes .tb.on{background:#fff;border-color:#fff;color:#1F2A6B}
+body.mode-pray:not(.pdark) .modes .status{color:#C9D2F0}
+body.mode-pray:not(.pdark) .ed{background:#FFFDF8;border-color:#1F2A6B}
+body.mode-pray:not(.pdark) .ed label{color:#1F2A6B}
+body.mode-pray:not(.pdark) .ed input,body.mode-pray:not(.pdark) .ed textarea,body.mode-pray:not(.pdark) .settings input,body.mode-pray:not(.pdark) .settings textarea{background:#fff;color:#1F2433;border-color:#D9D2C2}
+body.mode-pray:not(.pdark) .settings{background:#fff}
+body.mode-pray:not(.pdark) .banner{background:#fff}
+body.mode-pray:not(.pdark) .btn.p{background:#1F2A6B;color:#fff}
+body.mode-pray:not(.pdark) .btn.g{background:#F1ECE1;color:#4B5468}
+body.mode-pray:not(.pdark) .lockbox button{background:#1F2A6B;color:#fff}
+body.mode-pray:not(.pdark) .lockbox .err{color:#B42318}
+body.mode-pray:not(.pdark) .psbox{background:#fff}
+body.mode-pray:not(.pdark) .psbox summary{color:#8A6414}
+body.mode-pray:not(.pdark) .sec summary::after{border-color:#8B93A5}
+body.mode-pray.pdark{--muted:#C3CDEA;--dim:#98A5D0}
+body.mode-pray.pdark .it .tx{font-size:calc(15.5px*var(--fz,1));line-height:1.6}
+body.mode-pray.pdark .it .dsc i{font-size:calc(14px*var(--fz,1));line-height:1.65;color:#C9D2EE}
+body.mode-pray.pdark .it{background:#26356F}
+body.mode-pray.pdark .it .dsc{border-top:1px solid rgba(255,255,255,.12)}
 body.mode-song{--bg:#f3f7fc;--panel:#ffffff;--panel2:#ffffff;--line:#dde6f2;--body:#1a2a48;--muted:#5d6c88;--dim:#8a97ad;--ac:#2b6cb0;background:#f3f7fc;color:#1a2a48}
 body.mode-song .modes{background:#f3f7fc;border-color:#dde6f2}
 body.mode-song .modes a{color:#5d6c88} body.mode-song .modes a.on{background:#2b6cb0;color:#fff}
@@ -415,6 +475,7 @@ body.site #dev .amnote-body p{font-size:13.5px}
   <a data-mode="dev">묵상</a><a data-mode="pray">중보기도</a><a data-mode="song">찬양</a><span class="sp"></span>
   <div class="tools">
     <span class="status" id="status"></span>
+    <button class="tb" id="thBtn" type="button" aria-label="밝기 전환">☾</button>
     <button class="tb" id="editBtn" type="button">✎ 편집</button>
     <button class="tb" id="setBtn" type="button">⚙</button>
   </div>
@@ -616,6 +677,9 @@ var STATE=JSON.parse(document.getElementById("seed").textContent);
 var DB=null, EDIT=false, SEL=null, DIRTY={}, saveTimer=null, editingKey=null, MODE="viewer", PSOFF=0;
 var VIEW="dev"; // 기본은 항상 묵상
 var COMPACT=false; try{ COMPACT=localStorage.getItem("prayer.compact")==="1"; }catch(e){}
+var PDARK=false; try{ PDARK=localStorage.getItem("prayer.theme")==="dark"; }catch(e){}
+function applyTheme(){ document.body.classList.toggle("pdark",PDARK); var b=document.getElementById("thBtn"); if(b){ b.textContent=PDARK?"☀︎":"☾"; b.title=PDARK?"밝게 보기":"어둡게 보기"; } }
+applyTheme();
 var FZS=[0.9,1,1.1,1.2,1.3,1.45], FZ=1; try{ var _f=parseFloat(localStorage.getItem("prayer.fz")); if(FZS.indexOf(_f)>=0) FZ=_f; }catch(e){}
 function applyFz(){ document.documentElement.style.setProperty("--fz",String(FZ)); }
 applyFz();
@@ -1245,7 +1309,7 @@ function setView(v){ VIEW=v; document.body.classList.toggle("mode-dev",v==="dev"
   if(v==="dev"){ try{history.replaceState(null,"",location.hash==="#am"?"#am":"#dev");}catch(e){} } else if(v==="song"){ try{history.replaceState(null,"","#song");}catch(e){} renderSongs(); } else { try{history.replaceState(null,"","#day"+SEL);}catch(e){} }
   window.scrollTo({top:0}); }
 document.getElementById("modes").addEventListener("click",function(e){ var a=e.target.closest("a[data-mode]"); if(a) setView(a.dataset.mode); });
-document.getElementById("pcx").addEventListener("click",closeCard); document.getElementById("pcsave").addEventListener("click",saveCard);
+document.getElementById("pcx").addEventListener("click",closeCard); document.getElementById("thBtn").addEventListener("click",function(){ PDARK=!PDARK; try{ localStorage.setItem("prayer.theme",PDARK?"dark":"light"); }catch(e){} applyTheme(); }); document.getElementById("pcsave").addEventListener("click",saveCard);
 setView(VIEW);
 render(); connect(); loadBible();
 })();
