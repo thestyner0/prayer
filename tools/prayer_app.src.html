@@ -1389,14 +1389,15 @@ document.getElementById("spick").addEventListener("click",function(){ var id=thi
 document.addEventListener("keydown",function(e){ if(e.key==="Escape"&&document.getElementById("sview").classList.contains("on")) closeSong(); });
 document.getElementById("sfav").addEventListener("click",function(){ var id=this.dataset.sid, it=songs().find(function(x){return x.id===id;}); if(!it) return; var v=nextFav(favOf(it)); setFav(id,v); this.textContent=favIcon(v); renderSongs(); });
 
+var PAINTED=false;
 function setView(v){ VIEW=v; document.body.classList.toggle("mode-dev",v==="dev"); document.body.classList.toggle("mode-pray",v==="pray"); document.body.classList.toggle("mode-song",v==="song");
   document.querySelectorAll("#modes a[data-mode]").forEach(function(a){ a.classList.toggle("on",a.dataset.mode===v); });
-  if(v==="dev"){ try{history.replaceState(null,"",location.hash==="#am"?"#am":"#dev");}catch(e){} } else if(v==="song"){ try{history.replaceState(null,"","#song");}catch(e){} renderSongs(); } else { try{history.replaceState(null,"","#day"+SEL);}catch(e){} }
+  if(v==="dev"){ try{history.replaceState(null,"",location.hash==="#am"?"#am":"#dev");}catch(e){} } else if(v==="song"){ try{history.replaceState(null,"","#song");}catch(e){} renderSongs(); } else { try{history.replaceState(null,"","#day"+SEL);}catch(e){} if(PAINTED) render(); }
   window.scrollTo({top:0}); }
 document.getElementById("modes").addEventListener("click",function(e){ var a=e.target.closest("a[data-mode]"); if(a) setView(a.dataset.mode); });
 document.getElementById("pcx").addEventListener("click",closeCard); document.getElementById("thBtn").addEventListener("click",function(){ PDARK=!PDARK; try{ localStorage.setItem("prayer.theme",PDARK?"dark":"light"); }catch(e){} applyTheme(); }); document.getElementById("pcsave").addEventListener("click",saveCard);
 setView(VIEW);
-render(); connect(); loadBible();
+render(); PAINTED=true; connect(); loadBible();
 })();
 </script>
 </body>
