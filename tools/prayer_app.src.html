@@ -188,6 +188,13 @@ body.mode-dev .btn.p{background:#8a6d3b;color:#fff} body.mode-dev .btn.g{backgro
 .srow .tt small{display:block;font-size:11.5px;color:var(--dim);margin-top:1px}
 .srow .oh{flex:0 0 auto;font-size:10.5px;font-weight:700;color:#F2D18A;border:1px solid rgba(216,169,74,.45);border-radius:999px;padding:1px 7px}
 .srow .sc{flex:0 0 auto;font-size:12px;opacity:.9}
+.srow .fvb{flex:0 0 30px;height:30px;margin:-6px 0 -6px -6px;font:inherit;font-size:17px;line-height:1;background:none;border:0;cursor:pointer;color:var(--dim);border-radius:50%}
+.srow .fvb.on{color:#b7791f}
+.srow .fvb:active{background:rgba(0,0,0,.06)}
+.srow .tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}
+.srow .tg{font-size:10.5px;font-weight:700;border-radius:999px;padding:1px 7px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.srow .tg.oh{color:#b7791f;border-color:rgba(183,121,31,.4)}
+.schips{flex-wrap:wrap;overflow:visible}
 .snone{font-size:13px;color:var(--dim);text-align:center;padding:30px 0}
 #sview{position:fixed;inset:0;z-index:60;background:#0d1230;display:none;flex-direction:column}
 #sview.on{display:flex}
@@ -212,12 +219,13 @@ body.mode-song .modes .tb.on{background:#2b6cb0;border-color:#2b6cb0;color:#fff}
 body.mode-song .modes .status{color:#8a97ad}
 body.mode-song .schip.on{color:#fff}
 body.mode-song .schip.th{color:#2b6cb0;border-color:rgba(43,108,176,.28);background:#e8f0fa}
+body.mode-song .schip.on,body.mode-song .schip.th.on{background:#2b6cb0;border-color:#2b6cb0;color:#fff}
 body.mode-song .sgrp .rt{color:#2b6cb0}
 body.mode-song .sgrp::after{background:linear-gradient(90deg,rgba(43,108,176,.4),transparent)}
 body.mode-song .srow{border:1px solid #dde6f2;box-shadow:0 1px 2px rgba(26,42,72,.04)}
 body.mode-song .srow:hover{background:#eef4fb}
 body.mode-song .srow .no{background:#e8f0fa;color:#2b6cb0}
-body.mode-song .srow .oh{color:#2b6cb0;border-color:rgba(43,108,176,.35)}
+body.mode-song .srow .tg.th{color:#2b6cb0;background:#e8f0fa;border-color:#e8f0fa}
 body.mode-song .srow .fv{color:#b7791f}
 body.mode-song #sview{background:#f3f7fc}
 body.mode-song #sview .sbd img{box-shadow:0 2px 10px rgba(26,42,72,.12)}
@@ -535,8 +543,8 @@ body.site #dev .amnote-body p{font-size:13.5px}
   </div>
 </div></section>
 <section id="song"><div class="wrap">
-<header><h1>찬양</h1><div class="ssub">곡을 누르면 악보가 열립니다 · ▶ 영상은 악보 아래에서</div></header>
-<div class="sbar"><input id="sq" type="search" placeholder="제목 · 장수 · 초성(ㅈㅇㅂㅎ)으로 찾기" autocomplete="off"><div class="schips" id="sfil"></div></div>
+<header><h1>찬양</h1><div class="ssub">곡을 누르면 악보가 열립니다 · ☆를 누르면 내 찬양</div></header>
+<div class="sbar"><div class="schips" id="sfil"></div></div>
 <div id="slist"></div>
 </div></section>
 <div id="sview"><div class="shd"><button class="tb" type="button" id="sx">✕</button><div class="st" id="stt"></div><button class="tb" type="button" id="sfav" hidden>☆</button></div><div class="sbd" id="sbd"></div><div class="sft" id="sft"></div></div>
@@ -1093,27 +1101,32 @@ var CHO="ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ";
 function choOf(s){ var o=""; for(var i=0;i<s.length;i++){ var c=s.charCodeAt(i)-0xAC00; o+=(c>=0&&c<11172)?CHO[Math.floor(c/588)]:s[i]; } return o; }
 function songs(){ return (STATE.songs&&STATE.songs.items)||[]; }
 function favMark(f){ return f==="love"?"♥":f==="star"?"★":""; }
-function sortSongs(a,b){ var fr={love:0,star:1}; var fa=fr[a.fav]!=null?fr[a.fav]:2, fb=fr[b.fav]!=null?fr[b.fav]:2; if(fa!==fb) return fa-fb; var oa=a.oh||0, ob=b.oh||0; if(oa!==ob) return ob-oa; return a.t.localeCompare(b.t,"ko"); }
-function songMatch(it,q){ if(!q) return true; q=q.replace(/\s+/g,"").replace(/장$/,""); var t=(it.t+(it.alt||"")).replace(/\s+/g,""); if(/^\d+$/.test(q)) return it.no&&String(it.no)===q; if(t.indexOf(q)>=0) return true; if(/^[ㄱ-ㅎ]+$/.test(q)) return choOf(t).indexOf(q)>=0; return false; }
-function songPass(it){ if(SFIL==="fav") return !!it.fav; if(SFIL==="oh") return !!it.oh; if(SFIL==="hymn") return !!it.no; if(SFIL==="score") return !!(it.sc&&it.sc.length); return true; }
+var FAVK="prayer.songfav.v1";
+function favLocal(){ try{ return JSON.parse(localStorage.getItem(FAVK)||"{}"); }catch(e){ return {}; } }
+function favOf(it){ if(MODE!=="editor"){ var L=favLocal(); if(L[it.id]!==undefined) return L[it.id]||""; } return it.fav||""; }
+function setFav(id,v){ var it=songs().find(function(x){return x.id===id;}); if(!it) return;
+  if(MODE==="editor"){ if(v) it.fav=v; else delete it.fav; markDirty(null); }
+  else { var L=favLocal(); L[id]=v||""; try{ localStorage.setItem(FAVK,JSON.stringify(L)); }catch(e){} } }
+function nextFav(f){ return !f?"star":f==="star"?"love":""; }
+function favIcon(f){ return f==="love"?"♥":f==="star"?"★":"☆"; }
+var THS={"1":"경배","2":"십자가·보혈","3":"은혜·감사","4":"성령","5":"신뢰·위로","6":"헌신","7":"기도·부흥","8":"선교·나라"};
+function thShort(k){ return THS[k]||(((STATE.songs&&STATE.songs.themes)||{})[k]||""); }
+function sortSongs(a,b){ return a.t.localeCompare(b.t,"ko"); }
+function songPass(it){ if(SFIL==="all") return true; if(SFIL==="fav") return !!favOf(it); if(SFIL==="oh") return !!it.oh; if(SFIL==="hymn") return !!it.no; if(SFIL==="score") return !!(it.sc&&it.sc.length); if(/^th/.test(SFIL)) return String(it.th)===SFIL.slice(2); return true; }
 function renderSongs(){
   var box=document.getElementById("slist"); if(!box) return;
   var ths=(STATE.songs&&STATE.songs.themes)||{}, all=songs();
-  var fil=[["all","전체 "+all.length],["fav","♥★ 내 찬양"],["oh","오정현 선곡"],["hymn","찬송가"],["score","악보 있음"]];
-  document.getElementById("sfil").innerHTML=fil.map(function(f){return '<button class="schip'+(SFIL===f[0]?" on":"")+'" type="button" data-f="'+f[0]+'">'+esc(f[1])+'</button>';}).join("")
-    +(SQ?"":Object.keys(ths).map(function(k){return '<button class="schip th" type="button" data-th="'+k+'">'+esc(ths[k].split("·")[0])+'</button>';}).join(""));
-  var list=all.filter(function(it){ return songPass(it)&&songMatch(it,SQ); });
-  if(!list.length){ box.innerHTML='<div class="snone">'+(all.length?"찾는 곡이 없습니다":"찬양 목록이 아직 없습니다")+'</div>'; return; }
-  var h="";
-  Object.keys(ths).forEach(function(k){ var g=list.filter(function(it){return String(it.th)===k;}).sort(sortSongs); if(!g.length) return;
-    h+='<div class="sgrp" id="sth'+k+'"><span class="rt">'+esc(ths[k])+'</span><span class="rc">'+g.length+'</span></div>';
-    g.forEach(function(it){ h+='<div class="srow" data-sid="'+esc(it.id)+'"><span class="fv">'+favMark(it.fav)+'</span>'+(it.no?'<span class="no">'+it.no+'</span>':'')+'<span class="tt">'+esc(it.t)+(it.alt?'<small>'+esc(it.alt)+'</small>':'')+'</span>'+(it.sc&&it.sc.length?'<span class="sc" title="악보">🎼</span>':'')+(it.oh?'<span class="oh">오정현</span>':'')+'</div>'; });
-  });
-  box.innerHTML=h;
+  var fil=[["all","전체 "+all.length],["fav","★ 내 찬양"],["oh","오정현 선곡"],["hymn","찬송가"],["score","🎼 악보"]].concat(Object.keys(ths).map(function(k){return ["th"+k,thShort(k)];}));
+  document.getElementById("sfil").innerHTML=fil.map(function(f){return '<button class="schip'+(/^th/.test(f[0])?" th":"")+(SFIL===f[0]?" on":"")+'" type="button" data-f="'+f[0]+'">'+esc(f[1])+'</button>';}).join("");
+  var list=all.filter(songPass).sort(sortSongs);
+  if(!list.length){ box.innerHTML='<div class="snone">'+(SFIL==="fav"?"☆를 눌러 내 찬양을 추가하세요":"해당하는 곡이 없습니다")+'</div>'; return; }
+  box.innerHTML=list.map(function(it){ var f=favOf(it);
+    return '<div class="srow" data-sid="'+esc(it.id)+'"><button class="fvb'+(f?" on":"")+'" type="button" data-fav="'+esc(it.id)+'" title="내 찬양">'+favIcon(f)+'</button>'+(it.no?'<span class="no">'+it.no+'</span>':'')
+      +'<span class="tt">'+esc(it.t)+(it.alt?'<small>'+esc(it.alt)+'</small>':'')+'<span class="tags"><span class="tg th">'+esc(thShort(String(it.th)))+'</span>'+(it.oh?'<span class="tg oh">오정현</span>':'')+'</span></span>'
+      +(it.sc&&it.sc.length?'<span class="sc" title="악보">🎼</span>':'')+'</div>'; }).join("");
 }
-document.getElementById("sq").addEventListener("input",function(e){ SQ=e.target.value.trim(); renderSongs(); });
-document.getElementById("sfil").addEventListener("click",function(e){ var b=e.target.closest("button"); if(!b) return; if(b.dataset.f){ SFIL=b.dataset.f; renderSongs(); } else if(b.dataset.th){ var g=document.getElementById("sth"+b.dataset.th); if(g) g.scrollIntoView({behavior:"smooth"}); } });
-document.getElementById("slist").addEventListener("click",function(e){ var r=e.target.closest(".srow"); if(r) openSong(r.dataset.sid); });
+document.getElementById("sfil").addEventListener("click",function(e){ var b=e.target.closest("button"); if(!b||!b.dataset.f) return; SFIL=b.dataset.f; renderSongs(); window.scrollTo({top:0}); });
+document.getElementById("slist").addEventListener("click",function(e){ var fb=e.target.closest("[data-fav]"); if(fb){ e.stopPropagation(); var id=fb.dataset.fav, it=songs().find(function(x){return x.id===id;}); var v=nextFav(favOf(it)); setFav(id,v); fb.textContent=favIcon(v); fb.classList.toggle("on",!!v); if(SFIL==="fav"&&!v) renderSongs(); return; } var r=e.target.closest(".srow"); if(r) openSong(r.dataset.sid); });
 var SKEY=null, SURLS=[];
 async function scoreKey(){ if(SKEY) return SKEY; if(!STATE.sk) return null; SKEY=await crypto.subtle.importKey("raw",b64u8(STATE.sk),{name:"AES-GCM"},false,["decrypt"]); return SKEY; }
 async function loadScore(f,mime){ var k=await scoreKey(); if(!k) throw new Error("lock"); var base=MODE==="viewer"?"":"https://thestyner0.github.io/prayer/"; var r=await fetch(base+f+"?v="+encodeURIComponent(STATE.rev||""),{cache:"force-cache"}); if(!r.ok) throw new Error("http "+r.status); var b=new Uint8Array(await r.arrayBuffer()); var pt=await crypto.subtle.decrypt({name:"AES-GCM",iv:b.slice(0,12)},k,b.slice(12)); var u=URL.createObjectURL(new Blob([pt],{type:mime||"image/jpeg"})); SURLS.push(u); return u; }
@@ -1122,7 +1135,7 @@ async function openSong(id){
   var it=songs().find(function(x){return x.id===id;}); if(!it) return;
   var v=document.getElementById("sview"), bd=document.getElementById("sbd"), ft=document.getElementById("sft");
   document.getElementById("stt").innerHTML=(it.no?it.no+"장 ":"")+esc(it.t)+(it.alt?'<small>'+esc(it.alt)+'</small>':'');
-  var fb=document.getElementById("sfav"); fb.hidden=!(MODE==="editor"); fb.textContent=it.fav==="love"?"♥":it.fav==="star"?"★":"☆"; fb.dataset.sid=id;
+  var fb=document.getElementById("sfav"); fb.hidden=false; fb.textContent=favIcon(favOf(it)); fb.dataset.sid=id;
   v.classList.add("on"); document.body.classList.add("sview-open");
   var yid=ytId(it);
   ft.innerHTML=(yid?'<button class="btn p" type="button" id="syt">▶ 영상</button><a class="btn g" style="text-align:center;text-decoration:none" href="https://www.youtube.com/watch?v='+esc(yid)+'" target="_blank" rel="noopener">YouTube 앱에서 열기</a>':'<a class="btn g" style="text-align:center;text-decoration:none" href="https://www.youtube.com/results?search_query='+encodeURIComponent((it.no?"새찬송가 "+it.no+"장 ":"")+it.t)+'" target="_blank" rel="noopener">YouTube에서 찾기</a>');
@@ -1138,7 +1151,7 @@ async function openSong(id){
 function closeSong(){ var v=document.getElementById("sview"); v.classList.remove("on"); document.body.classList.remove("sview-open"); document.getElementById("sbd").innerHTML=""; SURLS.forEach(function(u){ try{URL.revokeObjectURL(u);}catch(e){} }); SURLS=[]; }
 document.getElementById("sx").addEventListener("click",closeSong);
 document.addEventListener("keydown",function(e){ if(e.key==="Escape"&&document.getElementById("sview").classList.contains("on")) closeSong(); });
-document.getElementById("sfav").addEventListener("click",function(){ var id=this.dataset.sid, it=songs().find(function(x){return x.id===id;}); if(!it) return; it.fav=!it.fav?"star":it.fav==="star"?"love":undefined; if(!it.fav) delete it.fav; this.textContent=it.fav==="love"?"♥":it.fav==="star"?"★":"☆"; markDirty(null); renderSongs(); });
+document.getElementById("sfav").addEventListener("click",function(){ var id=this.dataset.sid, it=songs().find(function(x){return x.id===id;}); if(!it) return; var v=nextFav(favOf(it)); setFav(id,v); this.textContent=favIcon(v); renderSongs(); });
 
 function setView(v){ VIEW=v; document.body.classList.toggle("mode-dev",v==="dev"); document.body.classList.toggle("mode-pray",v==="pray"); document.body.classList.toggle("mode-song",v==="song");
   document.querySelectorAll("#modes a[data-mode]").forEach(function(a){ a.classList.toggle("on",a.dataset.mode===v); });
