@@ -87,6 +87,7 @@ body.compact .it.hasd.show .dsc{display:block}
 .it .dsc i.urg:before{content:"!";color:#F08A8A;font-weight:800}
 .it .tx b.urg{color:#F7A8A8;font-weight:inherit}
 #prayer .real{color:#F08A8A}
+#prayer .kw{font-weight:800}
 .guide{font-size:calc(12px*var(--fz,1));color:var(--muted);background:rgba(255,255,255,.05);border-left:2px solid var(--ac);padding:9px 11px;margin:2px 0 4px}
 .guide b{color:var(--ac);font-weight:700}
 .st{display:flex;gap:9px;align-items:flex-start;background:var(--panel2);border-radius:9px;padding:9px 11px;margin-bottom:5px}
@@ -200,6 +201,42 @@ body.mode-dev .btn.p{background:#8a6d3b;color:#fff} body.mode-dev .btn.g{backgro
 .srow .tg.oh{color:#b7791f;border-color:rgba(183,121,31,.4)}
 .schips{flex-wrap:wrap;overflow:visible}
 .snone{font-size:13px;color:var(--dim);text-align:center;padding:30px 0}
+#pcard{position:fixed;inset:0;z-index:70;background:#e9e5dc;display:none;flex-direction:column}
+#pcard.on{display:flex}
+#pcard .pcbar{display:flex;align-items:center;gap:8px;padding:10px 12px;padding-top:calc(10px + env(safe-area-inset-top));background:#fff;border-bottom:1px solid #e3ddd0}
+#pcard .pcbar button{font:inherit;font-size:13.5px;font-weight:700;border:1px solid #d9d2c2;background:#fff;color:#1f2a4d;border-radius:999px;padding:7px 13px;cursor:pointer}
+#pcard .pcbar #pcsave{background:#1f2a6b;color:#fff;border-color:#1f2a6b}
+#pcard #pcmsg{flex:1;font-size:12px;color:#6b7280;text-align:center}
+#pcard .pcscroll{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding:14px 10px 40px}
+#pcout img{display:block;width:100%;max-width:540px;margin:0 auto 12px;border-radius:10px;box-shadow:0 2px 12px rgba(0,0,0,.15)}
+#pcout .hint{text-align:center;font-size:12.5px;color:#4b5563;margin:0 0 10px}
+.pc{width:540px;max-width:100%;margin:0 auto;background:#f6f3ec;color:#27303f;padding:30px 22px 26px;font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;line-height:1.6;border-radius:10px}
+.pc h1{font-size:25px;font-weight:800;text-align:center;color:#1c2440;margin:0;letter-spacing:-.02em}
+.pc .pdate{text-align:center;font-size:12px;color:#7a8194;margin:6px 0 16px}
+.pc .pnote{background:#fdf1c7;border:1.5px solid #e2b93b;border-radius:10px;padding:9px 12px;text-align:center;font-size:12.5px;font-weight:700;color:#5a4205;margin-bottom:14px}
+.pc .pbox{background:#fff;border:1px solid #e6e0d3;border-radius:12px;padding:14px 15px 8px;margin-bottom:12px}
+.pc .pbox.u{background:#fdeeee;border-color:#f0c4c4}
+.pc .phd{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.pc .phd .pn{flex:0 0 auto;width:23px;height:23px;border-radius:50%;background:#1f2a6b;color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.pc .pbox.u .phd .pn{background:#c62828}
+.pc .phd b{font-size:16.5px;font-weight:800;color:#1c2440}
+.pc .pbox.u .phd b{color:#c62828}
+.pc .phd small{font-size:11px;color:#8a90a0;font-weight:500}
+.pc .pg{font-size:12px;font-weight:800;color:#8a6d1f;margin:9px 0 1px;letter-spacing:.02em}
+.pc .pbox.u .pg{color:#b23b3b}
+.pc ul{list-style:none;margin:0;padding:0}
+.pc li{position:relative;padding:6px 0 6px 13px;font-size:13.5px;border-bottom:1px solid #f0ece2}
+.pc li:last-child{border-bottom:0}
+.pc li:before{content:"•";position:absolute;left:1px;top:6px;color:#3b5bb5}
+.pc .pbox.u li:before{color:#c62828}
+.pc li .dd{color:#5b6475}
+.pc li.nn{padding-left:27px}
+.pc li.nn:before{content:attr(data-n);width:19px;height:19px;border-radius:50%;background:#e8ecf8;color:#1f2a6b;font-size:10.5px;font-weight:800;display:flex;align-items:center;justify-content:center;top:8px}
+.pc b.kw{color:#1d4ea8;font-weight:800}
+.pc .pbox.u b.kw{color:#c62828}
+.pc .real{color:#c62828}
+.pc b.lb{color:#1c2440;font-weight:800}
+.pc .pfoot{text-align:center;font-size:11.5px;color:#8a90a0;margin-top:14px}
 #sview{position:fixed;inset:0;z-index:60;background:#0d1230;display:none;flex-direction:column}
 #sview.on{display:flex}
 #sview .shd{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--line);padding-top:calc(10px + env(safe-area-inset-top))}
@@ -551,6 +588,7 @@ body.site #dev .amnote-body p{font-size:13.5px}
 <div class="sbar"><div class="schips" id="sfil"></div></div>
 <div id="slist"></div>
 </div></section>
+<div id="pcard"><div class="pcbar"><button type="button" id="pcx">✕ 닫기</button><span id="pcmsg"></span><button type="button" id="pcsave">⬇ 이미지로 저장</button></div><div class="pcscroll"><div id="pcbody"></div><div id="pcout"></div></div></div>
 <div id="sview"><div class="shd"><button class="tb" type="button" id="sx">✕</button><div class="st" id="stt"></div><button class="tb" type="button" id="sfav" hidden>☆</button></div><div class="sbd" id="sbd"></div><div class="sft" id="sft"></div></div>
 <section id="prayer">
 <div class="wrap">
@@ -607,7 +645,8 @@ function psalmBoxHTML(){
    +psalmHTML(n)+'</details>';
 }
 function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
-function urg(x,tag){ x=String(x==null?"":x); var sub=/^-\s+/.test(x); if(sub) x=x.replace(/^-\s+/,""); var u=/^!\s*/.test(x); if(u) x=x.replace(/^!\s*/,""); if(!sub&&/^-\s+/.test(x)){ sub=true; x=x.replace(/^-\s+/,""); } /* "- " 로 시작하는 줄 = 하위 항목(들여쓰기) */ var h=esc(x).replace(/《([^》]+)》/g,'<span class="real">$1</span>'); /* 《…》 = 실제 사건·실명 → 붉은색 */ var cls=(u?"urg ":"")+(sub?"lv2":""); cls=cls.trim(); if(tag) return "<"+tag+(cls?' class="'+cls+'"':"")+">"+h+"</"+tag+">"; return u?'<b class="urg">'+h+"</b>":h; }
+function kwh(h){ return h.replace(/\*\*([^*]+?)\*\*/g,'<b class="kw">$1</b>'); } /* **키워드** = 강조 */
+function urg(x,tag){ x=String(x==null?"":x); var sub=/^-\s+/.test(x); if(sub) x=x.replace(/^-\s+/,""); var u=/^!\s*/.test(x); if(u) x=x.replace(/^!\s*/,""); if(!sub&&/^-\s+/.test(x)){ sub=true; x=x.replace(/^-\s+/,""); } /* "- " 로 시작하는 줄 = 하위 항목(들여쓰기) */ var h=kwh(esc(x)).replace(/《([^》]+)》/g,'<span class="real">$1</span>'); /* 《…》 = 실제 사건·실명 → 붉은색 */ var cls=(u?"urg ":"")+(sub?"lv2":""); cls=cls.trim(); if(tag) return "<"+tag+(cls?' class="'+cls+'"':"")+">"+h+"</"+tag+">"; return u?'<b class="urg">'+h+"</b>":h; }
 function dayByNo(n){for(var i=0;i<STATE.days.length;i++) if(STATE.days[i].no===n) return STATE.days[i]; return null;}
 
 /* ---------- 렌더 ---------- */
@@ -647,6 +686,45 @@ function mirrorOf(it){ // {mirror:{day,sec|secs,item?,line?,block?,match?,brief?
       if(m.line) dd=dd.filter(function(l){ return l.indexOf(m.line)>=0; }); return {t:x.t, d:dd}; } } }
   if(out.length) return {t:first||"", d:out};
   return null; }
+function cardTxt(x){ x=String(x==null?"":x).replace(/^-\s+/,"").replace(/^!\s*/,""); return kwh(esc(x)).replace(/《([^》]+)》/g,'<span class="real">$1</span>'); }
+function cardPerson(s){ var k=s.kicker||""; return (k.split("|")[1]||"").trim()||(s.title||"").split("—")[0].trim(); }
+function buildCard(si){
+  var d=dayByNo(SEL)||dayByNo(7); if(!d) return ""; var s0=d.sections[si]; if(!s0) return ""; var who=cardPerson(s0);
+  var secs=d.sections.filter(function(x){ return cardPerson(x)===who; });
+  var urgent=[], boxes=[], n=0;
+  secs.forEach(function(sc){
+    if(sc===s0){
+      sc.items.forEach(function(it){ var t=(it.t||"").replace(/^!\s*/,"");
+        if(/^중보/.test(t)) return;
+        var src=mirrorOf(it); if(src&&src.locked) return; var dd=src?(src.d||[]):(it.d||[]);
+        var isU=/^!/.test(it.t||"")||/긴급/.test(t);
+        var h="", open=false;
+        dd.forEach(function(L,k){ var sub=/^-\s+/.test(L), nx=dd[k+1];
+          if(!sub&&nx!=null&&/^-\s+/.test(nx)){ if(open) h+="</ul>"; h+='<div class="pg">'+cardTxt(L)+'</div><ul>'; open=true; }
+          else { if(!open){ h+="<ul>"; open=true; } var c=cardTxt(L).replace(/^([^:：<]{1,10}?)\s*[:：]\s+/,'<b class="lb">$1</b> · '); h+="<li>"+c+"</li>"; } });
+        if(open) h+="</ul>";
+        if(isU) urgent.push(h); else boxes.push({t:t,h:h,sub:src?"":""}); });
+    } else {
+      var h='<ul>'+sc.items.map(function(it,i){ var dd=(it.d||[]).map(cardTxt).join(" · "); return '<li class="nn" data-n="'+(i+1)+'">'+cardTxt(it.t)+(dd?' <span class="dd">— '+dd+'</span>':'')+'</li>'; }).join("")+'</ul>';
+      boxes.push({t:(sc.title||"").split("—").pop().trim(),h:h,sub:sc.sub||""});
+    } });
+  var up=STATE.updated||"";
+  var out='<div class="pc"><h1>'+esc(who)+' 기도제목</h1><div class="pdate">'+(up?esc(up)+" 업데이트 · ":"")+'함께 기도해 주세요</div>'
+   +'<div class="pnote">환자 실명이 포함되어 있어 혼자만 봐 주시면 감사하겠습니다 🙏</div>';
+  if(urgent.length) out+='<div class="pbox u"><div class="phd"><span class="pn">!</span><b>긴급기도</b><small>— 지금 가장 붙들어 주세요</small></div>'+urgent.join("")+'</div>';
+  boxes.forEach(function(b){ n++; out+='<div class="pbox"><div class="phd"><span class="pn">'+n+'</span><b>'+esc(b.t)+'</b>'+(b.sub?'<small>— '+esc(b.sub)+'</small>':'')+'</div>'+b.h+'</div>'; });
+  return out+'<div class="pfoot">"쉬지 말고 기도하라" (살전 5:17)</div></div>'; }
+var CARD_SI=null;
+function openCard(si){ CARD_SI=si; document.getElementById("pcbody").innerHTML=buildCard(si); document.getElementById("pcout").innerHTML=""; document.getElementById("pcmsg").textContent="현재 기도제목으로 자동 생성"; document.getElementById("pcbody").style.display=""; document.getElementById("pcard").classList.add("on"); document.body.style.overflow="hidden"; }
+function closeCard(){ document.getElementById("pcard").classList.remove("on"); document.body.style.overflow=""; }
+function loadH2C(){ return new Promise(function(ok,no){ if(window.html2canvas) return ok(window.html2canvas); var sc=document.createElement("script"); sc.src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"; sc.onload=function(){ ok(window.html2canvas); }; sc.onerror=function(){ no(new Error("load")); }; document.head.appendChild(sc); }); }
+async function saveCard(){ var msg=document.getElementById("pcmsg"), el=document.querySelector("#pcbody .pc"); if(!el) return; msg.textContent="이미지 만드는 중…";
+  try{ var h2c=await loadH2C(); el.style.width="540px"; el.style.maxWidth="none"; var cv; try{ cv=await h2c(el,{scale:2,backgroundColor:"#f6f3ec",useCORS:false,logging:false,windowWidth:620,width:540}); } finally { el.style.width=""; el.style.maxWidth=""; }
+    var url=cv.toDataURL("image/png"), name=(cardPerson(dayByNo(SEL).sections[CARD_SI])||"기도")+"_기도제목_"+new Date().toISOString().slice(0,10)+".png";
+    document.getElementById("pcout").innerHTML='<p class="hint">휴대폰: 이미지를 길게 눌러 저장 · 컴퓨터: <a href="'+url+'" download="'+esc(name)+'">파일로 받기</a></p><img alt="기도제목 이미지" src="'+url+'">';
+    document.getElementById("pcbody").style.display="none"; msg.textContent="이미지 완성 (1080px)";
+    try{ var a=document.createElement("a"); a.href=url; a.download=name; if(!/iPhone|iPad|iPod/.test(navigator.userAgent)){ document.body.appendChild(a); a.click(); a.remove(); } }catch(e){}
+  }catch(e){ msg.textContent="이미지 만들기 실패 — 화면을 캡처해 주세요"; } }
 function itemHTML(it,ii,si){
   var src=mirrorOf(it), dd=src?(src.d||[]):(it.d||[]);
   if(src&&src.locked) return '<div class="it" data-i="'+ii+'" data-s="'+si+'"><span class="no">'+(ii+1)+'</span><span class="tx">'+urg(it.t)+'<span class="mir lock" data-act="unlock7">🔒 긴급·중보 비밀번호 입력 후 표시</span></span>'+ctl("item",ii)+'</div>';
@@ -657,7 +735,7 @@ function itemHTML(it,ii,si){
 function sectionHTML(s,si){
   var items=s.items.map(function(it,ii){return itemHTML(it,ii,si);}).join("");
   return '<details class="sec" open data-s="'+si+'"><summary>'+(s.kicker?'<span class="k">'+esc(s.kicker)+'</span>':'')
-   +'<span class="t" data-edit="sec">'+esc(s.title)+'</span><span class="cnt">'+s.items.length+'</span>'+(s.link?'<a class="mir lnk" href="'+esc(s.link)+'" target="_blank" rel="noopener" onclick="event.stopPropagation()">'+esc(s.linkLabel||"🖼 이미지")+'</a>':'')+ctl("sec",si)+'</summary>'
+   +'<span class="t" data-edit="sec">'+esc(s.title)+'</span><span class="cnt">'+s.items.length+'</span>'+(s.card?'<a class="mir lnk" href="#" data-card="'+si+'" >'+esc(s.cardLabel||"🖼 기도제목 이미지")+'</a>':'')+(s.link?'<a class="mir lnk" href="'+esc(s.link)+'" target="_blank" rel="noopener" onclick="event.stopPropagation()">'+esc(s.linkLabel||"🖼 이미지")+'</a>':'')+ctl("sec",si)+'</summary>'
    +'<div class="secbody">'+(s.sub?'<div class="sub">'+esc(s.sub)+'</div>':'')+items
    +'<div class="addrow"><button class="add" type="button" data-act="additem" data-s="'+si+'">+ 기도제목 추가</button></div>'
    +(s.guide?'<div class="guide"><b>인도</b>&nbsp; '+esc(s.guide)+'</div>':'')+'</div></details>';
@@ -786,7 +864,7 @@ function editorBox(fields, onSave, onDelete){ // fields: [{k,label,val,multi,hin
 }
 function openItemEditor(si,ii){
   var d=dayByNo(SEL), s=d.sections[si], it=s.items[ii], node=document.querySelector('.it[data-s="'+si+'"][data-i="'+ii+'"]');
-  var box=editorBox([{k:"txt",label:"기도제목 (첫 줄) · 종속 내용 (둘째 줄부터)",val:[it.t].concat(it.d||[]).join("\n"),multi:true,hint:"첫 줄이 기도제목, 아래 줄들은 그 제목에 딸린 내용으로 들여쓰기됩니다. 줄 앞에 \"- \"를 붙이면 한 단계 더 들여쓴 하위 항목이 됩니다. 줄 앞에 ! 를 붙이면 긴급(빨간색)으로 표시됩니다."},{k:"link",label:"첨부 링크 (URL · 선택)",val:it.link||""},{k:"linkLabel",label:"링크 표시 이름 (선택)",val:it.linkLabel||""}],
+  var box=editorBox([{k:"txt",label:"기도제목 (첫 줄) · 종속 내용 (둘째 줄부터)",val:[it.t].concat(it.d||[]).join("\n"),multi:true,hint:"첫 줄이 기도제목, 아래 줄들은 그 제목에 딸린 내용으로 들여쓰기됩니다. 줄 앞에 \"- \"를 붙이면 한 단계 더 들여쓴 하위 항목이 됩니다. 줄 앞에 ! 를 붙이면 긴급(빨간색)으로 표시됩니다. **단어** 처럼 별표 두 개로 감싸면 굵게 강조됩니다."},{k:"link",label:"첨부 링크 (URL · 선택)",val:it.link||""},{k:"linkLabel",label:"링크 표시 이름 (선택)",val:it.linkLabel||""}],
     function(v){ var L=v.txt.split("\n").map(function(x){return x.trim();}).filter(Boolean); if(!L.length){render();return;} it.t=L[0]; it.d=L.slice(1); it.link=v.link.trim(); it.linkLabel=v.linkLabel.trim(); if(!it.link){delete it.link;delete it.linkLabel;} markDirty(d.no); render(); },
     function(){ s.items.splice(ii,1); markDirty(d.no); render(); });
   node.replaceWith(box); box.querySelector("textarea").focus();
@@ -834,6 +912,7 @@ function renumber(d){
 }
 
 document.getElementById("main").addEventListener("click",function(e){
+  var cd=e.target.closest("[data-card]"); if(cd){ e.preventDefault(); e.stopPropagation(); openCard(+cd.dataset.card); return; }
   var b=e.target.closest("button[data-act]"), t=e.target;
   if(b){
     e.preventDefault(); e.stopPropagation();
@@ -1166,6 +1245,7 @@ function setView(v){ VIEW=v; document.body.classList.toggle("mode-dev",v==="dev"
   if(v==="dev"){ try{history.replaceState(null,"",location.hash==="#am"?"#am":"#dev");}catch(e){} } else if(v==="song"){ try{history.replaceState(null,"","#song");}catch(e){} renderSongs(); } else { try{history.replaceState(null,"","#day"+SEL);}catch(e){} }
   window.scrollTo({top:0}); }
 document.getElementById("modes").addEventListener("click",function(e){ var a=e.target.closest("a[data-mode]"); if(a) setView(a.dataset.mode); });
+document.getElementById("pcx").addEventListener("click",closeCard); document.getElementById("pcsave").addEventListener("click",saveCard);
 setView(VIEW);
 render(); connect(); loadBible();
 })();
