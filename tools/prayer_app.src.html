@@ -326,21 +326,31 @@ body.bgm-on{padding-bottom:calc(86px + env(safe-area-inset-bottom))}
 #bgm button{font:inherit;font-size:14px;font-weight:800;width:36px;height:36px;border-radius:50%;border:0;background:rgba(255,255,255,.14);color:#fff;cursor:pointer}
 #bgmf{width:64px;height:36px;border-radius:6px;overflow:hidden;background:#000;flex:0 0 auto}
 #bgmf iframe{width:64px;height:36px;border:0;display:block}
-.pk{margin-top:8px;display:flex;flex-direction:column;gap:10px}
+.pk{margin-top:8px}
 .pk.none{font-size:12px;color:var(--muted);display:block}
-.pki{background:rgba(255,255,255,.06);border-radius:10px;padding:8px}
-.pkh{display:flex;align-items:center;gap:7px;margin-bottom:6px;font-size:14px}
-.pkh b,.st .tx .pkh b{flex:1;color:var(--body)}
-.pkh a{font-size:11.5px;font-weight:700;color:var(--ac);text-decoration:none;white-space:nowrap}
+.pkrow{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:6px;overscroll-behavior-x:contain}
+.pkf{flex:0 0 min(88%,560px);scroll-snap-align:start;margin:0;background:rgba(255,255,255,.06);border-radius:10px;padding:8px;display:flex;flex-direction:column}
+.pkf figcaption{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;margin-bottom:6px;color:var(--body)}
+.pkf figcaption small{font-weight:500;color:var(--muted)}
+.pkimg img{display:block;width:100%;border-radius:6px;background:#fff}
+.pkimg{min-height:60px}
+.pkhint{font-size:11px;color:var(--muted);text-align:center;margin:2px 0 10px}
+.pkvids{display:flex;flex-direction:column;gap:12px}
+.pkv{background:rgba(255,255,255,.06);border-radius:10px;padding:8px}
+.pkvh{display:flex;align-items:center;gap:7px;margin-bottom:6px;font-size:13.5px}
+.pkvh b,.st .tx .pkvh b,body.mode-pray:not(.pdark) .st .tx .pkvh b{flex:1;color:var(--body);font-weight:800}
+.pkvh a{font-size:11px;font-weight:700;color:var(--ac);text-decoration:none;white-space:nowrap}
+.pkvf{position:relative;width:100%;padding-top:56.25%;border-radius:8px;overflow:hidden;background:#000}
+.pkvf iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .pkn{width:19px;height:19px;border-radius:50%;background:#D8A94A;color:#241a05;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
-.pks img{display:block;width:100%;border-radius:6px;background:#fff;margin-bottom:6px}
 .pkm{font-size:12px;color:var(--muted)}
 .pkm a{color:var(--ac)}
+@media (min-width:900px){ .pkf{flex-basis:calc((100% - 20px)/3)} }
 body.mode-pray:not(.pdark) .bgmb{background:#FFF4DA;border-color:#E0C789;color:#8A6414}
 body.mode-pray:not(.pdark) .bgmb.on{background:#B8892B;border-color:#B8892B;color:#fff}
-body.mode-pray:not(.pdark) .pki{background:#fff;border:1px solid #EFEAE0}
+body.mode-pray:not(.pdark) .pkf,body.mode-pray:not(.pdark) .pkv{background:#fff;border:1px solid #EFEAE0}
 body.mode-pray:not(.pdark) .pkn{background:#1F2A6B;color:#fff}
-body.mode-pray:not(.pdark) .pkh a{color:#1D4EA8}
+body.mode-pray:not(.pdark) .pkvh a{color:#1D4EA8}
 #spk{margin:10px 0 4px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
 #spk .spkh{flex-basis:100%;font-size:13px;font-weight:800;color:var(--body);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 #spk .spkh small{font-size:11px;font-weight:500;color:var(--muted)}
@@ -872,12 +882,18 @@ function setPicks(ids){ var v={ids:ids,at:new Date().toISOString().slice(0,10)};
 function togglePick(id){ var ids=pickIds().slice(), i=ids.indexOf(id); if(i>=0) ids.splice(i,1); else ids.push(id); setPicks(ids); }
 var PICKURL={};
 function picksHTML(){ var ids=pickIds(), all=songs(); var L=ids.map(function(id){ return all.find(function(x){return x.id===id;}); }).filter(Boolean);
-  if(!L.length) return '<div class="pk none">찬양 탭에서 곡 옆의 <b>＋ 선곡</b>을 누르면 여기에 악보가 뜹니다</div>';
-  return '<div class="pk">'+L.map(function(it,i){ return '<div class="pki"><div class="pkh"><span class="pkn">'+(i+1)+'</span><b>'+(it.no?it.no+'장 ':'')+esc(it.t)+'</b>'+(it.yt?'<a href="https://www.youtube.com/watch?v='+esc(it.yt)+'" target="_blank" rel="noopener">▶ 영상</a>':'')+'</div><div class="pks" data-pk="'+esc(it.id)+'">'+(it.sc&&it.sc.length?(STATE.sk?'<span class="pkm">악보 여는 중…</span>':'<button type="button" class="mini" data-act="pick7">🔒 비밀번호 입력하면 악보가 보입니다</button>'):'<span class="pkm">악보 없음</span>')+'</div></div>'; }).join("")+'</div>'; }
-async function fillPicks(){ var els=document.querySelectorAll(".pks[data-pk]"); if(!els.length||!STATE.sk) return;
-  for(var n=0;n<els.length;n++){ var el=els[n], it=songs().find(function(x){return x.id===el.dataset.pk;}); if(!it||!(it.sc&&it.sc.length)) continue;
-    try{ var urls=[]; for(var i=0;i<it.sc.length;i++){ var f=it.sc[i][0]; if(!PICKURL[f]) PICKURL[f]=await loadScore(f,it.sc[i][1]); urls.push(PICKURL[f]); }
-      if(el.isConnected) el.innerHTML=urls.map(function(u){return '<img src="'+u+'" alt="악보">';}).join("");
+  if(!L.length) return '<div class="pk none">찬양 탭에서 곡 옆의 <b>＋ 선곡</b>을 누르면 여기에 악보와 영상이 뜹니다</div>';
+  var nm=function(it){ return (it.no?it.no+'장 ':'')+esc(it.t); };
+  var figs=L.map(function(it,i){ var n=(it.sc&&it.sc.length)||0;
+    if(!n) return '<figure class="pkf"><figcaption><span class="pkn">'+(i+1)+'</span>'+nm(it)+'</figcaption><div class="pkimg"><span class="pkm">악보 없음</span></div></figure>';
+    var h=''; for(var k=0;k<n;k++) h+='<figure class="pkf"><figcaption><span class="pkn">'+(i+1)+'</span>'+nm(it)+(n>1?' <small>'+(k+1)+'/'+n+'</small>':'')+'</figcaption><div class="pkimg" data-pk="'+esc(it.id)+'" data-pg="'+k+'">'+(STATE.sk?'<span class="pkm">악보 여는 중…</span>':'<button type="button" class="mini" data-act="pick7">🔒 비밀번호 입력하면 악보가 보입니다</button>')+'</div></figure>';
+    return h; }).join("");
+  var vids=L.map(function(it,i){ return '<div class="pkv"><div class="pkvh"><span class="pkn">'+(i+1)+'</span><b>'+nm(it)+'</b>'+(it.yt?'<a href="https://www.youtube.com/watch?v='+esc(it.yt)+'" target="_blank" rel="noopener">YouTube에서 열기</a>':'')+'</div>'
+    +(it.yt?'<div class="pkvf"><iframe loading="lazy" allow="encrypted-media; picture-in-picture" allowfullscreen title="'+esc(it.t)+'" src="https://www.youtube-nocookie.com/embed/'+esc(it.yt)+'?rel=0&playsinline=1"></iframe></div>':'<span class="pkm">영상 없음</span>')+'</div>'; }).join("");
+  return '<div class="pk"><div class="pkrow">'+figs+'</div>'+(L.length>0?'<div class="pkhint">← 옆으로 넘겨 보세요 →</div>':'')+'<div class="pkvids">'+vids+'</div></div>'; }
+async function fillPicks(){ var els=document.querySelectorAll(".pkimg[data-pk]"); if(!els.length||!STATE.sk) return;
+  for(var n=0;n<els.length;n++){ var el=els[n], it=songs().find(function(x){return x.id===el.dataset.pk;}), k=+el.dataset.pg; if(!it||!(it.sc&&it.sc[k])) continue;
+    try{ var f=it.sc[k][0]; if(!PICKURL[f]) PICKURL[f]=await loadScore(f,it.sc[k][1]); if(el.isConnected) el.innerHTML='<img src="'+PICKURL[f]+'" alt="악보">';
     }catch(ex){ if(el.isConnected) el.innerHTML='<span class="pkm">악보를 열지 못했습니다'+(MODE!=="viewer"?' — <a href="https://thestyner0.github.io/prayer/" target="_blank" rel="noopener">사이트에서 열기</a>':'')+'</span>'; } } }
 function orderHTML(){
   var m=STATE.meeting, cp=STATE.commonPrayer;
@@ -1360,7 +1376,8 @@ document.getElementById("sfil").addEventListener("click",function(e){ var b=e.ta
 document.getElementById("slist").addEventListener("click",function(e){ var pb=e.target.closest("[data-pick]"); if(pb){ e.stopPropagation(); togglePick(pb.dataset.pick); renderSongs(); return; } var fb=e.target.closest("[data-fav]"); if(fb){ e.stopPropagation(); var id=fb.dataset.fav, it=songs().find(function(x){return x.id===id;}); var v=nextFav(favOf(it)); setFav(id,v); fb.textContent=favIcon(v); fb.classList.toggle("on",!!v); if((SFIL==="fav"&&!v)||(SFIL==="love"&&v!=="love")) renderSongs(); return; } var r=e.target.closest(".srow"); if(r) openSong(r.dataset.sid); });
 var SKEY=null, SURLS=[];
 async function scoreKey(){ if(SKEY) return SKEY; if(!STATE.sk) return null; SKEY=await crypto.subtle.importKey("raw",b64u8(STATE.sk),{name:"AES-GCM"},false,["decrypt"]); return SKEY; }
-async function loadScore(f,mime){ var k=await scoreKey(); if(!k) throw new Error("lock"); var base=MODE==="viewer"?"":"https://thestyner0.github.io/prayer/"; var r=await fetch(base+f+"?v="+encodeURIComponent(STATE.rev||""),{cache:"force-cache"}); if(!r.ok) throw new Error("http "+r.status); var b=new Uint8Array(await r.arrayBuffer()); var pt=await crypto.subtle.decrypt({name:"AES-GCM",iv:b.slice(0,12)},k,b.slice(12)); var u=URL.createObjectURL(new Blob([pt],{type:mime||"image/jpeg"})); SURLS.push(u); return u; }
+async function loadScore(f,mime){ var k=await scoreKey(); if(!k) throw new Error("lock"); var b=null; if(MODE!=="viewer"){ try{ var r0=await fetch(f.replace(/\.bin$/,".b64.txt"),{cache:"force-cache"}); if(r0.ok){ var t=(await r0.text()).trim(), bs=atob(t); b=new Uint8Array(bs.length); for(var q=0;q<bs.length;q++) b[q]=bs.charCodeAt(q); } }catch(e){ b=null; } }
+  if(!b){ var r=await fetch((MODE==="viewer"?"":"https://thestyner0.github.io/prayer/")+f,{cache:"force-cache"}); if(!r.ok) throw new Error("http "+r.status); b=new Uint8Array(await r.arrayBuffer()); } var pt=await crypto.subtle.decrypt({name:"AES-GCM",iv:b.slice(0,12)},k,b.slice(12)); var u=URL.createObjectURL(new Blob([pt],{type:mime||"image/jpeg"})); SURLS.push(u); return u; }
 function ytId(it){ return it.yt||""; }
 async function openSong(id){
   var it=songs().find(function(x){return x.id===id;}); if(!it) return;
