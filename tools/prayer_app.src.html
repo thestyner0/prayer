@@ -313,6 +313,42 @@ body.mode-pray.pdark .it .tx{font-size:calc(15.5px*var(--fz,1));line-height:1.6}
 body.mode-pray.pdark .it .dsc i{font-size:calc(14px*var(--fz,1));line-height:1.65;color:#C9D2EE}
 body.mode-pray.pdark .it{background:#26356F}
 body.mode-pray.pdark .it .dsc{border-top:1px solid rgba(255,255,255,.12)}
+
+/* 배경 음악 · 이번 주 선곡 */
+.bgmb{font:inherit;font-size:12px;font-weight:800;margin-left:6px;padding:4px 10px;border-radius:999px;border:1px solid rgba(216,169,74,.55);background:rgba(216,169,74,.14);color:#F2D18A;cursor:pointer;vertical-align:1px}
+.bgmb.on{background:#D8A94A;color:#241a05;border-color:#D8A94A}
+#bgm{position:fixed;left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:55;display:none;align-items:center;gap:8px;background:#1F2A6B;color:#fff;border-radius:14px;padding:8px 8px 8px 12px;box-shadow:0 6px 20px rgba(0,0,0,.28);max-width:560px;margin:0 auto;flex-wrap:wrap}
+#bgm.on{display:flex}
+body.bgm-on{padding-bottom:calc(86px + env(safe-area-inset-bottom))}
+#bgm .bgmi{font-size:16px}
+#bgmt{flex:1;font-size:13px;font-weight:700;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#bgmh{flex-basis:100%;order:9;font-size:11px;color:#C9D2F0}
+#bgm button{font:inherit;font-size:14px;font-weight:800;width:36px;height:36px;border-radius:50%;border:0;background:rgba(255,255,255,.14);color:#fff;cursor:pointer}
+#bgmf{width:64px;height:36px;border-radius:6px;overflow:hidden;background:#000;flex:0 0 auto}
+#bgmf iframe{width:64px;height:36px;border:0;display:block}
+.pk{margin-top:8px;display:flex;flex-direction:column;gap:10px}
+.pk.none{font-size:12px;color:var(--muted);display:block}
+.pki{background:rgba(255,255,255,.06);border-radius:10px;padding:8px}
+.pkh{display:flex;align-items:center;gap:7px;margin-bottom:6px;font-size:14px}
+.pkh b,.st .tx .pkh b{flex:1;color:var(--body)}
+.pkh a{font-size:11.5px;font-weight:700;color:var(--ac);text-decoration:none;white-space:nowrap}
+.pkn{width:19px;height:19px;border-radius:50%;background:#D8A94A;color:#241a05;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.pks img{display:block;width:100%;border-radius:6px;background:#fff;margin-bottom:6px}
+.pkm{font-size:12px;color:var(--muted)}
+.pkm a{color:var(--ac)}
+body.mode-pray:not(.pdark) .bgmb{background:#FFF4DA;border-color:#E0C789;color:#8A6414}
+body.mode-pray:not(.pdark) .bgmb.on{background:#B8892B;border-color:#B8892B;color:#fff}
+body.mode-pray:not(.pdark) .pki{background:#fff;border:1px solid #EFEAE0}
+body.mode-pray:not(.pdark) .pkn{background:#1F2A6B;color:#fff}
+body.mode-pray:not(.pdark) .pkh a{color:#1D4EA8}
+#spk{margin:10px 0 4px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+#spk .spkh{flex-basis:100%;font-size:13px;font-weight:800;color:var(--body);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+#spk .spkh small{font-size:11px;font-weight:500;color:var(--muted)}
+#spk .spkc{margin-left:auto;font:inherit;font-size:11px;font-weight:700;border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:999px;padding:3px 9px;cursor:pointer}
+#spk .spkx{font-size:12.5px;font-weight:700;background:#2b6cb0;color:#fff;border-radius:999px;padding:5px 6px 5px 11px;cursor:pointer;display:inline-flex;align-items:center;gap:4px}
+#spk .spkx button{font:inherit;font-size:11px;border:0;background:rgba(255,255,255,.2);color:#fff;border-radius:50%;width:20px;height:20px;cursor:pointer}
+.srow .pkd{font-size:13px;margin-left:4px}
+#sview #spick.on{background:#2b6cb0;border-color:#2b6cb0;color:#fff}
 body.mode-song{--bg:#f3f7fc;--panel:#ffffff;--panel2:#ffffff;--line:#dde6f2;--body:#1a2a48;--muted:#5d6c88;--dim:#8a97ad;--ac:#2b6cb0;background:#f3f7fc;color:#1a2a48}
 body.mode-song .modes{background:#f3f7fc;border-color:#dde6f2}
 body.mode-song .modes a{color:#5d6c88} body.mode-song .modes a.on{background:#2b6cb0;color:#fff}
@@ -648,10 +684,12 @@ body.site #dev .amnote-body p{font-size:13.5px}
 <section id="song"><div class="wrap">
 <header><h1>찬양</h1><div class="ssub">곡을 누르면 악보가 열립니다 · ☆ 한 번 ★ 내 찬양, 두 번 ♥ 사랑하는 찬양</div></header>
 <div class="sbar"><div class="schips" id="sfil"></div></div>
+<div id="spk"></div>
 <div id="slist"></div>
 </div></section>
+<div id="bgm"><span class="bgmi">🎵</span><span id="bgmt"></span><span id="bgmh" hidden>안 들리면 오른쪽 작은 화면의 ▶를 누르세요</span><button type="button" id="bgmp">⏸</button><button type="button" id="bgmx" aria-label="끄기">✕</button><div id="bgmf"></div></div>
 <div id="pcard"><div class="pcbar"><button type="button" id="pcx">✕ 닫기</button><span id="pcmsg"></span><button type="button" id="pcsave">⬇ 이미지로 저장</button></div><div class="pcscroll"><div id="pcbody"></div><div id="pcout"></div></div></div>
-<div id="sview"><div class="shd"><button class="tb" type="button" id="sx">✕</button><div class="st" id="stt"></div><button class="tb" type="button" id="sfav" hidden>☆</button></div><div class="sbd" id="sbd"></div><div class="sft" id="sft"></div></div>
+<div id="sview"><div class="shd"><button class="tb" type="button" id="sx">✕</button><div class="st" id="stt"></div><button class="tb" type="button" id="spick" hidden>＋ 이번 주</button><button class="tb" type="button" id="sfav" hidden>☆</button></div><div class="sbd" id="sbd"></div><div class="sft" id="sft"></div></div>
 <section id="prayer">
 <div class="wrap">
 <header>
@@ -805,11 +843,48 @@ function sectionHTML(s,si){
    +'<div class="addrow"><button class="add" type="button" data-act="additem" data-s="'+si+'">+ 기도제목 추가</button></div>'
    +(s.guide?'<div class="guide"><b>인도</b>&nbsp; '+esc(s.guide)+'</div>':'')+'</div></details>';
 }
+/* ---------- 배경 음악 (기도모임 순서) — 영상 없이 소리만, 탭을 옮겨도 계속 ---------- */
+var BGM_DEF=[{key:"word",match:"말씀묵상",label:"묵상 음악",yt:"f742p7mQ0Ic",start:860},{key:"pray",match:"공통기도|이번 ?주 ?기도제목",label:"기도 음악",yt:"ZoP16WzbFMM",start:2492}];
+var BGM={key:null,on:false,fr:null};
+function bgmList(){ return (STATE.meeting&&STATE.meeting.bgm)||BGM_DEF; }
+function bgmFor(step){ var L=bgmList(); for(var i=0;i<L.length;i++) if(new RegExp(L[i].match).test(step)) return L[i]; return null; }
+function bgmCmd(f){ try{ BGM.fr&&BGM.fr.contentWindow.postMessage(JSON.stringify({event:"command",func:f,args:[]}),"*"); }catch(e){} }
+function bgmBar(){ var bar=document.getElementById("bgm"), d=bgmList().find(function(x){return x.key===BGM.key;});
+  if(!d){ bar.classList.remove("on"); document.body.classList.remove("bgm-on"); return; }
+  bar.classList.add("on"); document.body.classList.add("bgm-on");
+  document.getElementById("bgmt").textContent=(BGM.on?"♪ ":"")+d.label+(BGM.on?" 재생 중":" 일시정지");
+  document.getElementById("bgmp").textContent=BGM.on?"⏸":"▶";
+  document.querySelectorAll('button[data-act="bgm"]').forEach(function(b){ var on=(b.dataset.k===BGM.key&&BGM.on); var dd=bgmList().find(function(x){return x.key===b.dataset.k;}); b.classList.toggle("on",on); b.textContent=on?"⏸ 음악 멈추기":"🎵 "+(dd?dd.label:"음악"); }); }
+function bgmToggle(k){ var d=bgmList().find(function(x){return x.key===k;}); if(!d) return;
+  if(BGM.key===k&&BGM.fr){ BGM.on=!BGM.on; bgmCmd(BGM.on?"playVideo":"pauseVideo"); bgmBar(); return; }
+  var box=document.getElementById("bgmf"); box.innerHTML="";
+  var f=document.createElement("iframe"); f.allow="autoplay; encrypted-media"; f.title=d.label;
+  f.src="https://www.youtube-nocookie.com/embed/"+d.yt+"?autoplay=1&start="+(d.start||0)+"&playsinline=1&controls=1&rel=0&enablejsapi=1";
+  box.appendChild(f); BGM.fr=f; BGM.key=k; BGM.on=true; bgmBar();
+  setTimeout(function(){ var h=document.getElementById("bgmh"); if(h&&BGM.key===k) h.hidden=false; },2500); }
+function bgmStop(){ document.getElementById("bgmf").innerHTML=""; BGM={key:null,on:false,fr:null}; document.getElementById("bgmh").hidden=true; bgmBar(); }
+/* ---------- 이번 주 선곡 (찬양 탭에서 고르면 기도모임 순서의 '찬양' 아래에 악보가 뜸) ---------- */
+var PICKK="prayer.songpick.v1";
+function pickIds(){ if(MODE!=="editor"){ try{ var L=JSON.parse(localStorage.getItem(PICKK)||"null"); if(L&&L.ids) return L.ids; }catch(e){} } return (STATE.songs&&STATE.songs.pick&&STATE.songs.pick.ids)||[]; }
+function setPicks(ids){ var v={ids:ids,at:new Date().toISOString().slice(0,10)};
+  if(MODE==="editor"){ if(!STATE.songs) return; STATE.songs.pick=v; markDirty(null); } else { try{ localStorage.setItem(PICKK,JSON.stringify(v)); }catch(e){} } }
+function togglePick(id){ var ids=pickIds().slice(), i=ids.indexOf(id); if(i>=0) ids.splice(i,1); else ids.push(id); setPicks(ids); }
+var PICKURL={};
+function picksHTML(){ var ids=pickIds(), all=songs(); var L=ids.map(function(id){ return all.find(function(x){return x.id===id;}); }).filter(Boolean);
+  if(!L.length) return '<div class="pk none">찬양 탭에서 곡을 열고 <b>＋ 이번 주 선곡</b>을 누르면 여기에 악보가 뜹니다</div>';
+  return '<div class="pk">'+L.map(function(it,i){ return '<div class="pki"><div class="pkh"><span class="pkn">'+(i+1)+'</span><b>'+(it.no?it.no+'장 ':'')+esc(it.t)+'</b>'+(it.yt?'<a href="https://www.youtube.com/watch?v='+esc(it.yt)+'" target="_blank" rel="noopener">▶ 영상</a>':'')+'</div><div class="pks" data-pk="'+esc(it.id)+'">'+(it.sc&&it.sc.length?(STATE.sk?'<span class="pkm">악보 여는 중…</span>':'<button type="button" class="mini" data-act="pick7">🔒 비밀번호 입력하면 악보가 보입니다</button>'):'<span class="pkm">악보 없음</span>')+'</div></div>'; }).join("")+'</div>'; }
+async function fillPicks(){ var els=document.querySelectorAll(".pks[data-pk]"); if(!els.length||!STATE.sk) return;
+  for(var n=0;n<els.length;n++){ var el=els[n], it=songs().find(function(x){return x.id===el.dataset.pk;}); if(!it||!(it.sc&&it.sc.length)) continue;
+    try{ var urls=[]; for(var i=0;i<it.sc.length;i++){ var f=it.sc[i][0]; if(!PICKURL[f]) PICKURL[f]=await loadScore(f,it.sc[i][1]); urls.push(PICKURL[f]); }
+      if(el.isConnected) el.innerHTML=urls.map(function(u){return '<img src="'+u+'" alt="악보">';}).join("");
+    }catch(ex){ if(el.isConnected) el.innerHTML='<span class="pkm">악보를 열지 못했습니다'+(MODE!=="viewer"?' — <a href="https://thestyner0.github.io/prayer/" target="_blank" rel="noopener">사이트에서 열기</a>':'')+'</span>'; } } }
 function orderHTML(){
   var m=STATE.meeting, cp=STATE.commonPrayer;
   var steps=m.steps.map(function(s,i){
-    var isP=/말씀묵상/.test(s), isC=/공통기도/.test(s);
+    var isP=/말씀묵상/.test(s), isC=/공통기도/.test(s), isS=/^찬양/.test(s), bg=bgmFor(s);
     return '<div class="st" data-step="'+i+'"><span class="n">'+(i+1)+'</span><span class="tx" data-edit="step">'+esc(s)
+      +(bg?' <button class="bgmb'+(BGM.key===bg.key&&BGM.on?' on':'')+'" type="button" data-act="bgm" data-k="'+esc(bg.key)+'">'+(BGM.key===bg.key&&BGM.on?'⏸ 음악 멈추기':'🎵 '+esc(bg.label))+'</button>':'')
+      +(isS?picksHTML():'')
       +(isP?' <b>시편 '+psalmNow()+'편</b>'+psalmBoxHTML():'')
       +(isC?cp.cards.map(function(c,ci){return '<div class="cc" data-card="'+ci+'"><div class="h">'+esc(c.t)+'</div>'+(c.ref?'<div class="r">'+esc(c.ref)+'</div>':'')+'<div class="d">'+esc(c.d)+'</div>'+ctl("card",ci)+'</div>';}).join("")
         +'<div class="addrow"><button class="add" type="button" data-act="addcard">+ 공통기도 카드 추가</button></div>':'')
@@ -835,7 +910,7 @@ function dayHTML(d){
    +'<div class="secctl"><div class="fzc" title="글자 크기 (이 기기에만 저장)"><button type="button" data-act="fz-" aria-label="글자 작게">가−</button><span>'+Math.round(FZ*100)+'%</span><button type="button" data-act="fz+" aria-label="글자 크게">가+</button></div><button class="mini'+(COMPACT?" on":"")+'" type="button" data-act="collapse">설명 접기</button><button class="mini'+(COMPACT?"":" on")+'" type="button" data-act="expand">설명 펼치기</button></div>'
    +regnav+secs+'<div class="addrow"><button class="add" type="button" data-act="addsec">+ 주제(섹션) 추가</button><button class="add" type="button" data-act="renum" style="flex:0 0 auto">번호 다시 매기기</button></div></section>';
 }
-function render(){ if(VIEW==="song"){ try{ renderSongs(); }catch(e){} }
+function render(){ setTimeout(function(){ try{ fillPicks(); bgmBar(); }catch(e){} },0); if(VIEW==="song"){ try{ renderSongs(); }catch(e){} }
   renderHeader(); renderTabs();
   var main=document.getElementById("main");
   if(SEL===0) main.innerHTML=orderHTML();
@@ -978,6 +1053,8 @@ function renumber(d){
 
 document.getElementById("main").addEventListener("click",function(e){
   var cd=e.target.closest("[data-card]"); if(cd){ e.preventDefault(); e.stopPropagation(); openCard(+cd.dataset.card); return; }
+  var bb=e.target.closest('button[data-act="bgm"]'); if(bb){ e.preventDefault(); e.stopPropagation(); bgmToggle(bb.dataset.k); return; }
+  var pg=e.target.closest('[data-act="pick7"]'); if(pg){ e.preventDefault(); e.stopPropagation(); show(7); return; }
   var b=e.target.closest("button[data-act]"), t=e.target;
   if(b){
     e.preventDefault(); e.stopPropagation();
@@ -1270,12 +1347,13 @@ function renderSongs(){
   var ths=(STATE.songs&&STATE.songs.themes)||{}, all=songs();
   var fil=[["all","전체 "+all.length],["fav","★ 내 찬양"],["love","♥ 사랑하는 찬양"],["oh","오정현 선곡"],["hymn","찬송가"],["nosc","악보 없음 "+all.filter(function(x){return !(x.sc&&x.sc.length);}).length]].concat(Object.keys(ths).map(function(k){return ["th"+k,thShort(k)];}));
   document.getElementById("sfil").innerHTML=fil.map(function(f){return '<button class="schip'+(/^th/.test(f[0])?" th":"")+(SFIL===f[0]?" on":"")+'" type="button" data-f="'+f[0]+'">'+esc(f[1])+'</button>';}).join("");
-  var list=all.filter(songPass).sort(sortSongs);
+  var list=all.filter(songPass).sort(sortSongs), pk=pickIds().map(function(id){return all.find(function(x){return x.id===id;});}).filter(Boolean);
+  var pbox=document.getElementById("spk"); if(pbox) pbox.innerHTML=pk.length?'<div class="spkh">이번 주 선곡 <small>기도모임 순서 · 찬양 아래에 악보가 뜹니다</small><button type="button" class="spkc" data-pkclear="1">모두 비우기</button></div>'+pk.map(function(it,i){return '<span class="spkx" data-sid="'+esc(it.id)+'">'+(i+1)+'. '+esc(it.t)+' <button type="button" data-unpick="'+esc(it.id)+'" aria-label="빼기">✕</button></span>';}).join(""):'<div class="spkh">이번 주 선곡 <small>곡을 열고 ＋ 이번 주 를 누르세요 (2–3곡)</small></div>';
   if(!list.length){ box.innerHTML='<div class="snone">'+(SFIL==="fav"?"☆를 눌러 내 찬양을 추가하세요":SFIL==="love"?"☆를 두 번 눌러 ♥로 만들면 여기에 모입니다":"해당하는 곡이 없습니다")+'</div>'; return; }
   box.innerHTML=list.map(function(it){ var f=favOf(it);
     return '<div class="srow" data-sid="'+esc(it.id)+'"><button class="fvb'+(f?" on":"")+'" type="button" data-fav="'+esc(it.id)+'" title="내 찬양">'+favIcon(f)+'</button>'+(it.no?'<span class="no">'+it.no+'</span>':'')
       +'<span class="tt">'+esc(it.t)+(it.alt?'<small>'+esc(it.alt)+'</small>':'')+'<span class="tags"><span class="tg th">'+esc(thShort(String(it.th)))+'</span>'+(it.oh?'<span class="tg oh">오정현</span>':'')+'</span></span>'
-      +(it.sc&&it.sc.length?'<span class="sc" title="악보">🎼</span>':'')+'</div>'; }).join("");
+      +(pickIds().indexOf(it.id)>=0?'<span class="pkd" title="이번 주 선곡">📌</span>':'')+(it.sc&&it.sc.length?'<span class="sc" title="악보">🎼</span>':'')+'</div>'; }).join("");
 }
 document.getElementById("sfil").addEventListener("click",function(e){ var b=e.target.closest("button"); if(!b||!b.dataset.f) return; SFIL=b.dataset.f; renderSongs(); window.scrollTo({top:0}); });
 document.getElementById("slist").addEventListener("click",function(e){ var fb=e.target.closest("[data-fav]"); if(fb){ e.stopPropagation(); var id=fb.dataset.fav, it=songs().find(function(x){return x.id===id;}); var v=nextFav(favOf(it)); setFav(id,v); fb.textContent=favIcon(v); fb.classList.toggle("on",!!v); if((SFIL==="fav"&&!v)||(SFIL==="love"&&v!=="love")) renderSongs(); return; } var r=e.target.closest(".srow"); if(r) openSong(r.dataset.sid); });
@@ -1288,6 +1366,7 @@ async function openSong(id){
   var v=document.getElementById("sview"), bd=document.getElementById("sbd"), ft=document.getElementById("sft");
   document.getElementById("stt").innerHTML=(it.no?it.no+"장 ":"")+esc(it.t)+(it.alt?'<small>'+esc(it.alt)+'</small>':'');
   var fb=document.getElementById("sfav"); fb.hidden=false; fb.textContent=favIcon(favOf(it)); fb.dataset.sid=id;
+  var pb=document.getElementById("spick"); pb.hidden=false; pb.dataset.sid=id; pb.classList.toggle("on",pickIds().indexOf(id)>=0); pb.textContent=pickIds().indexOf(id)>=0?"✓ 이번 주":"＋ 이번 주";
   v.classList.add("on"); document.body.classList.add("sview-open");
   var yid=ytId(it);
   ft.innerHTML=(yid?'<button class="btn p" type="button" id="syt">▶ 영상</button><a class="btn g" style="text-align:center;text-decoration:none" href="https://www.youtube.com/watch?v='+esc(yid)+'" target="_blank" rel="noopener">YouTube 앱에서 열기</a>':'<a class="btn g" style="text-align:center;text-decoration:none" href="https://www.youtube.com/results?search_query='+encodeURIComponent((it.no?"새찬송가 "+it.no+"장 ":"")+it.t)+'" target="_blank" rel="noopener">YouTube에서 찾기</a>');
@@ -1302,6 +1381,10 @@ async function openSong(id){
 }
 function closeSong(){ var v=document.getElementById("sview"); v.classList.remove("on"); document.body.classList.remove("sview-open"); document.getElementById("sbd").innerHTML=""; SURLS.forEach(function(u){ try{URL.revokeObjectURL(u);}catch(e){} }); SURLS=[]; }
 document.getElementById("sx").addEventListener("click",closeSong);
+document.getElementById("spk").addEventListener("click",function(e){ var u=e.target.closest("[data-unpick]"); if(u){ togglePick(u.dataset.unpick); renderSongs(); return; } if(e.target.closest("[data-pkclear]")){ setPicks([]); renderSongs(); return; } var x=e.target.closest(".spkx"); if(x) openSong(x.dataset.sid); });
+document.getElementById("bgmp").addEventListener("click",function(){ if(BGM.key) bgmToggle(BGM.key); });
+document.getElementById("bgmx").addEventListener("click",bgmStop);
+document.getElementById("spick").addEventListener("click",function(){ var id=this.dataset.sid; togglePick(id); var on=pickIds().indexOf(id)>=0; this.classList.toggle("on",on); this.textContent=on?"✓ 이번 주":"＋ 이번 주"; renderSongs(); });
 document.addEventListener("keydown",function(e){ if(e.key==="Escape"&&document.getElementById("sview").classList.contains("on")) closeSong(); });
 document.getElementById("sfav").addEventListener("click",function(){ var id=this.dataset.sid, it=songs().find(function(x){return x.id===id;}); if(!it) return; var v=nextFav(favOf(it)); setFav(id,v); this.textContent=favIcon(v); renderSongs(); });
 
