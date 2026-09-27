@@ -206,7 +206,9 @@ body.mode-dev .btn.p{background:#8a6d3b;color:#fff} body.mode-dev .btn.g{backgro
 #pcard .pcbar{display:flex;align-items:center;gap:8px;padding:10px 12px;padding-top:calc(10px + env(safe-area-inset-top));background:#fff;border-bottom:1px solid #e3ddd0}
 #pcard .pcbar button{font:inherit;font-size:13.5px;font-weight:700;border:1px solid #d9d2c2;background:#fff;color:#1f2a4d;border-radius:999px;padding:7px 13px;cursor:pointer}
 #pcard .pcbar #pcsave{background:#1f2a6b;color:#fff;border-color:#1f2a6b}
-#pcard #pcmsg{flex:1;font-size:12px;color:#6b7280;text-align:center}
+#pcard .pcbar{flex-wrap:wrap}
+#pcard #pcmsg{order:9;flex-basis:100%;font-size:12px;color:#6b7280;text-align:center}
+#pcard #pcsave3{margin-left:auto}
 #pcard .pcscroll{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding:14px 10px 40px}
 #pcout img{display:block;width:100%;max-width:540px;margin:0 auto 12px;border-radius:10px;box-shadow:0 2px 12px rgba(0,0,0,.15)}
 #pcout .hint{text-align:center;font-size:12.5px;color:#4b5563;margin:0 0 10px}
@@ -254,6 +256,17 @@ body.mode-dev .btn.p{background:#8a6d3b;color:#fff} body.mode-dev .btn.g{backgro
 .pc.wide li.nn{padding-left:30px}
 .pc.wide li.nn:before{width:21px;height:21px;font-size:11.5px}
 .pc.wide .pfoot{font-size:13px;margin-top:6px}
+
+.pc.part{width:540px;max-width:none;border-radius:0;padding:24px 20px 20px;margin-bottom:20px}
+.pc.part .pthead{display:flex;align-items:baseline;justify-content:space-between;border-bottom:2px solid #1c2440;padding-bottom:8px;margin-bottom:4px}
+.pc.part .pthead b{font-size:24px;font-weight:800;color:#1c2440}
+.pc.part .pthead span{font-size:14px;font-weight:800;color:#8a6d1f}
+.pc.part .pdate{text-align:left;margin:4px 0 12px;font-size:12px}
+.pc.part .pnote{font-size:13px;margin-bottom:12px}
+.pc.part .pbox{margin-bottom:12px}
+.pc.part li{font-size:15px;line-height:1.6}
+.pc.part .phd b{font-size:18px}
+.pc.part .pg{font-size:13px}
 #sview{position:fixed;inset:0;z-index:60;background:#0d1230;display:none;flex-direction:column}
 #sview.on{display:flex}
 #sview .shd{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--line);padding-top:calc(10px + env(safe-area-inset-top))}
@@ -716,7 +729,7 @@ body.site #dev .amnote-body p{font-size:13.5px}
 <div id="slist"></div>
 </div></section>
 <div id="bgm"><span class="bgmi">🎵</span><span id="bgmt"></span><span id="bgmh" hidden>안 들리면 오른쪽 작은 화면의 ▶를 누르세요</span><button type="button" id="bgmp">⏸</button><button type="button" id="bgmx" aria-label="끄기">✕</button><div id="bgmf"></div></div>
-<div id="pcard"><div class="pcbar"><button type="button" id="pcx">✕ 닫기</button><span id="pcmsg"></span><button type="button" id="pcsave">⬇ 이미지로 저장</button></div><div class="pcscroll"><div id="pcbody"></div><div id="pcout"></div></div></div>
+<div id="pcard"><div class="pcbar"><button type="button" id="pcx">✕ 닫기</button><span id="pcmsg"></span><button type="button" id="pcsave3">⬇ 3장으로 나눠 저장</button><button type="button" id="pcsave">⬇ 이미지로 저장</button></div><div class="pcscroll"><div id="pcbody"></div><div id="pcout"></div></div></div>
 <div id="sview"><div class="shd"><button class="tb" type="button" id="sx">✕</button><div class="st" id="stt"></div><button class="tb" type="button" id="spick" hidden>＋ 이번 주</button><button class="tb" type="button" id="sfav" hidden>☆</button></div><div class="sbd" id="sbd"></div><div class="sft" id="sft"></div></div>
 <section id="prayer">
 <div class="wrap">
@@ -866,6 +879,26 @@ function buildWide(){ /* 이미지용: 넓은 3단 배치 (폭 1500px) — 상�
   var total=hs.reduce(function(a,b){return a+b;},0), target=total/3, ci=0, acc=0;
   boxes.forEach(function(b,i){ if(ci<2&&acc>0&&acc+hs[i]/2>target*(ci+1)) ci++; C[ci].appendChild(b); acc+=hs[i]; });
   return w; }
+function buildParts(){ /* 문자·카톡용: 넓은 배치의 3단을 한 장씩 폰 비율(폭 540px)로 */
+  var wd=buildWide(); if(!wd) return []; var host=document.getElementById("pcwide");
+  var cols=[].slice.call(wd.querySelectorAll(".pcol")).filter(function(c){ return c.children.length; }), n=cols.length, out=[];
+  var h1=wd.querySelector("h1"), dt=wd.querySelector(".pdate"), nt=wd.querySelector(".pnote"), ft=wd.querySelector(".pfoot");
+  cols.forEach(function(c,i){ var e=document.createElement("div"); e.className="pc part";
+    var h=document.createElement("div"); h.className="pthead"; h.innerHTML='<b>'+(h1?h1.textContent:"기도제목")+'</b><span>'+(i+1)+' / '+n+'</span>'; e.appendChild(h);
+    if(dt){ var d=dt.cloneNode(true); e.appendChild(d); }
+    if(i===0&&nt) e.appendChild(nt.cloneNode(true));
+    [].slice.call(c.children).forEach(function(b){ e.appendChild(b.cloneNode(true)); });
+    if(i===n-1&&ft) e.appendChild(ft.cloneNode(true));
+    host.appendChild(e); out.push(e); });
+  wd.style.display="none"; return out; }
+async function saveCard3(){ var msg=document.getElementById("pcmsg"); if(!document.querySelector("#pcbody .pc")) return; msg.textContent="3장 만드는 중…";
+  try{ var h2c=await loadH2C(), parts=buildParts(), urls=[];
+    try{ for(var i=0;i<parts.length;i++){ var cv=await h2c(parts[i],{scale:2,backgroundColor:"#f6f3ec",useCORS:false,logging:false,windowWidth:1600,width:540}); urls.push(cv.toDataURL("image/jpeg",0.92)); } } finally { var hh=document.getElementById("pcwide"); if(hh) hh.remove(); }
+    var site=(MODE==="viewer"), base=(cardPerson(dayByNo(SEL).sections[CARD_SI])||"기도")+"_기도제목_"+new Date().toISOString().slice(0,10);
+    document.getElementById("pcout").innerHTML='<p class="hint">문자·카톡용 '+urls.length+'장 · '+(site?'휴대폰: 각 이미지를 길게 눌러 저장':'각 이미지를 길게 누르거나 우클릭해서 저장하세요')+'</p>'+urls.map(function(u,i){ return (site?'<p class="hint"><a href="'+u+'" download="'+esc(base)+'_'+(i+1)+'.jpg">'+(i+1)+'번 파일로 받기</a></p>':'')+'<img alt="기도제목 '+(i+1)+'/'+urls.length+'" src="'+u+'">'; }).join("");
+    document.getElementById("pcbody").style.display="none"; msg.textContent="3장 완성 (각 1080px)";
+    if(site&&!/iPhone|iPad|iPod/.test(navigator.userAgent)) urls.forEach(function(u,i){ setTimeout(function(){ try{ var a=document.createElement("a"); a.href=u; a.download=base+"_"+(i+1)+".jpg"; document.body.appendChild(a); a.click(); a.remove(); }catch(e){} },i*400); });
+  }catch(e){ msg.textContent="이미지 만들기 실패 — 화면을 캡처해 주세요"; } }
 async function saveCard(){ var msg=document.getElementById("pcmsg"), el=document.querySelector("#pcbody .pc"); if(!el) return; msg.textContent="이미지 만드는 중…";
   try{ var h2c=await loadH2C(); var wd=buildWide(); var cv; try{ cv=await h2c(wd,{scale:2,backgroundColor:"#f6f3ec",useCORS:false,logging:false,windowWidth:1600,width:1500}); } finally { var hh=document.getElementById("pcwide"); if(hh) hh.remove(); }
     var url=cv.toDataURL("image/png"), name=(cardPerson(dayByNo(SEL).sections[CARD_SI])||"기도")+"_기도제목_"+new Date().toISOString().slice(0,10)+".png";
@@ -1446,7 +1479,7 @@ function setView(v){ VIEW=v; document.body.classList.toggle("mode-dev",v==="dev"
   if(v==="dev"){ try{history.replaceState(null,"",location.hash==="#am"?"#am":"#dev");}catch(e){} } else if(v==="song"){ try{history.replaceState(null,"","#song");}catch(e){} renderSongs(); } else { try{history.replaceState(null,"","#day"+SEL);}catch(e){} if(PAINTED) render(); }
   window.scrollTo({top:0}); }
 document.getElementById("modes").addEventListener("click",function(e){ var a=e.target.closest("a[data-mode]"); if(a) setView(a.dataset.mode); });
-document.getElementById("pcx").addEventListener("click",closeCard); document.getElementById("thBtn").addEventListener("click",function(){ PDARK=!PDARK; try{ localStorage.setItem("prayer.theme",PDARK?"dark":"light"); }catch(e){} applyTheme(); }); document.getElementById("pcsave").addEventListener("click",saveCard);
+document.getElementById("pcx").addEventListener("click",closeCard); document.getElementById("thBtn").addEventListener("click",function(){ PDARK=!PDARK; try{ localStorage.setItem("prayer.theme",PDARK?"dark":"light"); }catch(e){} applyTheme(); }); document.getElementById("pcsave").addEventListener("click",saveCard); document.getElementById("pcsave3").addEventListener("click",saveCard3);
 setView(VIEW);
 render(); PAINTED=true; connect(); loadBible();
 })();
