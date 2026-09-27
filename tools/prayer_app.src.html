@@ -721,9 +721,9 @@ function loadH2C(){ return new Promise(function(ok,no){ if(window.html2canvas) r
 async function saveCard(){ var msg=document.getElementById("pcmsg"), el=document.querySelector("#pcbody .pc"); if(!el) return; msg.textContent="이미지 만드는 중…";
   try{ var h2c=await loadH2C(); el.style.width="540px"; el.style.maxWidth="none"; var cv; try{ cv=await h2c(el,{scale:2,backgroundColor:"#f6f3ec",useCORS:false,logging:false,windowWidth:620,width:540}); } finally { el.style.width=""; el.style.maxWidth=""; }
     var url=cv.toDataURL("image/png"), name=(cardPerson(dayByNo(SEL).sections[CARD_SI])||"기도")+"_기도제목_"+new Date().toISOString().slice(0,10)+".png";
-    document.getElementById("pcout").innerHTML='<p class="hint">휴대폰: 이미지를 길게 눌러 저장 · 컴퓨터: <a href="'+url+'" download="'+esc(name)+'">파일로 받기</a></p><img alt="기도제목 이미지" src="'+url+'">';
+    var site=(MODE==="viewer"); document.getElementById("pcout").innerHTML='<p class="hint">'+(site?'휴대폰: 이미지를 길게 눌러 저장 · 컴퓨터: <a href="'+url+'" download="'+esc(name)+'">파일로 받기</a>':'이미지를 길게 누르거나(휴대폰) 우클릭(컴퓨터)해서 저장하세요')+'</p><img alt="기도제목 이미지" src="'+url+'">';
     document.getElementById("pcbody").style.display="none"; msg.textContent="이미지 완성 (1080px)";
-    try{ var a=document.createElement("a"); a.href=url; a.download=name; if(!/iPhone|iPad|iPod/.test(navigator.userAgent)){ document.body.appendChild(a); a.click(); a.remove(); } }catch(e){}
+    try{ var a=document.createElement("a"); a.href=url; a.download=name; if(site&&!/iPhone|iPad|iPod/.test(navigator.userAgent)){ document.body.appendChild(a); a.click(); a.remove(); } }catch(e){}
   }catch(e){ msg.textContent="이미지 만들기 실패 — 화면을 캡처해 주세요"; } }
 function itemHTML(it,ii,si){
   var src=mirrorOf(it), dd=src?(src.d||[]):(it.d||[]);
