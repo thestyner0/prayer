@@ -250,6 +250,36 @@ body.mode-theo .modes .status{color:#9b917e}
 #tpop .tph{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
 #tpop .tph b{color:#7a5a2b}
 #tpop .tv .tx{font-size:15px}
+/* compact */
+#ttopic h1{font-size:20px;margin:6px 0 2px}
+#ttopic .tintro{font-size:12px;line-height:1.5;margin-top:4px}
+.ttools{margin:8px 0 2px}
+.tpart{margin:14px 0 4px}
+.tpart>h2{font-size:14.5px;margin:0 0 2px}
+.tpart>.tpd{font-size:12px;line-height:1.45;margin-bottom:5px}
+.tsb{margin:5px 0;border-radius:10px}
+.tsb>.tsh{padding:8px 12px;gap:8px}
+.tsb>.tsh .tq{font-size:14px;line-height:1.35}
+.tsb>.tsh .tq small{font-size:11.5px;margin-top:1px}
+.tsb>.tbd{padding:0 12px 8px}
+.tv{padding:6px 0}
+.tv .tr{display:inline;font-size:12px;margin:0 6px 0 0}
+.tv .tx{display:inline;font-size:calc(14.5px*var(--fz,1));line-height:1.62}
+.tv .tn2{font-size:calc(12.5px*var(--fz,1));line-height:1.5;margin-top:3px;padding-left:8px;border-left-width:2px}
+.tps{font-size:calc(14.5px*var(--fz,1));line-height:1.65;padding-top:4px}
+.tps .tvl{display:inline;margin:0}
+.tps .tvl::after{content:" "}
+.tps .tph2{margin:8px 0 1px;font-size:12px}
+.tbd p.tp{font-size:calc(13.5px*var(--fz,1));line-height:1.6;margin:6px 0}
+.tbd ul.tl{margin:3px 0;padding-left:16px}
+.tbd ul.tl li{font-size:calc(13.5px*var(--fz,1));line-height:1.55;margin:3px 0}
+.tbd h4{font-size:14px;margin:12px 0 2px}
+.ttb{margin:6px 0}
+.ttb .trw{padding:6px 9px;margin:4px 0}
+.ttb .trw .tvv{font-size:13px;line-height:1.5}
+.tgr{margin:8px 0 2px;padding:5px 10px}
+.tgr .tv{padding:5px 0}
+.tnext{margin-top:6px}
 /* ---- 찬양 ---- */
 #song .wrap{max-width:760px;margin:0 auto;padding:0 14px 30px}
 #song header{padding:18px 0 6px}
@@ -1605,12 +1635,13 @@ function renderTheo(){ var home=document.getElementById("thome"), tp=document.ge
   home.hidden=true; tp.hidden=false;
   if(TCUR!==T.id){ TCUR=T.id; var si=0;
     tp.innerHTML='<div class="tback"><button type="button" class="tb" data-tback="1">← 신학</button></div><h1>'+esc(T.t)+'</h1><div class="tsubt">'+esc(T.sub||"")+'</div>'+((T.intro||[]).length?'<div class="tintro">'+T.intro.map(function(x){return tTxt(x);}).join("<br>")+'</div>':'')
-      +'<div class="ttools"><button type="button" class="tb" data-tall="1">모두 펼치기</button></div>'
+      +'<div class="ttools"><button type="button" class="tb" data-tall="0">모두 접기</button></div>'
       +(T.parts||[]).map(function(P,pi){ return '<div class="tpart">'+(P.t?'<h2>'+esc(P.t)+'</h2>':'')+(P.d?'<div class="tpd">'+tTxt(P.d)+'</div>':'')
         +(P.subs||[]).map(function(S){ var id=si++; var c=0; (S.b||[]).forEach(function(b){ if(b.k==="v") c++; if(b.k==="psg") c+=b.vs.filter(function(x){return x[0];}).length; if(b.k==="grd") c+=b.items.length; });
           return '<div class="tsb" data-si="'+id+'"><button type="button" class="tsh"><span class="tq">'+esc(S.t)+(S.n?'<small>'+esc(S.n)+'</small>':'')+'</span>'+(c?'<span class="tc">말씀 '+c+'</span>':'')+'<span class="tcar">▶</span></button><div class="tbd"></div></div>'; }).join("")+'</div>'; }).join("");
-    window.scrollTo({top:0}); }
-  if(m&&m[2]!=null){ var el=tp.querySelector('.tsb[data-si="'+m[2]+'"]'); if(el&&!el.classList.contains("on")) tOpen(el,true); }
+    tp.querySelectorAll(".tsb").forEach(function(el){ tOpen(el,false,true); });
+    window.scrollTo({top:0});
+    if(m&&m[2]!=null){ var el=tp.querySelector('.tsb[data-si="'+m[2]+'"]'); if(el) setTimeout(function(){ el.scrollIntoView({block:"start"}); },30); } }
 }
 function tSubOf(T,idx){ var i=0, r=null; (T.parts||[]).forEach(function(P){ (P.subs||[]).forEach(function(S){ if(i===idx) r=S; i++; }); }); return r; }
 function tBlocks(S){ var h=""; (S.b||[]).forEach(function(b){
@@ -1625,9 +1656,9 @@ function tBlocks(S){ var h=""; (S.b||[]).forEach(function(b){
     else if(cols>=3&&R.length>1&&R[0].join("").length<40){ h+='<div class="ttb">'+R.slice(1).map(function(r){ return '<div class="trw"><div class="tk">'+tTxt(r[0])+'</div>'+r.slice(1).map(function(c,ci){ return '<div class="tvv"><span class="tl2">'+esc(R[0][ci+1]||"")+'</span>'+tTxt(c)+'</div>'; }).join("")+'</div>'; }).join("")+'</div>'; }
     else h+='<div class="ttbs"><table>'+R.map(function(r,ri){ return '<tr>'+r.map(function(c){ return ri===0?'<th>'+esc(c)+'</th>':'<td>'+tTxt(c)+'</td>'; }).join("")+'</tr>'; }).join("")+'</table></div>'; }
 }); return h; }
-function tOpen(el,scroll){ var T=THEO.topics.find(function(x){return x.id===TCUR;}); if(!T) return; var idx=+el.dataset.si, S=tSubOf(T,idx), bd=el.querySelector(".tbd");
-  if(!bd.dataset.done){ var nx=tSubOf(T,idx+1); bd.innerHTML=tBlocks(S)+(nx?'<div class="tnext"><button type="button" class="tb" data-tnext="'+(idx+1)+'">다음 · '+esc(nx.t.length>24?nx.t.slice(0,24)+"…":nx.t)+' ↓</button></div>':''); bd.dataset.done="1"; }
-  el.classList.add("on"); try{ history.replaceState(null,"","#theo-"+TCUR+"-"+idx); }catch(e){}
+function tOpen(el,scroll,nohash){ var T=THEO.topics.find(function(x){return x.id===TCUR;}); if(!T) return; var idx=+el.dataset.si, S=tSubOf(T,idx), bd=el.querySelector(".tbd");
+  if(!bd.dataset.done){ var nx=tSubOf(T,idx+1); bd.innerHTML=tBlocks(S); bd.dataset.done="1"; }
+  el.classList.add("on"); if(!nohash){ try{ history.replaceState(null,"","#theo-"+TCUR+"-"+idx); }catch(e){} }
   if(scroll) setTimeout(function(){ el.scrollIntoView({behavior:"smooth",block:"start"}); },30); }
 document.getElementById("theo").addEventListener("click",function(e){
   var c=e.target.closest("[data-tid]"); if(c){ try{ history.replaceState(null,"","#theo-"+c.dataset.tid); }catch(x){} TCUR=null; renderTheo(); return; }
