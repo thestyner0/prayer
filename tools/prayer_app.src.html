@@ -151,7 +151,9 @@ body.editing .addrow{display:flex;gap:6px;flex-wrap:wrap}
 .shbar a{color:var(--ac);font-weight:800;text-decoration:none;word-break:break-all}
 .shbar .tb{padding:4px 10px;font-size:11.5px}
 .sgh{font-size:12.5px;font-weight:800;color:var(--ac);margin:12px 4px 4px;letter-spacing:.02em}.sgh small{color:var(--muted);font-weight:600;margin-left:4px}
-.modes{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
+.appbar{position:sticky;top:0;z-index:20;background:inherit}
+html{scroll-padding-top:var(--abh,90px)}
+.modes{position:relative;background:var(--bg);border-bottom:1px solid var(--line)}
 .modes .in{max-width:760px;margin:0 auto;padding:8px 14px;display:flex;align-items:center;gap:8px}
 .modes a{font-size:14px;font-weight:800;padding:8px 14px;border-radius:999px;color:var(--muted);text-decoration:none;cursor:pointer;border:1px solid transparent}
 .modes a.on{background:var(--ac);color:#12193c}
@@ -301,10 +303,10 @@ body.mode-theo .modes .status{color:#9b917e}
 .tseg button{font:inherit;font-size:12.5px;font-weight:700;padding:6px 13px;border:0;background:transparent;color:var(--muted);cursor:pointer}
 .tseg button.on{background:#7a5a2b;color:#fff}
 /* chapter jump */
-.tjump{position:sticky;top:var(--mh,53px);z-index:14;background:#f6f3ec;display:flex;align-items:center;gap:6px;margin:8px -16px 4px;padding:7px 16px;border-bottom:1px solid #e6dfd0}
-.tjc{display:flex;gap:6px;overflow-x:auto;flex:1;min-width:0;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.tjump{position:sticky;top:var(--abh,90px);z-index:14;background:#f6f3ec;display:flex;align-items:flex-start;gap:6px;margin:8px -16px 4px;padding:6px 16px 7px;border-bottom:1px solid #e6dfd0}
+.tjc{display:flex;flex-wrap:wrap;gap:5px;flex:1;min-width:0}
 .tjc::-webkit-scrollbar{display:none}
-.tjc button,.tjt{flex:none;font:inherit;font-size:12.5px;font-weight:700;line-height:1.2;padding:6px 11px;border-radius:999px;border:1px solid #e0d4bb;background:#fffdf9;color:#6b4c1e;white-space:nowrap;cursor:pointer}
+.tjc button,.tjt{flex:none;font:inherit;font-size:12px;font-weight:700;line-height:1.2;padding:5px 9px;border-radius:999px;border:1px solid #e0d4bb;background:#fffdf9;color:#6b4c1e;white-space:nowrap;cursor:pointer}
 .tjc button.on{background:#7a5a2b;border-color:#7a5a2b;color:#fff}
 .tjt{background:#5b4320;border-color:#5b4320;color:#fff}
 .ttoc{position:absolute;left:10px;right:10px;top:100%;margin-top:4px;max-height:68vh;overflow:auto;background:#fffdf9;border:1px solid #e0d4bb;border-radius:12px;box-shadow:0 12px 30px rgba(60,40,10,.2);padding:4px 14px 12px}
@@ -312,7 +314,7 @@ body.mode-theo .modes .status{color:#9b917e}
 .ttg>b{display:block;font-size:12.5px;font-weight:800;color:#7a5a2b;margin:12px 0 2px;cursor:pointer}
 .ttg>a{display:block;font-size:13.5px;line-height:1.4;padding:6px 2px;color:#2b2519;border-top:1px solid #f0e9da;cursor:pointer;text-decoration:none}
 .ttg>a:active,.ttg>b:active{opacity:.6}
-#ttopic .tpart,#ttopic .tsb{scroll-margin-top:var(--tjoff,110px)}
+#ttopic .tpart,#ttopic .tsb{scroll-margin-top:var(--tjoff,60px)}
 /* word-table */
 .twt{margin:10px 0 6px;border:1px solid #d9ccb2;border-radius:8px;overflow:hidden;background:#fffdf9}
 .twh,.twr{display:grid;grid-template-columns:76px 1fr;column-gap:0}
@@ -346,7 +348,7 @@ body.mode-theo .modes .status{color:#9b917e}
 #song header{padding:18px 0 6px}
 #song h1{font-size:21px;font-weight:800;letter-spacing:-.02em}
 #song .ssub{font-size:12.5px;color:var(--muted);margin-top:4px}
-.sbar{position:sticky;top:53px;z-index:15;background:var(--bg);padding:8px 0 6px}
+.sbar{position:sticky;top:var(--abh,90px);z-index:15;background:var(--bg);padding:8px 0 6px}
 .sbar input{width:100%;font:inherit;font-size:15px;color:var(--body);background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:10px 12px;outline:none}
 .sbar input:focus{border-color:var(--ac)}
 .schips{display:flex;gap:6px;overflow-x:auto;padding:8px 0 2px;scrollbar-width:none}.schips::-webkit-scrollbar{display:none}
@@ -718,7 +720,7 @@ body.site #dev .amnote-body p{font-size:13.5px}
 </style>
 </head>
 <body>
-<div class="shbar" id="shbar"><a href="https://thestyner0.github.io/prayer/" target="_blank" rel="noopener">🔗 thestyner0.github.io/prayer</a><button class="tb" id="shareBtn" type="button">공유 · 주소 복사</button></div>
+<header class="appbar" id="appbar"><div class="shbar" id="shbar"><a href="https://thestyner0.github.io/prayer/" target="_blank" rel="noopener">🔗 thestyner0.github.io/prayer</a><button class="tb" id="shareBtn" type="button">공유 · 주소 복사</button></div>
 <nav class="modes" id="modes"><div class="in">
   <a data-mode="dev">묵상</a><a data-mode="pray">중보기도</a><a data-mode="song">찬양</a><a data-mode="theo">신학</a><span class="sp"></span>
   <div class="tools">
@@ -727,7 +729,7 @@ body.site #dev .amnote-body p{font-size:13.5px}
     <button class="tb" id="editBtn" type="button">✎ 편집</button>
     <button class="tb" id="setBtn" type="button">⚙</button>
   </div>
-</div></nav>
+</div></nav></header>
 <div class="wrap" id="gtop">
 <div class="banner" id="banner"></div>
 <div class="settings" id="settings">
@@ -1710,16 +1712,18 @@ function tShort(t){ return String(t||"").split(/\s[—–-]\s/)[0].replace(/^([�
 function tJumpBar(T){ var si=0, P=T.parts||[]; if(P.length<2) return "";
   return '<div class="tjump"><div class="tjc">'+P.map(function(x,pi){ return '<button type="button" data-tjp="'+pi+'">'+esc(tShort(x.t)||("파트 "+(pi+1)))+'</button>'; }).join("")+'</div><button type="button" class="tjt" data-ttoc="1">☰ 목차</button>'
     +'<div class="ttoc" hidden>'+P.map(function(x,pi){ return '<div class="ttg"><b data-tjp="'+pi+'">'+esc(x.t||("파트 "+(pi+1)))+'</b>'+(x.subs||[]).map(function(S){ return '<a data-tjs="'+(si++)+'">'+esc(S.t)+'</a>'; }).join("")+'</div>'; }).join("")+'</div></div>'; }
-function tJumpMeasure(){ var md=document.querySelector(".modes"), tp=document.getElementById("ttopic"), jb=tp&&tp.querySelector(".tjump"); var mh=md?md.offsetHeight:53;
-  tp.style.setProperty("--mh",mh+"px"); tp.style.setProperty("--tjoff",(mh+(jb?jb.offsetHeight:0)+8)+"px"); return mh+(jb?jb.offsetHeight:0)+8; }
+function abMeasure(){ var ab=document.getElementById("appbar"), h=ab?ab.offsetHeight:90; document.documentElement.style.setProperty("--abh",h+"px"); return h; }
+function tJumpMeasure(){ var mh=abMeasure(), tp=document.getElementById("ttopic"), jb=tp&&tp.querySelector(".tjump"), jh=jb?jb.offsetHeight:0;
+  tp.style.setProperty("--tjoff",(jh+8)+"px"); return mh+jh+8; }
 function tJumpTo(el){ if(!el) return; var off=tJumpMeasure(); window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-off+2,behavior:"smooth"}); }
 var tSpyRaf=0;
 function tJumpSpy(){ var tp=document.getElementById("ttopic"); if(!tp||tp.hidden) return; var jb=tp.querySelector(".tjump"); if(!jb) return;
-  var off=(parseFloat(tp.style.getPropertyValue("--tjoff"))||110)+12, cur=0;
+  var off=(parseFloat(document.documentElement.style.getPropertyValue("--abh"))||90)+(parseFloat(tp.style.getPropertyValue("--tjoff"))||60)+12, cur=0;
   tp.querySelectorAll(".tpart").forEach(function(el){ if(el.getBoundingClientRect().top<=off) cur=+el.dataset.pi; });
-  jb.querySelectorAll(".tjc button").forEach(function(b){ var on=+b.dataset.tjp===cur; if(on&&!b.classList.contains("on")){ var c=b.parentNode; if(b.offsetLeft<c.scrollLeft||b.offsetLeft+b.offsetWidth>c.scrollLeft+c.clientWidth) c.scrollLeft=b.offsetLeft-12; } b.classList.toggle("on",on); }); }
+  jb.querySelectorAll(".tjc button").forEach(function(b){ b.classList.toggle("on",+b.dataset.tjp===cur); }); }
 window.addEventListener("scroll",function(){ if(tSpyRaf) return; tSpyRaf=requestAnimationFrame(function(){ tSpyRaf=0; tJumpSpy(); }); },{passive:true});
-window.addEventListener("resize",function(){ var tp=document.getElementById("ttopic"); if(tp&&!tp.hidden) tJumpMeasure(); });
+window.addEventListener("resize",function(){ abMeasure(); var tp=document.getElementById("ttopic"); if(tp&&!tp.hidden) tJumpMeasure(); });
+(function(){ abMeasure(); var ab=document.getElementById("appbar"); if(ab&&window.ResizeObserver) new ResizeObserver(abMeasure).observe(ab); })();
 function tSubOf(T,idx){ var i=0, r=null; (T.parts||[]).forEach(function(P){ (P.subs||[]).forEach(function(S){ if(i===idx) r=S; i++; }); }); return r; }
 function tWRow(r,alt,body,n){ return '<div class="twr"><div class="twk">'+esc(r)+(alt?'<span class="alt">개역한글</span>':'')+'</div><div class="tx">'+body+'</div><div class="tn3">'+(n?tTxt(n):'')+'</div></div>'; }
 function tWHead(g){ return '<div class="twt'+(g?' twg':'')+'"><div class="twh"><span>'+(g?'근거':'구절')+'</span><span>말씀</span><span class="tn3h">'+(g?'요점':'의미 · 적용')+'</span></div>'; }
