@@ -146,7 +146,8 @@ def verse_table_doc(path, tid, title_override=None):
                     if pr:
                         code, segs = pr; sp = split_verses(txt, segs)
                         if sp:
-                            for (ch, v), t in sp: put(code, ch, v, t)
+                            if tid not in KRV_DOCS:  # 개역한글 문서는 개역개정 색인에 넣지 않음
+                                for (ch, v), t in sp: put(code, ch, v, t)
                             vv = [[ch, v, t] for (ch, v), t in sp]
                     sub["b"].append({"k": "v", "r": ref, "c": pr[0] if pr else None, "vs": vv, "x": None if vv else txt, "n": note})
             elif part is None:
@@ -275,11 +276,13 @@ def resolve(T):
 KIND = {"table": verse_table_doc, "prose": prose_doc, "chapter": chapter_doc}
 MAN = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "theology_manifest.json"), encoding="utf-8"))
 DOCS = [(m["id"], m["t"], m["file"], KIND[m["kind"]]) for m in MAN]
+KRV_DOCS = {m["id"] for m in MAN if m.get("ver") == "krv"}
 topics = []
 for tid, title, fn, fnc in DOCS:
     p = os.path.join(SRC, fn)
     if not os.path.exists(p): print("missing", fn); continue
     T = fnc(p, tid); T["t"] = title; topics.append(T)
+    if tid in KRV_DOCS: T["ver"] = "개역한글"
 # 권면 문서는 다른 문서에서 모은 개역개정 색인을 쓰므로 맨 마지막에 해석
 report = {}
 for T in topics:
