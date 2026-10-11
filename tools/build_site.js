@@ -4,6 +4,8 @@
 //  · 1~6주차 항목 중 pub===true 인 연동 항목(예: 4주차 사명자 : 박일근)은 빌드 시 7일차 내용을 그대로 박아 넣어 공개, 나머지 7일차 연동 항목은 잠금 표시
 // 사용: node build_site.js <dataDir> <password> [outDir=site]
 const fs=require("fs"), path=require("path"), crypto=require("crypto");
+function theoB64(){ const zlib=require("zlib"); const c=[process.env.THEO_JSON,path.join(__dirname,"..","data","theology.json"),path.join(__dirname,"theology.json")].filter(Boolean).find(p=>fs.existsSync(p)); if(!c){ console.warn("theology.json 없음 — 신학 파트 비어 있음"); return ""; } return zlib.gzipSync(fs.readFileSync(c),{level:9}).toString("base64"); }
+
 const [,, dataDir, pw, outDir="site"] = process.argv;
 if(!dataDir||!pw){ console.error("usage: node build_site.js <dataDir> <password> [outDir]"); process.exit(1); }
 function findJson(dir){ // read_db out_dir: <dir>/prayer/meta.json, <dir>/prayer/meta/days/N.json  |  dbseed: meta.json, dayN.json
@@ -53,7 +55,7 @@ const locked7={salt:salt.toString("base64"),iv:iv.toString("base64"),iter:ITER,c
 
 const D={devotion:{start:dev.start,amsong:dev.amsong,amsongState:dev.amsongState||{current:"psa139",done:{}},updatedAt:dev.updatedAt||"",rev:dev.rev,plan:PLAN},rev:meta.rev,updated:meta.updated,updatedAt:meta.updatedAt,anchorSunday:meta.anchorSunday||meta.anchorMonday,anchorWeek:meta.anchorWeek,meeting:meta.meeting,commonPrayer:meta.commonPrayer,songs:meta.songs||null,dayIndex:meta.dayIndex||[],days:pubDays,locked7};
 const seed=JSON.stringify(D).replace(/<\/script/g,"<\\/script");
-const html=fs.readFileSync(path.join(__dirname,"prayer_app.src.html"),"utf8").replace("__SEED__",seed);
+const html=fs.readFileSync(path.join(__dirname,"prayer_app.src.html"),"utf8").replace("__THEO__",()=>theoB64()).replace("__SEED__",seed);
 // 공개 원문에 7일차 실명(선교사 목록 등)이 새지 않는지 확인
 const names=[]; day7.sections.forEach(s=>{ if(/^[가-힣]{2,4}$/.test(s.title)) names.push(s.title); s.items.forEach(it=>{ if(/^[가-힣]{2,4} \(/.test(it.t)) names.push(it.t.split(" (")[0]); }); }); hidden.forEach(h=>{ const n=/^사명자\s*:\s*(\S+)/.exec(h.it.t); if(n) names.push(n[1]); });
 const pubJson=JSON.stringify(pubDays);

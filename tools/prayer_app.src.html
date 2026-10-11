@@ -155,6 +155,8 @@ body.editing .addrow{display:flex;gap:6px;flex-wrap:wrap}
 .modes a{font-size:14px;font-weight:800;padding:8px 14px;border-radius:999px;color:var(--muted);text-decoration:none;cursor:pointer;border:1px solid transparent}
 .modes a.on{background:var(--ac);color:#12193c}
 .modes .sp{flex:1}
+.modes a,.modes .tb{white-space:nowrap}
+@media(max-width:440px){.modes .in{gap:3px;padding:7px 8px}.modes a{padding:7px 9px;font-size:13.5px}.modes .tools{gap:3px}.modes .tools .tb{padding:6px 8px}.modes .status{display:none}}
 body.mode-dev{background:#faf8f3;color:#2b2a26}
 body.mode-dev .modes{background:#faf8f3;border-color:#e8e2d5}
 body.mode-dev .modes a{color:#6b675e}
@@ -175,7 +177,79 @@ body.mode-dev .btn.p{background:#8a6d3b;color:#fff} body.mode-dev .btn.g{backgro
   body.mode-dev .banner,body.mode-dev .settings{background:#2a2822;color:#e9e4d8;border-color:#35322b}
   body.mode-dev .settings input,body.mode-dev .settings textarea{background:#1c1b18;color:#e9e4d8;border-color:#35322b}
 }
-#dev,#prayer,#song{display:none} body.mode-dev #dev{display:block} body.mode-pray #prayer{display:block} body.mode-song #song{display:block}
+#dev,#prayer,#song,#theo{display:none} body.mode-dev #dev{display:block} body.mode-pray #prayer{display:block} body.mode-song #song{display:block} body.mode-theo #theo{display:block}
+body.mode-theo{--bg:#f6f3ec;--panel:#fffdf9;--panel2:#fffdf9;--line:#e6dfd0;--body:#2b2519;--muted:#6e6553;--dim:#9b917e;--ac:#7a5a2b;background:#f6f3ec;color:#2b2519}
+body.mode-theo .modes{background:#f6f3ec;border-color:#e6dfd0}
+body.mode-theo .modes a{color:#6e6553} body.mode-theo .modes a.on{background:#7a5a2b;color:#fff}
+body.mode-theo .modes .tb{background:#fffdf9;border-color:#e6dfd0;color:#6e6553}
+body.mode-theo .modes .status{color:#9b917e}
+#theo .wrap{max-width:760px;margin:0 auto;padding:0 16px 60px}
+#theo header h1{font-size:24px;margin:18px 0 4px}
+#theo .ssub{font-size:13px;color:var(--muted);line-height:1.55}
+.tcards{display:grid;grid-template-columns:1fr;gap:10px;margin:16px 0}
+@media(min-width:620px){.tcards{grid-template-columns:1fr 1fr}}
+.tcard{display:block;text-align:left;width:100%;font:inherit;color:inherit;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:15px 16px 13px;cursor:pointer;box-shadow:0 1px 2px rgba(60,45,20,.05)}
+.tcard:hover{border-color:#cdbf9f}
+.tcard .tn{font-size:11px;font-weight:800;letter-spacing:.08em;color:var(--ac)}
+.tcard .tt{display:block;font-size:17px;font-weight:800;margin:3px 0 4px;color:var(--body)}
+.tcard .ts{display:block;font-size:12.5px;color:var(--muted);line-height:1.5}
+.tcard .tm{display:block;font-size:11.5px;color:var(--dim);margin-top:8px}
+.tnote{font-size:12px;color:var(--dim);line-height:1.6;margin:18px 2px 0}
+.trec{margin-top:22px}
+.trec h3{font-size:14px;margin:0 0 6px;color:var(--ac)}
+.trec .chips{display:flex;flex-wrap:wrap;gap:6px}
+.trec .chips span{font-size:12px;padding:4px 10px;border-radius:999px;border:1px dashed #cdbf9f;color:var(--muted);background:transparent}
+.tback{margin:14px 0 2px}
+#ttopic h1{font-size:22px;margin:8px 0 4px;line-height:1.35}
+#ttopic .tsubt{font-size:13px;color:var(--muted);line-height:1.55}
+#ttopic .tintro{font-size:12.5px;color:var(--dim);line-height:1.6;margin-top:6px}
+.ttools{display:flex;gap:8px;margin:12px 0 4px;flex-wrap:wrap}
+.tpart{margin:22px 0 6px}
+.tpart>h2{font-size:15.5px;margin:0 0 3px;color:var(--ac);letter-spacing:.01em}
+.tpart>.tpd{font-size:12.5px;color:var(--muted);line-height:1.55;margin-bottom:8px}
+.tsb{background:var(--panel);border:1px solid var(--line);border-radius:12px;margin:7px 0;overflow:hidden}
+.tsb>.tsh{display:flex;align-items:center;gap:10px;width:100%;text-align:left;font:inherit;color:inherit;background:none;border:0;padding:12px 14px;cursor:pointer}
+.tsb>.tsh .tq{flex:1;font-size:14.5px;font-weight:700;line-height:1.4}
+.tsb>.tsh .tq small{display:block;font-size:12px;font-weight:500;color:var(--muted);margin-top:2px}
+.tsb>.tsh .tc{font-size:11px;color:var(--dim);white-space:nowrap}
+.tsb>.tsh .tcar{color:var(--dim);font-size:12px;transition:transform .15s}
+.tsb.on>.tsh .tcar{transform:rotate(90deg)}
+.tsb>.tbd{display:none;padding:2px 14px 14px;border-top:1px solid var(--line)}
+.tsb.on>.tbd{display:block}
+.tv{padding:11px 0;border-bottom:1px dashed var(--line)}
+.tv:last-child{border-bottom:0}
+.tv .tr{font-size:12.5px;font-weight:800;color:var(--ac);margin-bottom:3px}
+.tv .tr .alt,.tgr .alt{font-size:10.5px;font-weight:600;color:var(--dim);margin-left:6px}
+.tv .tx{font-size:calc(15px*var(--fz,1));line-height:1.75;color:var(--body)}
+.tv .tx sup,.tps sup{font-size:10px;color:var(--ac);font-weight:700;margin-right:2px}
+.tv .tn2{font-size:calc(13px*var(--fz,1));line-height:1.6;color:var(--muted);margin-top:5px;padding-left:10px;border-left:3px solid #e6d7b8}
+.tps{font-size:calc(15px*var(--fz,1));line-height:1.85;padding-top:8px}
+.tps .tph2{font-size:12.5px;font-weight:800;color:var(--ac);margin:14px 0 2px}
+.tps .tph2:first-child{margin-top:4px}
+.tps .tvl{margin:2px 0}
+.tbd p.tp{font-size:calc(14px*var(--fz,1));line-height:1.7;margin:10px 0}
+.tbd p.tp b,.tbd li b{color:var(--ac)}
+.tbd ul.tl{margin:8px 0;padding-left:18px}
+.tbd ul.tl li{font-size:calc(14px*var(--fz,1));line-height:1.65;margin:5px 0}
+.tbd h4{font-size:14.5px;margin:18px 0 4px;color:var(--body)}
+.tbd .tsn{font-size:12.5px;color:var(--muted);margin:10px 0 0;font-style:italic}
+.ttb{margin:10px 0}
+.ttb .trw{border:1px solid var(--line);border-radius:10px;padding:9px 11px;margin:6px 0;background:#fbf8f2}
+.ttb .trw .tk{font-size:12px;font-weight:800;color:var(--ac);margin-bottom:2px}
+.ttb .trw .tvv{font-size:13.5px;line-height:1.6}
+.ttb .trw .tvv .tl2{font-size:11px;color:var(--dim);font-weight:700;margin-right:4px}
+.ttbs{overflow-x:auto}.ttbs table{border-collapse:collapse;font-size:13px;min-width:100%}.ttbs th,.ttbs td{border:1px solid var(--line);padding:6px 8px;vertical-align:top;text-align:left;line-height:1.5}.ttbs th{background:#f3ecdf;font-size:12px}
+.tgr{margin:12px 0 4px;background:#fbf8f2;border:1px solid var(--line);border-radius:10px;padding:8px 12px}
+.tgr .tgh{font-size:11.5px;font-weight:800;letter-spacing:.05em;color:var(--ac);margin:2px 0 4px}
+.tgr .tv{padding:8px 0}
+.tref{font:inherit;font-size:inherit;color:var(--ac);background:none;border:0;padding:0;border-bottom:1px dotted var(--ac);cursor:pointer}
+.tnext{margin-top:12px;text-align:right}
+#tpop{position:fixed;inset:0;z-index:60;background:rgba(40,30,15,.35);display:flex;align-items:flex-end;justify-content:center}
+#tpop[hidden]{display:none}
+#tpop .tpin{background:#fffdf9;color:#2b2519;width:100%;max-width:640px;max-height:70vh;overflow:auto;border-radius:16px 16px 0 0;padding:14px 16px 22px;box-shadow:0 -6px 24px rgba(0,0,0,.18)}
+#tpop .tph{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+#tpop .tph b{color:#7a5a2b}
+#tpop .tv .tx{font-size:15px}
 /* ---- 찬양 ---- */
 #song .wrap{max-width:760px;margin:0 auto;padding:0 14px 30px}
 #song header{padding:18px 0 6px}
@@ -555,7 +629,7 @@ body.site #dev .amnote-body p{font-size:13.5px}
 <body>
 <div class="shbar" id="shbar"><a href="https://thestyner0.github.io/prayer/" target="_blank" rel="noopener">🔗 thestyner0.github.io/prayer</a><button class="tb" id="shareBtn" type="button">공유 · 주소 복사</button></div>
 <nav class="modes" id="modes"><div class="in">
-  <a data-mode="dev">묵상</a><a data-mode="pray">중보기도</a><a data-mode="song">찬양</a><span class="sp"></span>
+  <a data-mode="dev">묵상</a><a data-mode="pray">중보기도</a><a data-mode="song">찬양</a><a data-mode="theo">신학</a><span class="sp"></span>
   <div class="tools">
     <span class="status" id="status"></span>
     <button class="tb" id="thBtn" type="button" aria-label="밝기 전환">☾</button>
@@ -733,6 +807,12 @@ body.site #dev .amnote-body p{font-size:13.5px}
 <div id="spk"></div>
 <div id="slist"></div>
 </div></section>
+<section id="theo"><div class="wrap">
+<div id="thome"></div>
+<div id="ttopic" hidden></div>
+</div></section>
+<div id="tpop" hidden><div class="tpin"><div class="tph"><b id="tpt"></b><button class="tb" type="button" id="tpx">✕</button></div><div id="tpb"></div></div></div>
+<script id="theo-data" type="text/plain">__THEO__</script>
 <div id="bgm"><span class="bgmi">🎵</span><span id="bgmt"></span><span id="bgmh" hidden>안 들리면 오른쪽 작은 화면의 ▶를 누르세요</span><button type="button" id="bgmp">⏸</button><button type="button" id="bgmx" aria-label="끄기">✕</button><div id="bgmf"></div></div>
 <div id="pcard"><div class="pcbar"><button type="button" id="pcx">✕ 닫기</button><span id="pcmsg"></span><button type="button" id="pcsave3">⬇ 3장으로 나눠 저장</button><button type="button" id="pcsave">⬇ 이미지로 저장</button></div><div class="pcscroll"><div id="pcbody"></div><div id="pcout"></div></div></div>
 <div id="sview"><div class="shd"><button class="tb" type="button" id="sx">✕</button><div class="st" id="stt"></div><button class="tb" type="button" id="spick" hidden>＋ 이번 주</button><button class="tb" type="button" id="sfav" hidden>☆</button></div><div class="sbd" id="sbd"></div><div class="sft" id="sft"></div></div>
@@ -1412,7 +1492,7 @@ async function connect(){
 }
 
 var h=/^#day([0-7])$/.exec(location.hash); SEL=h?+h[1]:todayWeek();
-if(h) VIEW="pray"; else if(location.hash==="#song") VIEW="song"; else VIEW="dev";
+if(h) VIEW="pray"; else if(location.hash==="#song") VIEW="song"; else if(/^#theo/.test(location.hash)) VIEW="theo"; else VIEW="dev";
 /* ---------- 찬양 ---------- */
 var SFIL="all", SQ="";
 var CHO="ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ";
@@ -1487,10 +1567,84 @@ document.getElementById("sfav").addEventListener("click",function(){ var id=this
   function fallback(){ try{ var t=document.createElement("textarea"); t.value=U; t.style.position="fixed"; t.style.opacity="0"; document.body.appendChild(t); t.select(); var ok=document.execCommand("copy"); t.remove(); done(ok?"✓ 주소 복사됨":U); }catch(e){ done(U); } }
   b.addEventListener("click",function(){ if(navigator.share){ navigator.share({title:"묵상과 기도",text:"묵상과 기도 — 주일기도모임",url:U}).catch(function(err){ if(!err||err.name!=="AbortError") copy(); }); } else copy(); });
 })();
+/* ---------- 신학 ---------- */
+var THEO=null, THEOP=null, TIDX={}, TCUR=null;
+var TABBR="창 출 레 민 신 수 삿 룻 삼상 삼하 왕상 왕하 대상 대하 스 느 에 욥 시 잠 전 아 사 렘 애 겔 단 호 욜 암 옵 욘 미 나 합 습 학 슥 말 마 막 눅 요 행 롬 고전 고후 갈 엡 빌 골 살전 살후 딤전 딤후 딛 몬 히 약 벧전 벧후 요일 요이 요삼 유 계".split(" ");
+var TCODES="gen exo lev num deu jos jdg rut 1sa 2sa 1ki 2ki 1ch 2ch ezr neh est job psa pro ecc sng isa jer lam ezk dan hos jol amo oba jon mic nam hab zep hag zec mal mat mrk luk jhn act rom 1co 2co gal eph php col 1th 2th 1ti 2ti tit phm heb jas 1pe 2pe 1jn 2jn 3jn jud rev".split(" ");
+var TBOOK=null, TRE=null, TBF=false;
+function tBooks(){ var hasB=(typeof BIBLE!=="undefined"&&BIBLE&&BIBLE.names); if(TBOOK&&(TBF||!hasB)) return; TBF=!!hasB; TBOOK={}; for(var i=0;i<TCODES.length;i++){ TBOOK[TABBR[i]]=TCODES[i]; if(typeof BIBLE!=="undefined"&&BIBLE&&BIBLE.names) TBOOK[BIBLE.names[i]]=TCODES[i]; } TBOOK["시편"]="psa";
+  var ks=Object.keys(TBOOK).sort(function(a,b){return b.length-a.length;}); TRE=new RegExp("(^|[^가-힣])("+ks.join("|")+")\\s?(\\d{1,3})(?:(편|장)|:(\\d{1,3}(?:\\s?[-–]\\s?(?:\\d{1,3}:)?\\d{1,3})?(?:\\s?[,·]\\s?\\d{1,3}(?:\\s?[-–]\\s?\\d{1,3})?)*))?","g"); }
+function tChLen(code,ch){ try{ return BIBLE.kr[code][ch-1].length; }catch(e){ return 0; } }
+function tParse(bk,ch,suf,vs){ var code=TBOOK[bk]; if(!code) return null; ch=+ch; var segs=[];
+  if(!vs){ if(suf||["oba","phm","2jn","3jn","jud"].indexOf(code)<0) return suf?{code:code,segs:[[ch,1,tChLen(code,ch)||200]]}:null; return {code:code,segs:[[1,ch,ch]]}; }
+  vs.replace(/[–]/g,"-").split(/\s?[,·]\s?/).forEach(function(part){ var m=/^(\d+)(?:\s?-\s?(?:(\d+):)?(\d+))?/.exec(part); if(!m) return; var v1=+m[1];
+    if(m[2]){ var c2=+m[2]; segs.push([ch,v1,tChLen(code,ch)||200]); for(var c=ch+1;c<c2;c++) segs.push([c,1,tChLen(code,c)||200]); segs.push([c2,1,+m[3]]); ch=c2; } else segs.push([ch,v1,m[3]?+m[3]:v1]); });
+  return segs.length?{code:code,segs:segs}:null; }
+function tVerses(q){ var out=[], alt=false; q.segs.forEach(function(s){ for(var v=s[1];v<=s[2];v++){ var t=TIDX[q.code+" "+s[0]+" "+v]; if(t==null){ try{ t=BIBLE.kr[q.code][s[0]-1][v-1]; }catch(e){ t=null; } if(t!=null){ alt=true; t=t.replace(/^<[^>]+>\s*/,""); } } if(t!=null) out.push([s[0],v,t]); } }); return {vs:out,alt:alt}; }
+function tLink(h){ tBooks(); return h.replace(TRE,function(all,pre,bk,ch,suf,vs){ if(!vs&&!suf&&["유","옵","몬","요이","요삼"].indexOf(bk)<0) return all; return pre+'<button type="button" class="tref" data-r="'+esc(bk+" "+ch+(suf||"")+(vs?":"+vs:""))+'">'+all.slice(pre.length)+'</button>'; }); }
+function tTxt(t){ return tLink(kwh(esc(t))); }
+function tLabelled(t){ var m=/^([^—]{1,22}?)\s+—\s+([\s\S]+)$/.exec(t); return m?'<b>'+esc(m[1])+'</b> — '+tTxt(m[2]):tTxt(t); }
+function tVsHTML(vs){ if(!vs||!vs.length) return ""; var multi=vs.length>1; return vs.map(function(x){ return (multi?'<sup>'+x[1]+'</sup>':'')+esc(x[2]); }).join(" "); }
+function tBuildIdx(){ TIDX={}; (THEO.topics||[]).forEach(function(T){ (T.parts||[]).forEach(function(P){ (P.subs||[]).forEach(function(S){ (S.b||[]).forEach(function(b){
+  if(b.k==="v"&&b.c&&b.vs&&!b.alt) b.vs.forEach(function(x){ var k=b.c+" "+x[0]+" "+x[1]; if(TIDX[k]==null) TIDX[k]=x[2]; });
+  if(b.k==="psg") b.vs.forEach(function(x){ if(x[0]) { var k=b.code+" "+x[0]+" "+x[1]; if(TIDX[k]==null) TIDX[k]=x[2]; } }); }); }); }); }); }
+function loadTheo(){ if(THEO) return Promise.resolve(THEO); if(THEOP) return THEOP; var el=document.getElementById("theo-data"), t=el?el.textContent.trim():"";
+  if(!t||t.indexOf("__THEO")===0){ THEO={topics:[]}; return Promise.resolve(THEO); }
+  THEOP=inflateB64(t).then(function(x){ THEO=JSON.parse(x); el.textContent=""; tBuildIdx(); return THEO; }); return THEOP; }
+function tCount(T){ var n=0,s=0; (T.parts||[]).forEach(function(P){ s+=(P.subs||[]).length; (P.subs||[]).forEach(function(S){ (S.b||[]).forEach(function(b){ if(b.k==="v") n++; if(b.k==="psg") n+=b.vs.filter(function(x){return x[0];}).length; if(b.k==="grd") n+=b.items.length; }); }); }); return {s:s,n:n}; }
+var TREC=["계시와 성경","하나님의 속성과 이름","삼위일체","창조와 섭리","인간 — 하나님의 형상","죄와 회개","언약","그리스도의 인격과 삼중직","그리스도와의 연합","양자됨","성령과 은사","은혜의 방편 — 말씀 · 성례 · 기도","교회","율법과 복음 · 십계명","하나님의 뜻과 인도","종말과 천국"];
+function renderTheo(){ var home=document.getElementById("thome"), tp=document.getElementById("ttopic"); if(!home) return;
+  var m=/^#theo-([a-z0-9]+)(?:-(\d+))?/.exec(location.hash||""); var tid=m?m[1]:null;
+  if(!THEO){ home.hidden=false; tp.hidden=true; home.innerHTML='<header><h1>신학</h1><div class="ssub">말씀을 여는 중…</div></header>'; loadTheo().then(renderTheo).catch(function(){ home.innerHTML='<header><h1>신학</h1><div class="ssub">이 브라우저에서 내용을 풀지 못했습니다. 최신 브라우저(Safari 16.4+, Chrome)로 열어 주세요.</div></header>'; }); return; }
+  var T=tid&&THEO.topics.find(function(x){return x.id===tid;});
+  if(!T){ tp.hidden=true; home.hidden=false; TCUR=null;
+    home.innerHTML='<header><h1>신학</h1><div class="ssub">주제를 누르면 말씀 중심으로 정리된 내용이 열립니다. 소주제를 누르면 그 주제의 말씀이 이어서 펼쳐집니다.</div></header><div class="tcards">'+THEO.topics.map(function(T,i){ var c=tCount(T); return '<button type="button" class="tcard" data-tid="'+esc(T.id)+'"><span class="tn">'+String(i+1).padStart(2,"0")+'</span><span class="tt">'+esc(T.t)+'</span><span class="ts">'+esc(T.sub||"")+'</span><span class="tm">'+c.s+'개 소주제 · 말씀 '+c.n+'</span></button>'; }).join("")+'</div>'
+      +'<div class="trec"><h3>앞으로 더할 주제 (조직신학 순서)</h3><div class="chips">'+TREC.map(function(x){return '<span>'+esc(x)+'</span>';}).join("")+'</div></div>'
+      +'<div class="tnote">본문: 각 정리 문서에 실린 개역개정. 문서에 없는 구절을 눌러 볼 때는 개역한글로 대신 보여 드립니다(「개역한글」 표시). 최종 갱신 '+esc(THEO.updated||"")+'</div>';
+    return; }
+  home.hidden=true; tp.hidden=false;
+  if(TCUR!==T.id){ TCUR=T.id; var si=0;
+    tp.innerHTML='<div class="tback"><button type="button" class="tb" data-tback="1">← 신학</button></div><h1>'+esc(T.t)+'</h1><div class="tsubt">'+esc(T.sub||"")+'</div>'+((T.intro||[]).length?'<div class="tintro">'+T.intro.map(function(x){return tTxt(x);}).join("<br>")+'</div>':'')
+      +'<div class="ttools"><button type="button" class="tb" data-tall="1">모두 펼치기</button></div>'
+      +(T.parts||[]).map(function(P,pi){ return '<div class="tpart">'+(P.t?'<h2>'+esc(P.t)+'</h2>':'')+(P.d?'<div class="tpd">'+tTxt(P.d)+'</div>':'')
+        +(P.subs||[]).map(function(S){ var id=si++; var c=0; (S.b||[]).forEach(function(b){ if(b.k==="v") c++; if(b.k==="psg") c+=b.vs.filter(function(x){return x[0];}).length; if(b.k==="grd") c+=b.items.length; });
+          return '<div class="tsb" data-si="'+id+'"><button type="button" class="tsh"><span class="tq">'+esc(S.t)+(S.n?'<small>'+esc(S.n)+'</small>':'')+'</span>'+(c?'<span class="tc">말씀 '+c+'</span>':'')+'<span class="tcar">▶</span></button><div class="tbd"></div></div>'; }).join("")+'</div>'; }).join("");
+    window.scrollTo({top:0}); }
+  if(m&&m[2]!=null){ var el=tp.querySelector('.tsb[data-si="'+m[2]+'"]'); if(el&&!el.classList.contains("on")) tOpen(el,true); }
+}
+function tSubOf(T,idx){ var i=0, r=null; (T.parts||[]).forEach(function(P){ (P.subs||[]).forEach(function(S){ if(i===idx) r=S; i++; }); }); return r; }
+function tBlocks(S){ var h=""; (S.b||[]).forEach(function(b){
+  if(b.k==="v"){ h+='<div class="tv"><div class="tr">'+esc(b.r)+(b.alt?'<span class="alt">개역한글</span>':'')+'</div><div class="tx">'+(b.vs?tVsHTML(b.vs):esc(b.x||""))+'</div>'+(b.n?'<div class="tn2">'+tTxt(b.n)+'</div>':'')+'</div>'; }
+  else if(b.k==="psg"){ h+='<div class="tps">'+b.vs.map(function(x){ return x[0]?'<div class="tvl"><sup>'+x[1]+'</sup>'+esc(x[2])+'</div>':'<div class="tph2">'+tTxt(x[2])+'</div>'; }).join("")+'</div>'; }
+  else if(b.k==="p"){ h+='<p class="tp">'+tLabelled(b.t)+'</p>'; }
+  else if(b.k==="li"){ h+='<ul class="tl"><li>'+tLabelled(b.t)+'</li></ul>'; }
+  else if(b.k==="h"){ h+='<h4>'+esc(b.t)+'</h4>'; }
+  else if(b.k==="grd"){ h+='<div class="tgr"><div class="tgh">본문 근거</div>'+b.items.map(function(it){ return '<div class="tv"><div class="tr">'+esc(it.r)+(it.l?' <span style="font-weight:600;color:var(--muted)">· '+esc(it.l)+'</span>':'')+(it.alt?'<span class="alt">개역한글</span>':'')+'</div>'+(it.vs&&it.vs.length?'<div class="tx">'+tVsHTML(it.vs)+'</div>':'')+'</div>'; }).join("")+'</div>'; }
+  else if(b.k==="tb"){ var R=b.rows||[]; if(!R.length) return; var cols=R[0].length;
+    if(cols===2&&R.length>1){ h+='<div class="ttb">'+R.slice(1).map(function(r){ return '<div class="trw"><div class="tk">'+tTxt(r[0])+'</div><div class="tvv">'+tTxt(r[1])+'</div></div>'; }).join("")+'</div>'; }
+    else if(cols>=3&&R.length>1&&R[0].join("").length<40){ h+='<div class="ttb">'+R.slice(1).map(function(r){ return '<div class="trw"><div class="tk">'+tTxt(r[0])+'</div>'+r.slice(1).map(function(c,ci){ return '<div class="tvv"><span class="tl2">'+esc(R[0][ci+1]||"")+'</span>'+tTxt(c)+'</div>'; }).join("")+'</div>'; }).join("")+'</div>'; }
+    else h+='<div class="ttbs"><table>'+R.map(function(r,ri){ return '<tr>'+r.map(function(c){ return ri===0?'<th>'+esc(c)+'</th>':'<td>'+tTxt(c)+'</td>'; }).join("")+'</tr>'; }).join("")+'</table></div>'; }
+}); return h; }
+function tOpen(el,scroll){ var T=THEO.topics.find(function(x){return x.id===TCUR;}); if(!T) return; var idx=+el.dataset.si, S=tSubOf(T,idx), bd=el.querySelector(".tbd");
+  if(!bd.dataset.done){ var nx=tSubOf(T,idx+1); bd.innerHTML=tBlocks(S)+(nx?'<div class="tnext"><button type="button" class="tb" data-tnext="'+(idx+1)+'">다음 · '+esc(nx.t.length>24?nx.t.slice(0,24)+"…":nx.t)+' ↓</button></div>':''); bd.dataset.done="1"; }
+  el.classList.add("on"); try{ history.replaceState(null,"","#theo-"+TCUR+"-"+idx); }catch(e){}
+  if(scroll) setTimeout(function(){ el.scrollIntoView({behavior:"smooth",block:"start"}); },30); }
+document.getElementById("theo").addEventListener("click",function(e){
+  var c=e.target.closest("[data-tid]"); if(c){ try{ history.replaceState(null,"","#theo-"+c.dataset.tid); }catch(x){} TCUR=null; renderTheo(); return; }
+  if(e.target.closest("[data-tback]")){ try{ history.replaceState(null,"","#theo"); }catch(x){} TCUR=null; renderTheo(); window.scrollTo({top:0}); return; }
+  if(e.target.closest("[data-tall]")){ var b=e.target.closest("[data-tall]"), all=document.querySelectorAll("#ttopic .tsb"), open=b.dataset.tall==="1"; all.forEach(function(el){ if(open) tOpen(el,false); else el.classList.remove("on"); }); b.dataset.tall=open?"0":"1"; b.textContent=open?"모두 접기":"모두 펼치기"; return; }
+  var nx=e.target.closest("[data-tnext]"); if(nx){ var el=document.querySelector('#ttopic .tsb[data-si="'+nx.dataset.tnext+'"]'); if(el) tOpen(el,true); return; }
+  var r=e.target.closest(".tref"); if(r){ e.stopPropagation(); tShowRef(r.dataset.r); return; }
+  var h=e.target.closest(".tsh"); if(h){ var el2=h.parentElement; if(el2.classList.contains("on")){ el2.classList.remove("on"); try{ history.replaceState(null,"","#theo-"+TCUR); }catch(x){} } else tOpen(el2,false); }
+});
+function tShowRef(r){ tBooks(); TRE.lastIndex=0; var m=TRE.exec(" "+r); TRE.lastIndex=0; if(!m) return; var q=tParse(m[2],m[3],m[4],m[5]); if(!q) return; var o=tVerses(q);
+  document.getElementById("tpt").textContent=r+(o.alt?" (개역한글)":""); document.getElementById("tpb").innerHTML='<div class="tv"><div class="tx">'+(o.vs.length?tVsHTML(o.vs):"본문을 찾지 못했습니다")+'</div></div>'; document.getElementById("tpop").hidden=false; }
+document.getElementById("tpop").addEventListener("click",function(e){ if(e.target.id==="tpop"||e.target.closest("#tpx")) this.hidden=true; });
+document.addEventListener("keydown",function(e){ if(e.key==="Escape"){ var tpp=document.getElementById("tpop"); if(tpp&&!tpp.hidden) tpp.hidden=true; } });
 var PAINTED=false;
-function setView(v){ VIEW=v; document.body.classList.toggle("mode-dev",v==="dev"); document.body.classList.toggle("mode-pray",v==="pray"); document.body.classList.toggle("mode-song",v==="song");
+function setView(v){ VIEW=v; document.body.classList.toggle("mode-dev",v==="dev"); document.body.classList.toggle("mode-pray",v==="pray"); document.body.classList.toggle("mode-song",v==="song"); document.body.classList.toggle("mode-theo",v==="theo");
   document.querySelectorAll("#modes a[data-mode]").forEach(function(a){ a.classList.toggle("on",a.dataset.mode===v); });
-  if(v==="dev"){ try{history.replaceState(null,"",location.hash==="#am"?"#am":"#dev");}catch(e){} } else if(v==="song"){ try{history.replaceState(null,"","#song");}catch(e){} renderSongs(); } else { try{history.replaceState(null,"","#day"+SEL);}catch(e){} if(PAINTED) render(); }
+  if(v==="dev"){ try{history.replaceState(null,"",location.hash==="#am"?"#am":"#dev");}catch(e){} } else if(v==="song"){ try{history.replaceState(null,"","#song");}catch(e){} renderSongs(); } else if(v==="theo"){ if(!/^#theo/.test(location.hash)){ try{history.replaceState(null,"","#theo");}catch(e){} } renderTheo(); } else { try{history.replaceState(null,"","#day"+SEL);}catch(e){} if(PAINTED) render(); }
   window.scrollTo({top:0}); }
 document.getElementById("modes").addEventListener("click",function(e){ var a=e.target.closest("a[data-mode]"); if(a) setView(a.dataset.mode); });
 document.getElementById("pcx").addEventListener("click",closeCard); document.getElementById("thBtn").addEventListener("click",function(){ PDARK=!PDARK; try{ localStorage.setItem("prayer.theme",PDARK?"dark":"light"); }catch(e){} applyTheme(); }); document.getElementById("pcsave").addEventListener("click",saveCard); document.getElementById("pcsave3").addEventListener("click",saveCard3);
