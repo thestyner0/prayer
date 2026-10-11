@@ -4,7 +4,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&display=swap" rel="stylesheet">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#161d47">
+<meta name="theme-color" content="#1F2A6B">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>묵상과 기도</title>
@@ -717,6 +717,16 @@ body.site #dev .amnote-body p{font-size:13.5px}
 #dev .sched-day{flex: 0 0 74px; font-size: 11.5px; color: var(--ink-faint);
     font-variant-numeric: tabular-nums; letter-spacing: 0.03em; text-align: right;}
 #dev .sched-ref{color: var(--ink); font-variant-numeric: tabular-nums;}
+/* unified appbar — 전 탭 공통 남색 */
+#appbar,#appbar .modes{background:#1F2A6B;border-color:#1F2A6B}
+#appbar .modes a{color:#C9D2F0}
+#appbar .modes a.on{background:#fff;color:#1F2A6B}
+#appbar .modes .tb,#appbar .shbar .tb{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.28);color:#E6EAF7}
+#appbar .modes .tb.on{background:#fff;border-color:#fff;color:#1F2A6B}
+#appbar .modes .status{color:#C9D2F0}
+#appbar .shbar a{color:#fff}
+#appbar .modes .in{height:52px;box-sizing:border-box;padding-top:0;padding-bottom:0}
+#appbar .modes .tools{display:flex;align-items:center;max-height:52px}
 </style>
 </head>
 <body>
