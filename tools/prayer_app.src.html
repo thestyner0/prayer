@@ -300,6 +300,19 @@ body.mode-theo .modes .status{color:#9b917e}
 .tseg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--panel)}
 .tseg button{font:inherit;font-size:12.5px;font-weight:700;padding:6px 13px;border:0;background:transparent;color:var(--muted);cursor:pointer}
 .tseg button.on{background:#7a5a2b;color:#fff}
+/* chapter jump */
+.tjump{position:sticky;top:var(--mh,53px);z-index:14;background:#f6f3ec;display:flex;align-items:center;gap:6px;margin:8px -16px 4px;padding:7px 16px;border-bottom:1px solid #e6dfd0}
+.tjc{display:flex;gap:6px;overflow-x:auto;flex:1;min-width:0;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.tjc::-webkit-scrollbar{display:none}
+.tjc button,.tjt{flex:none;font:inherit;font-size:12.5px;font-weight:700;line-height:1.2;padding:6px 11px;border-radius:999px;border:1px solid #e0d4bb;background:#fffdf9;color:#6b4c1e;white-space:nowrap;cursor:pointer}
+.tjc button.on{background:#7a5a2b;border-color:#7a5a2b;color:#fff}
+.tjt{background:#5b4320;border-color:#5b4320;color:#fff}
+.ttoc{position:absolute;left:10px;right:10px;top:100%;margin-top:4px;max-height:68vh;overflow:auto;background:#fffdf9;border:1px solid #e0d4bb;border-radius:12px;box-shadow:0 12px 30px rgba(60,40,10,.2);padding:4px 14px 12px}
+.ttoc[hidden]{display:none}
+.ttg>b{display:block;font-size:12.5px;font-weight:800;color:#7a5a2b;margin:12px 0 2px;cursor:pointer}
+.ttg>a{display:block;font-size:13.5px;line-height:1.4;padding:6px 2px;color:#2b2519;border-top:1px solid #f0e9da;cursor:pointer;text-decoration:none}
+.ttg>a:active,.ttg>b:active{opacity:.6}
+#ttopic .tpart,#ttopic .tsb{scroll-margin-top:var(--tjoff,110px)}
 /* word-table */
 .twt{margin:10px 0 6px;border:1px solid #d9ccb2;border-radius:8px;overflow:hidden;background:#fffdf9}
 .twh,.twr{display:grid;grid-template-columns:76px 1fr;column-gap:0}
@@ -1684,13 +1697,29 @@ function renderTheo(){ var home=document.getElementById("thome"), tp=document.ge
   if(TCUR!==T.id){ TCUR=T.id; var si=0;
     tp.innerHTML='<div class="tback"><button type="button" class="tb" data-tback="1">← 신학</button></div><h1>'+esc(T.t)+'</h1><div class="tsubt">'+esc(T.sub||"")+'</div>'+((T.intro||[]).length?'<div class="tintro">'+T.intro.map(function(x){return tTxt(x);}).join("<br>")+'</div>':'')
       +'<div class="ttools"><div class="tseg"><button type="button" data-tmode="v"'+(TMODE==="v"?' class="on"':'')+'>말씀만</button><button type="button" data-tmode="vn"'+(TMODE==="vn"?' class="on"':'')+'>+ 의미·적용</button></div><button type="button" class="tb" data-tall="0">모두 접기</button></div>'
-      +(T.parts||[]).map(function(P,pi){ return '<div class="tpart">'+(P.t?'<h2>'+esc(P.t)+'</h2>':'')+(P.d?'<div class="tpd">'+tTxt(P.d)+'</div>':'')
+      +tJumpBar(T)
+      +(T.parts||[]).map(function(P,pi){ return '<div class="tpart" data-pi="'+pi+'">'+(P.t?'<h2>'+esc(P.t)+'</h2>':'')+(P.d?'<div class="tpd">'+tTxt(P.d)+'</div>':'')
         +(P.subs||[]).map(function(S){ var id=si++; var c=0; (S.b||[]).forEach(function(b){ if(b.k==="v") c++; if(b.k==="psg") c+=b.vs.filter(function(x){return x[0];}).length; if(b.k==="grd") c+=b.items.length; });
           return '<div class="tsb" data-si="'+id+'"><button type="button" class="tsh"><span class="tq">'+esc(S.t)+(S.n?'<small>'+esc(S.n)+'</small>':'')+'</span>'+(c?'<span class="tc">말씀 '+c+'</span>':'')+'<span class="tcar">▶</span></button><div class="tbd"></div></div>'; }).join("")+'</div>'; }).join("");
     tp.querySelectorAll(".tsb").forEach(function(el){ tOpen(el,false,true); });
     window.scrollTo({top:0});
+    tJumpMeasure(); tJumpSpy();
     if(m&&m[2]!=null){ var el=tp.querySelector('.tsb[data-si="'+m[2]+'"]'); if(el) setTimeout(function(){ el.scrollIntoView({block:"start"}); },30); } }
 }
+function tShort(t){ return String(t||"").split(/\s[—–-]\s/)[0].replace(/^([ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩ])\.\s*/,"$1 "); }
+function tJumpBar(T){ var si=0, P=T.parts||[]; if(P.length<2) return "";
+  return '<div class="tjump"><div class="tjc">'+P.map(function(x,pi){ return '<button type="button" data-tjp="'+pi+'">'+esc(tShort(x.t)||("파트 "+(pi+1)))+'</button>'; }).join("")+'</div><button type="button" class="tjt" data-ttoc="1">☰ 목차</button>'
+    +'<div class="ttoc" hidden>'+P.map(function(x,pi){ return '<div class="ttg"><b data-tjp="'+pi+'">'+esc(x.t||("파트 "+(pi+1)))+'</b>'+(x.subs||[]).map(function(S){ return '<a data-tjs="'+(si++)+'">'+esc(S.t)+'</a>'; }).join("")+'</div>'; }).join("")+'</div></div>'; }
+function tJumpMeasure(){ var md=document.querySelector(".modes"), tp=document.getElementById("ttopic"), jb=tp&&tp.querySelector(".tjump"); var mh=md?md.offsetHeight:53;
+  tp.style.setProperty("--mh",mh+"px"); tp.style.setProperty("--tjoff",(mh+(jb?jb.offsetHeight:0)+8)+"px"); return mh+(jb?jb.offsetHeight:0)+8; }
+function tJumpTo(el){ if(!el) return; var off=tJumpMeasure(); window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-off+2,behavior:"smooth"}); }
+var tSpyRaf=0;
+function tJumpSpy(){ var tp=document.getElementById("ttopic"); if(!tp||tp.hidden) return; var jb=tp.querySelector(".tjump"); if(!jb) return;
+  var off=(parseFloat(tp.style.getPropertyValue("--tjoff"))||110)+12, cur=0;
+  tp.querySelectorAll(".tpart").forEach(function(el){ if(el.getBoundingClientRect().top<=off) cur=+el.dataset.pi; });
+  jb.querySelectorAll(".tjc button").forEach(function(b){ var on=+b.dataset.tjp===cur; if(on&&!b.classList.contains("on")){ var c=b.parentNode; if(b.offsetLeft<c.scrollLeft||b.offsetLeft+b.offsetWidth>c.scrollLeft+c.clientWidth) c.scrollLeft=b.offsetLeft-12; } b.classList.toggle("on",on); }); }
+window.addEventListener("scroll",function(){ if(tSpyRaf) return; tSpyRaf=requestAnimationFrame(function(){ tSpyRaf=0; tJumpSpy(); }); },{passive:true});
+window.addEventListener("resize",function(){ var tp=document.getElementById("ttopic"); if(tp&&!tp.hidden) tJumpMeasure(); });
 function tSubOf(T,idx){ var i=0, r=null; (T.parts||[]).forEach(function(P){ (P.subs||[]).forEach(function(S){ if(i===idx) r=S; i++; }); }); return r; }
 function tWRow(r,alt,body,n){ return '<div class="twr"><div class="twk">'+esc(r)+(alt?'<span class="alt">개역한글</span>':'')+'</div><div class="tx">'+body+'</div><div class="tn3">'+(n?tTxt(n):'')+'</div></div>'; }
 function tWHead(g){ return '<div class="twt'+(g?' twg':'')+'"><div class="twh"><span>'+(g?'근거':'구절')+'</span><span>말씀</span><span class="tn3h">'+(g?'요점':'의미 · 적용')+'</span></div>'; }
@@ -1713,6 +1742,13 @@ function tOpen(el,scroll,nohash){ var T=THEO.topics.find(function(x){return x.id
   el.classList.add("on"); if(!nohash){ try{ history.replaceState(null,"","#theo-"+TCUR+"-"+idx); }catch(e){} }
   if(scroll) setTimeout(function(){ el.scrollIntoView({behavior:"smooth",block:"start"}); },30); }
 document.getElementById("theo").addEventListener("click",function(e){
+  var tj=e.target.closest("[data-tjp],[data-tjs]"), toc=document.querySelector("#ttopic .ttoc");
+  if(tj){ if(toc) toc.hidden=true; var tp2=document.getElementById("ttopic"), el3;
+    if(tj.dataset.tjp!=null) el3=tp2.querySelector('.tpart[data-pi="'+tj.dataset.tjp+'"]');
+    else { el3=tp2.querySelector('.tsb[data-si="'+tj.dataset.tjs+'"]'); if(el3&&!el3.classList.contains("on")) tOpen(el3,false,true); try{ history.replaceState(null,"","#theo-"+TCUR+"-"+tj.dataset.tjs); }catch(x){} }
+    tJumpTo(el3); return; }
+  if(e.target.closest("[data-ttoc]")){ if(toc) toc.hidden=!toc.hidden; return; }
+  if(toc&&!toc.hidden&&!e.target.closest(".ttoc")) toc.hidden=true;
   var c=e.target.closest("[data-tid]"); if(c){ try{ history.replaceState(null,"","#theo-"+c.dataset.tid); }catch(x){} TCUR=null; renderTheo(); return; }
   var tm=e.target.closest("[data-tmode]"); if(tm){ TMODE=tm.dataset.tmode; try{ localStorage.setItem("theo.mode",TMODE); }catch(x){} document.getElementById("ttopic").classList.toggle("tmono",TMODE==="v"); document.querySelectorAll("#ttopic [data-tmode]").forEach(function(b){ b.classList.toggle("on",b.dataset.tmode===TMODE); }); return; }
   if(e.target.closest("[data-tback]")){ try{ history.replaceState(null,"","#theo"); }catch(x){} TCUR=null; renderTheo(); window.scrollTo({top:0}); return; }
