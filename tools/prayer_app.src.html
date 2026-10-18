@@ -1714,7 +1714,7 @@ function renderTheo(){ var home=document.getElementById("thome"), tp=document.ge
   if(!T){ tp.hidden=true; home.hidden=false; TCUR=null;
     home.innerHTML='<header><h1>신학</h1><div class="ssub">주제를 누르면 말씀 중심으로 정리된 내용이 열립니다. 소주제를 누르면 그 주제의 말씀이 이어서 펼쳐집니다.</div></header><div class="tcards">'+THEO.topics.map(function(T,i){ var c=tCount(T); return '<button type="button" class="tcard" data-tid="'+esc(T.id)+'"><span class="tn">'+String(i+1).padStart(2,"0")+'</span><span class="tt">'+esc(T.t)+'</span><span class="ts">'+esc(T.sub||"")+'</span><span class="tm">'+c.s+'개 소주제 · 말씀 '+c.n+(T.ver?' · '+esc(T.ver):'')+'</span></button>'; }).join("")+'</div>'
       +'<details class="trec"><summary>앞으로 더할 주제 <small>조직신학 순서 · '+TREC.items.length+'개 · 눌러서 펼치기</small></summary><p class="trin">'+esc(TREC.intro)+'</p><ol>'+TREC.items.map(function(x){ var done=x.id&&THEO.topics.some(function(T){return T.id===x.id;}); return '<li'+(done?' class="done"':'')+'><b>'+esc(x.t)+'</b>'+(done?' <button type="button" class="trdone" data-tid="'+esc(x.id)+'">✓ 정리됨 · 열기</button>':'')+'<span>'+esc(x.d)+'</span></li>'; }).join("")+'</ol></details>'
-      +'<div class="tnote">본문: 각 정리 문서에 실린 번역(대부분 개역개정, 「하나님의 속성과 이름」·「그리스도와의 연합」은 개역한글). 문서에 없는 구절을 눌러 볼 때는 개역한글로 대신 보여 드립니다(「개역한글」 표시). 최종 갱신 '+esc(THEO.updated||"")+'</div>';
+      +'<div class="tnote">본문: 각 정리 문서에 실린 번역(대부분 개역개정, 「하나님의 속성과 이름」·「그리스도와의 연합」·「하나님이 멀게 느껴질 때」는 개역한글). 문서에 없는 구절을 눌러 볼 때는 개역한글로 대신 보여 드립니다(「개역한글」 표시). 최종 갱신 '+esc(THEO.updated||"")+'</div>';
     return; }
   home.hidden=true; tp.hidden=false; tp.classList.toggle("tmono",TMODE==="v");
   if(TCUR!==T.id){ TCUR=T.id; var si=0;
