@@ -202,6 +202,17 @@ body.mode-theo .modes .status{color:#9b917e}
 .trec h3{font-size:14px;margin:0 0 6px;color:var(--ac)}
 .trec .chips{display:flex;flex-wrap:wrap;gap:6px}
 .trec .chips span{font-size:12px;padding:4px 10px;border-radius:999px;border:1px dashed #cdbf9f;color:var(--muted);background:transparent}
+.trec summary{cursor:pointer;font-size:14px;font-weight:700;color:var(--ac);padding:8px 0;list-style:none}
+.trec summary::-webkit-details-marker{display:none}
+.trec summary::before{content:"▸ ";display:inline-block;transition:transform .15s}
+.trec[open] summary::before{transform:rotate(90deg)}
+.trec summary small{font-weight:400;color:var(--muted);margin-left:6px;font-size:12px}
+.trec .trin{font-size:13px;line-height:1.65;color:var(--muted);margin:4px 0 10px}
+.trec ol{margin:0;padding-left:22px}
+.trec li{font-size:13.5px;line-height:1.6;margin:0 0 9px}
+.trec li b{font-weight:700}
+.trec li span{display:block;color:var(--muted);font-size:13px}
+.trec .trdone{font-size:11px;margin-left:6px;padding:1px 8px;border-radius:999px;border:1px solid var(--ac);background:transparent;color:var(--ac);cursor:pointer}
 .tback{margin:14px 0 2px}
 #ttopic h1{font-size:22px;margin:8px 0 4px;line-height:1.35}
 #ttopic .tsubt{font-size:13px;color:var(--muted);line-height:1.55}
@@ -1695,14 +1706,14 @@ function loadTheo(){ if(THEO) return Promise.resolve(THEO); if(THEOP) return THE
   if(!t||t.indexOf("__THEO")===0){ THEO={topics:[]}; return Promise.resolve(THEO); }
   THEOP=inflateB64(t).then(function(x){ THEO=JSON.parse(x); el.textContent=""; tBuildIdx(); return THEO; }); return THEOP; }
 function tCount(T){ var n=0,s=0; (T.parts||[]).forEach(function(P){ s+=(P.subs||[]).length; (P.subs||[]).forEach(function(S){ (S.b||[]).forEach(function(b){ if(b.k==="v") n++; if(b.k==="psg") n+=b.vs.filter(function(x){return x[0];}).length; if(b.k==="grd") n+=b.items.length; }); }); }); return {s:s,n:n}; }
-var TREC=["계시와 성경","삼위일체","창조와 섭리","인간 — 하나님의 형상","죄와 회개","언약","그리스도의 인격과 삼중직","양자됨","성령과 은사","은혜의 방편 — 말씀 · 성례 · 기도","교회","율법과 복음 · 십계명","하나님의 뜻과 인도","종말과 천국"];
+var TREC={"intro": "칼빈 『기독교 강요』, 바빙크 『개혁교의학』, 벌코프 『조직신학』, 그루뎀 『조직신학』, 패커 『하나님을 아는 지식』의 교리 순서(서론 → 신론 → 인간론 → 기독론 → 구원론 → 교회론 → 종말론)를 기준으로 골랐습니다. 이미 만든 「하나님의 약속」과 겹치는 칭의·중생·견인은 뺐습니다. 아래 순위와 이유는 책에서 그대로 옮긴 것이 아니라 제 판단입니다.", "items": [{"t": "하나님의 속성과 이름", "d": "거룩·사랑·신실·주권, 여호와 이레·샬롬 등 이름별 계시. 『강요』 1권, 바빙크 2권, 패커가 다루는 기초이고, 기도와 찬양의 언어가 됩니다.", "id": "attrs"}, {"t": "그리스도와의 연합", "d": "칼빈이 구원론 전체를 여는 열쇠로 본 주제입니다. \"그리스도 안에서\" 본문을 모으면 약속·성화·고난이 하나로 꿰어집니다.", "id": "union"}, {"t": "양자됨(하나님의 자녀)", "d": "패커가 신약의 가장 높은 특권이라 부른 주제입니다. 약속 6번을 넓혀 별도 주제로 만들 만합니다."}, {"t": "창조와 섭리", "d": "하이델베르크 27–28문과 롬 8:28의 실제. 고난 중의 신앙과 바로 이어집니다."}, {"t": "죄와 회개", "d": "시 51, 눅 15, 고후 7:10. 「기뻐하시는 것」 제2장의 짝입니다."}, {"t": "성령과 은사", "d": "성령의 인격, 충만, 은사(고전 12–14), 열매."}, {"t": "은혜의 방편 — 말씀 · 성례 · 기도", "d": "웨스트민스터 소요리문답 88문 이하. 기도모임과 가장 직결됩니다."}, {"t": "율법과 복음 · 십계명", "d": "개인 기도제목에 있는 십계명을 말씀 중심으로 정리할 수 있습니다."}, {"t": "하나님의 뜻과 인도", "d": "분별, 소명, 결정. 선교·진로 기도와 연결됩니다."}, {"t": "언약", "d": "아담 → 노아 → 아브라함 → 모세 → 다윗 → 새 언약의 흐름."}, {"t": "그리스도의 인격과 삼중직", "d": "선지자·제사장·왕. 「십자가의 고난」 다음 편으로 자연스럽습니다."}, {"t": "교회 · 종말과 천국", "d": "약속 Ⅴ단원을 확장하는 마무리 주제입니다."}]};
 function renderTheo(){ var home=document.getElementById("thome"), tp=document.getElementById("ttopic"); if(!home) return;
   var m=/^#theo-([a-z0-9]+)(?:-(\d+))?/.exec(location.hash||""); var tid=m?m[1]:null;
   if(!THEO){ home.hidden=false; tp.hidden=true; home.innerHTML='<header><h1>신학</h1><div class="ssub">말씀을 여는 중…</div></header>'; loadTheo().then(renderTheo).catch(function(){ home.innerHTML='<header><h1>신학</h1><div class="ssub">이 브라우저에서 내용을 풀지 못했습니다. 최신 브라우저(Safari 16.4+, Chrome)로 열어 주세요.</div></header>'; }); return; }
   var T=tid&&THEO.topics.find(function(x){return x.id===tid;});
   if(!T){ tp.hidden=true; home.hidden=false; TCUR=null;
     home.innerHTML='<header><h1>신학</h1><div class="ssub">주제를 누르면 말씀 중심으로 정리된 내용이 열립니다. 소주제를 누르면 그 주제의 말씀이 이어서 펼쳐집니다.</div></header><div class="tcards">'+THEO.topics.map(function(T,i){ var c=tCount(T); return '<button type="button" class="tcard" data-tid="'+esc(T.id)+'"><span class="tn">'+String(i+1).padStart(2,"0")+'</span><span class="tt">'+esc(T.t)+'</span><span class="ts">'+esc(T.sub||"")+'</span><span class="tm">'+c.s+'개 소주제 · 말씀 '+c.n+(T.ver?' · '+esc(T.ver):'')+'</span></button>'; }).join("")+'</div>'
-      +'<div class="trec"><h3>앞으로 더할 주제 (조직신학 순서)</h3><div class="chips">'+TREC.map(function(x){return '<span>'+esc(x)+'</span>';}).join("")+'</div></div>'
+      +'<details class="trec"><summary>앞으로 더할 주제 <small>조직신학 순서 · '+TREC.items.length+'개 · 눌러서 펼치기</small></summary><p class="trin">'+esc(TREC.intro)+'</p><ol>'+TREC.items.map(function(x){ var done=x.id&&THEO.topics.some(function(T){return T.id===x.id;}); return '<li'+(done?' class="done"':'')+'><b>'+esc(x.t)+'</b>'+(done?' <button type="button" class="trdone" data-tid="'+esc(x.id)+'">✓ 정리됨 · 열기</button>':'')+'<span>'+esc(x.d)+'</span></li>'; }).join("")+'</ol></details>'
       +'<div class="tnote">본문: 각 정리 문서에 실린 번역(대부분 개역개정, 「하나님의 속성과 이름」·「그리스도와의 연합」은 개역한글). 문서에 없는 구절을 눌러 볼 때는 개역한글로 대신 보여 드립니다(「개역한글」 표시). 최종 갱신 '+esc(THEO.updated||"")+'</div>';
     return; }
   home.hidden=true; tp.hidden=false; tp.classList.toggle("tmono",TMODE==="v");
