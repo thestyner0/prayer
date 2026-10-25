@@ -213,6 +213,11 @@ body.mode-theo .modes .status{color:#9b917e}
 #thx .pst{font-size:14px;line-height:1.7;white-space:pre-wrap;color:#2b2519;cursor:text;margin-top:2px}
 #thx #psnin,#thx .psnedit{width:100%;box-sizing:border-box;min-height:84px;font:inherit;font-size:14px;line-height:1.7;padding:8px 10px;border-radius:10px;border:1px solid #e3d6bd;background:#fffefb;color:var(--body);resize:vertical}
 #thx .psn .thbtns{margin:6px 0 2px}
+#thx #thtrash details{margin-top:22px} #thx #thtrash summary{cursor:pointer;font-size:12.5px;color:var(--dim);font-weight:700}
+#thx .thi.trs{opacity:.75;margin-top:6px}
+#thundo{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#2b2519;color:#fff;border-radius:999px;padding:9px 10px 9px 18px;display:flex;gap:12px;align-items:center;font-size:14px;box-shadow:0 6px 20px rgba(0,0,0,.25);z-index:60}
+#thundo[hidden]{display:none}
+#thundo button{font:inherit;font-weight:800;color:#f3c97a;background:transparent;border:0;cursor:pointer;padding:4px 8px}
 @media(min-width:960px){
  body.mode-thx #thx .wrap{max-width:1080px}
  #thx .thgrid{flex-direction:row-reverse;align-items:flex-start;gap:22px}
@@ -1015,7 +1020,7 @@ body.site #dev .amnote-body p{font-size:13.5px}
 <div class="thadd"><textarea id="thin" rows="4" placeholder="지금 마음속의 감사와 간구를 적어 보세요…"></textarea><div class="thbtns"><button type="button" class="thb thbold" data-bold="thin" title="굵게 (선택한 글자를 **굵게**)"><b>B</b></button><button type="button" class="thb pri" id="thaddb">저장하기</button></div></div>
 <div class="thf" id="thf"></div>
 <div id="thlist"></div>
-<div class="thnote" id="thnote"></div>
+<div id="thtrash"></div><div class="thnote" id="thnote"></div><div id="thundo" hidden></div>
 </div></div></div></section>
 <section id="theo"><div class="wrap">
 <div id="thome"></div>
@@ -1890,16 +1895,24 @@ function thxDay(k){ var p=k.split("-"), d=new Date(+p[0],+p[1]-1,+p[2]); return 
 function thxK(x){ return x.k||""; }
 function thxTime(x){ if(!x.c) return ""; var d=new Date(x.c); return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0"); }
 async function thxLoad(){
-  if(DB){ try{ var sn=await DB.doc("thanks/notes").get(); var it=sn.exists&&sn.data()&&sn.data().items; THX=Array.isArray(it)?it.map(function(x){return Object.assign({},x);}):[]; }catch(e){ if(!THX) THX=[]; }
-    try{ var pn=await DB.doc("thanks/psalmnotes").get(); PSN=(pn.exists&&pn.data()&&pn.data().notes)||{}; }catch(e){ if(!PSN) PSN={}; } renderPsn(); }
+  if(DB){ try{ var sn=await DB.doc("thanks/notes").get(); var it=sn.exists&&sn.data()&&sn.data().items; THX=Array.isArray(it)?it.map(function(x){return Object.assign({},x);}):[]; var tr=sn.exists&&sn.data()&&sn.data().trash; THXTR=Array.isArray(tr)?tr:[]; }catch(e){ if(!THX) THX=[]; }
+    try{ var pn=await DB.doc("thanks/psalmnotes").get(); PSN=(pn.exists&&pn.data()&&pn.data().notes)||{}; PSNTR=(pn.exists&&pn.data()&&pn.data().trash)||[]; }catch(e){ if(!PSN) PSN={}; } renderPsn(); }
   else if(!THX) THX=[];
   renderThx(); }
 function thxSave(){
   if(!DB){ setStatus("저장소에 연결되지 않아 저장되지 않았습니다","err"); return; }
-  setStatus("저장 중…","busy"); DB.doc("thanks/notes").set({items:THX,updatedAt:new Date().toISOString()}).then(function(){ setStatus("저장됨",""); }).catch(function(e){ setStatus("저장 실패: "+((e&&(e.code||e.message))||""),"err"); }); }
+  setStatus("저장 중…","busy"); DB.doc("thanks/notes").set({items:THX,trash:thxPrune(THXTR),updatedAt:new Date().toISOString()}).then(function(){ setStatus("저장됨",""); }).catch(function(e){ setStatus("저장 실패: "+((e&&(e.code||e.message))||""),"err"); }); }
+var THXTR=[], PSNTR=[];
+function thxPrune(a){ var lim=Date.now()-60*864e5; return (a||[]).filter(function(x){ return !x.del||Date.parse(x.del)>lim; }); }
+var THXU=null;
+function thxUndo(msg,fn){ var el=document.getElementById("thundo"); if(!el) return; clearTimeout(THXU); el.innerHTML='<span>'+esc(msg)+'</span><button type="button">되돌리기</button>'; el.hidden=false;
+  el.querySelector("button").onclick=function(){ el.hidden=true; clearTimeout(THXU); fn(); }; THXU=setTimeout(function(){ el.hidden=true; },12000); }
+function renderTrash(){ var el=document.getElementById("thtrash"); if(!el) return; var L=(THXTR||[]).slice().sort(function(a,b){ return (b.del||"").localeCompare(a.del||""); });
+  if(!L.length){ el.innerHTML=""; return; }
+  el.innerHTML='<details><summary>휴지통 ('+L.length+') — 지운 일기는 60일간 여기 남습니다</summary>'+L.map(function(x){ return '<div class="thi trs"><div class="thtm">'+esc(x.d||"")+' '+thxTime(x)+'<button type="button" class="thed" data-rs="'+esc(x.id)+'">↺ 되살리기</button></div><div class="tht">'+thxFmt(x.t)+'</div></div>'; }).join("")+'</details>'; }
 function thxChips(cur,attr){ return THXKS.map(function(k){ return '<button type="button" data-k="'+k[0]+'" '+attr+'="'+k[0]+'"'+(cur===k[0]?' class="on"':'')+'>'+k[0]+'</button>'; }).join(""); }
 function thxComposer(){}
-function renderThx(){ var el=document.getElementById("thlist"); if(!el) return; thxComposer(); if(!THPS) renderThps();
+function renderThx(){ var el=document.getElementById("thlist"); if(!el) return; thxComposer(); if(!THPS) renderThps(); renderTrash();
   var all=THX||[], cnt={}; all.forEach(function(x){ var k=thxK(x); if(k) cnt[k]=(cnt[k]||0)+1; });
   document.getElementById("thf").innerHTML=Object.keys(cnt).length?['전체'].concat(THXKS.map(function(k){return k[0];})).filter(function(k){ return k==="전체"||cnt[k]; }).map(function(k){ return '<button type="button" data-ff="'+k+'"'+(THXF===k?' class="on"':'')+'>'+k+'<small>'+(k==="전체"?all.length:cnt[k])+'</small></button>'; }).join(""):"";
   document.getElementById("thnote").textContent=DB?"대시보드 저장소에 저장됩니다 — 대시보드를 여는 모든 기기에서 같은 노트가 보입니다.":"저장소에 연결된 뒤에 저장할 수 있습니다.";
@@ -1914,6 +1927,7 @@ function renderThx(){ var el=document.getElementById("thlist"); if(!el) return; 
   var ta=el.querySelector(".thedit"); if(ta){ thxGrow(ta); ta.focus(); ta.setSelectionRange(ta.value.length,ta.value.length); } }
 function thxAdd(){ var inp=document.getElementById("thin"), t=inp.value.trim(); if(!t) return; if(!DB){ setStatus("저장소에 연결된 뒤에 적을 수 있습니다","err"); return; } if(!THX) THX=[];
   THX.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),d:thxToday(),t:t,c:new Date().toISOString()}); inp.value=""; THXF="전체"; thxSave(); renderThx(); }
+document.getElementById("thtrash").addEventListener("click",function(e){ var b=e.target.closest("[data-rs]"); if(!b) return; var x=THXTR.find(function(y){return y.id===b.dataset.rs;}); if(!x) return; THXTR=THXTR.filter(function(y){return y!==x;}); delete x.del; THX.push(x); thxSave(); renderThx(); });
 document.getElementById("thaddb").addEventListener("click",function(){ thxAdd(); thxGrow(document.getElementById("thin")); });
 function thxGrow(t){ if(!t) return; t.style.height="auto"; t.style.height=Math.max(t.scrollHeight+2,0)+"px"; }
 document.getElementById("thx").addEventListener("input",function(e){ if(e.target.tagName==="TEXTAREA") thxGrow(e.target); });
@@ -1925,7 +1939,7 @@ document.getElementById("thlist").addEventListener("click",function(e){ var b=e.
   if(a==="edit"){ THXED=id; delete x.ek; renderThx(); }
   else if(a==="cancel"){ THXED=null; delete x.ek; renderThx(); }
   else if(a==="save"){ var v=row.querySelector(".thedit").value.trim(); if(!v) return; x.t=v; if(x.ek!==undefined){ if(x.ek) x.k=x.ek; else delete x.k; delete x.ek; } x.u=new Date().toISOString(); THXED=null; thxSave(); renderThx(); }
-  else if(a==="del"){ if(!b.classList.contains("arm")){ b.classList.add("arm"); b.textContent="한 번 더 누르면 삭제"; return; } THX=THX.filter(function(y){return y.id!==id;}); THXED=null; thxSave(); renderThx(); } });
+  else if(a==="del"){ if(!b.classList.contains("arm")){ b.classList.add("arm"); b.textContent="한 번 더 누르면 삭제"; return; } THX=THX.filter(function(y){return y.id!==id;}); delete x.ek; x.del=new Date().toISOString(); THXTR.push(x); THXED=null; thxSave(); renderThx(); thxUndo("일기를 지웠습니다",function(){ THXTR=THXTR.filter(function(y){return y!==x;}); delete x.del; THX.push(x); thxSave(); renderThx(); }); } });
 var DAVID=[3,4,5,6,7,8,9,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,34,35,36,37,38,39,40,41,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,68,69,70,86,101,103,108,109,110,122,124,131,133,138,139,140,141,142,143,144,145];
 var THPS=null;
 function thpsToday(){ var t=thxToday(), h=0; for(var i=0;i<t.length;i++) h=(h*31+t.charCodeAt(i))>>>0; return DAVID[h%DAVID.length]; }
@@ -1941,7 +1955,7 @@ document.getElementById("thx").addEventListener("click",function(e){ var b=e.tar
   thxBold(w==="thin"?document.getElementById("thin"):w==="psn"?document.getElementById("psnin"):b.closest(".thi,.psi").querySelector("textarea")); },true);
 /* 시편 연구 노트 — 저장소 thanks/psalmnotes {notes:{"23":[{id,t,c,u}]}} */
 var PSN=null, PSNED=null;
-function psnSave(){ if(!DB){ setStatus("저장소에 연결되지 않아 저장되지 않았습니다","err"); return; } setStatus("저장 중…","busy"); DB.doc("thanks/psalmnotes").set({notes:PSN,updatedAt:new Date().toISOString()}).then(function(){ setStatus("저장됨",""); }).catch(function(e){ setStatus("저장 실패: "+((e&&(e.code||e.message))||""),"err"); }); }
+function psnSave(){ if(!DB){ setStatus("저장소에 연결되지 않아 저장되지 않았습니다","err"); return; } setStatus("저장 중…","busy"); DB.doc("thanks/psalmnotes").set({notes:PSN,trash:thxPrune(PSNTR),updatedAt:new Date().toISOString()}).then(function(){ setStatus("저장됨",""); }).catch(function(e){ setStatus("저장 실패: "+((e&&(e.code||e.message))||""),"err"); }); }
 function psnWhen(x){ var d=new Date(x.c); return (d.getMonth()+1)+"/"+d.getDate()+" "+String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0"); }
 function renderPsn(){ var el=document.getElementById("psn"); if(!el||!THPS) return; var L=((PSN||{})[String(THPS)]||[]).slice().sort(function(a,b){ return (b.c||"").localeCompare(a.c||""); });
   var h='<div class="psnh">연구 노트 · 시편 '+THPS+'편'+(L.length?' <small>'+L.length+'</small>':'')+'</div>';
@@ -1955,7 +1969,7 @@ document.getElementById("thps").addEventListener("click",function(e){ var b=e.ta
   if(a==="edit"){ PSNED=id; renderPsn(); }
   else if(a==="cancel"){ PSNED=null; renderPsn(); }
   else if(a==="save"){ var v=row.querySelector(".psnedit").value.trim(); if(!v) return; x.t=v; x.u=new Date().toISOString(); PSNED=null; psnSave(); renderPsn(); }
-  else if(a==="del"){ if(!b.classList.contains("arm")){ b.classList.add("arm"); b.textContent="한 번 더 누르면 삭제"; return; } PSN[key]=arr.filter(function(y){return y.id!==id;}); PSNED=null; psnSave(); renderPsn(); } });
+  else if(a==="del"){ if(!b.classList.contains("arm")){ b.classList.add("arm"); b.textContent="한 번 더 누르면 삭제"; return; } PSN[key]=arr.filter(function(y){return y.id!==id;}); x.del=new Date().toISOString(); x.ps=key; PSNTR.push(x); PSNED=null; psnSave(); renderPsn(); thxUndo("연구 노트를 지웠습니다",function(){ PSNTR=PSNTR.filter(function(y){return y!==x;}); delete x.del; delete x.ps; (PSN[key]=PSN[key]||[]).push(x); psnSave(); renderPsn(); }); } });
 document.getElementById("thps").addEventListener("click",function(e){ var b=e.target.closest("[data-ps]"); if(!b) return; var a=b.dataset.ps;
   if(a==="more"){ var o=this.classList.toggle("open"); b.textContent=o?"접기":"펼치기"; }
   else if(a==="next"){ var n=THPS; while(n===THPS) n=DAVID[Math.floor(Math.random()*DAVID.length)]; renderThps(n); }
