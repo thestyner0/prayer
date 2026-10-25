@@ -275,7 +275,9 @@ def resolve(T):
 # 주제 목록: data/theology_manifest.json  [{id, t(제목), file(.Claude_신학 안 파일명), kind: table|prose|chapter}]
 KIND = {"table": verse_table_doc, "prose": prose_doc, "chapter": chapter_doc}
 MAN = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "theology_manifest.json"), encoding="utf-8"))
-DOCS = [(m["id"], m["t"], m["file"], KIND[m["kind"]]) for m in MAN]
+DOCS = [(m["id"], m["t"], m["file"], KIND[m["kind"]]) for m in MAN if m["kind"] != "catalog"]
+# catalog: 문서 대신 data/ 의 정리 JSON(시편 150편 등)을 그대로 싣는다 — 같은 내용의 .docx는 .Claude_신학에 함께 둠
+CAT = {m["id"]: json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", m["data"]), encoding="utf-8")) for m in MAN if m["kind"] == "catalog"}
 KRV_DOCS = {m["id"] for m in MAN if m.get("ver") == "krv"}
 topics = []
 for tid, title, fn, fnc in DOCS:
@@ -296,10 +298,14 @@ for T in topics:
     h = T.pop("head", [])
     T["sub"] = h[1] if len(h) > 1 else ""
     T["intro"] = [x for x in (h[2:] if len(h) > 2 else []) if "한눈에 보기" not in x and "이동합니다" not in x]
+for k, C in CAT.items(): C["t"] = next(m["t"] for m in MAN if m["id"] == k)
+order = [m["id"] for m in MAN]
+topics = sorted(topics + list(CAT.values()), key=lambda T: order.index(T["id"]))
 out = {"v": 1, "updated": datetime.date.today().isoformat(), "topics": topics}
 json.dump(out, open(OUT, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
 print("wrote", OUT, os.path.getsize(OUT) // 1024, "KB")
 for T in topics:
+    if T.get("kind") == "catalog": print(f"  {T['id']}: catalog items={len(T['ps'])} groups={len(T['groups'])}"); continue
     nv = sum(1 for p in T["parts"] for s in p["subs"] for b in s["b"] if b["k"] in ("v", "psg"))
     print(f"  {T['id']}: parts={len(T['parts'])} subs={sum(len(p['subs']) for p in T['parts'])} verse-blocks={nv} unresolved={report[T['id']][:8]}")
 print("개역개정 색인 절 수:", len(KRR))

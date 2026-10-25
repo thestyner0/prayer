@@ -28,6 +28,14 @@
   "ver": "krv"
  },
  {
+  "id": "psalms",
+  "t": "시편 150편",
+  "file": "시편_150편_정리.docx",
+  "kind": "catalog",
+  "data": "psalms_catalog.json",
+  "ver": "krv"
+ },
+ {
   "id": "promise",
   "t": "하나님의 약속",
   "file": "하나님의_약속_정리_2.docx",
