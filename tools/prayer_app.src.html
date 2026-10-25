@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#1F2A6B">
@@ -225,6 +225,17 @@ body.mode-theo .modes .status{color:#9b917e}
 #thx .tht{font-size:15.5px;line-height:1.65;white-space:pre-wrap;word-break:keep-all;overflow-wrap:anywhere;cursor:text}
 #thx .thempty{color:var(--muted);font-size:14px;padding:24px 0;text-align:center}
 #thx .thnote{font-size:12px;color:var(--dim);margin-top:26px;line-height:1.6}
+#thx textarea#thin,#thx textarea.thedit{font-family:'Nanum Pen Script',cursive;font-size:24px;line-height:34px;color:#2f3a5a;padding:8px 18px 8px 46px;border:1px solid #e3d8c3;border-radius:6px 14px 14px 6px;
+ background-color:#fffef8;background-image:linear-gradient(90deg,transparent 33px,rgba(214,120,110,.38) 33px,rgba(214,120,110,.38) 34px,transparent 34px),linear-gradient(transparent 33px,#e8dfcd 33px,#e8dfcd 34px);
+ background-size:100% 100%,100% 34px;background-position:0 0,0 8px;background-attachment:local;box-shadow:0 2px 8px rgba(80,55,20,.07);resize:none;overflow:hidden}
+#thx textarea#thin{min-height:288px}
+#thx textarea.thedit{min-height:152px}
+#thx textarea#thin::placeholder{color:#b8ad99}
+#thx textarea:focus{outline:none;border-color:#c9a46a;box-shadow:0 0 0 3px rgba(201,164,106,.18),0 2px 8px rgba(80,55,20,.07)}
+#thx .thadd .thbtns{justify-content:stretch}
+#thx #thaddb{flex:1;max-width:none;padding:11px 0;font-size:15px;letter-spacing:.08em;border-radius:12px}
+#thx .tht{font-family:'Nanum Pen Script',cursive;font-size:23px;line-height:32px;color:#2f3a5a;background-image:linear-gradient(transparent 31px,#efe7d6 31px,#efe7d6 32px);background-size:100% 32px;padding-bottom:2px}
+#thx .thd{font-family:'Nanum Pen Script',cursive;font-size:22px;font-weight:400;color:#8a6a3e;letter-spacing:0}
 body.site #modes a[data-mode="thx"]{display:none}
 body.mode-thx{--bg:#fbf8f2;--panel:#ffffff;--panel2:#ffffff;--line:#e8e1d3;--body:#2b2519;--muted:#6e6553;--dim:#9b917e;--ac:#b9874a;background:#fbf8f2;color:#2b2519}
 body.mode-thx .modes{background:#fbf8f2;border-color:#e8e1d3}
@@ -234,7 +245,10 @@ body.mode-thx .modes .status{color:#9b917e}
 #thx button.thb.pri{color:#fff}
 #thx .tht{color:#2b2519}
 #thx .thi{box-shadow:0 1px 2px rgba(60,40,10,.05)}
-#thx .thtm{font-size:11.5px;color:var(--dim);font-weight:700;margin-bottom:3px;font-variant-numeric:tabular-nums}
+#thx .thtm{font-size:11.5px;color:var(--dim);font-weight:700;margin-bottom:3px;font-variant-numeric:tabular-nums;display:flex;align-items:center;gap:4px}
+#thx .thu{font-weight:500;font-size:11px;color:#b8ad99}
+#thx .thed{margin-left:auto;font:inherit;font-size:12px;font-weight:700;color:#a07a45;background:transparent;border:1px solid #eadfc8;border-radius:999px;padding:2px 10px;cursor:pointer}
+#thx .thed:hover{background:#fbf3e4}
 #thx .thk button.on{color:#2b2519}
 #thx .tag{color:#2b2519}
 #thx .thkl{font-size:12px;color:var(--dim);margin-right:2px;align-self:center}
@@ -984,8 +998,8 @@ body.site #dev .amnote-body p{font-size:13.5px}
 <div id="slist"></div>
 </div></section>
 <section id="thx"><div class="wrap">
-<header><h1>나의 고백</h1><div class="ssub">마음속의 감사와 간구를 일기처럼 적어 두는 곳. 시간은 자동으로 기록됩니다. 적은 글을 누르면 고치거나, 나중에 찬양·감사·회개·간구·신뢰로 분류할 수 있습니다.</div></header><div class="thgrid"><aside class="thps" id="thps"></aside><div class="thmain">
-<div class="thadd"><textarea id="thin" rows="4" placeholder="지금 마음속의 감사와 간구를 적어 보세요…"></textarea><div class="thbtns"><span class="sp"></span><button type="button" class="thb pri" id="thaddb">저장</button></div></div>
+<header><h1>나의 고백</h1><div class="ssub">마음속의 감사와 간구를 일기처럼 적어 두는 곳. 시간은 자동으로 기록됩니다. 이미 쓴 일기는 ✎ 수정(또는 글을 누르기)으로 고치거나, 나중에 찬양·감사·회개·간구·신뢰로 분류할 수 있습니다.</div></header><div class="thgrid"><aside class="thps" id="thps"></aside><div class="thmain">
+<div class="thadd"><textarea id="thin" rows="4" placeholder="지금 마음속의 감사와 간구를 적어 보세요…"></textarea><div class="thbtns"><button type="button" class="thb pri" id="thaddb">저장하기</button></div></div>
 <div class="thf" id="thf"></div>
 <div id="thlist"></div>
 <div class="thnote" id="thnote"></div>
@@ -1881,12 +1895,14 @@ function renderThx(){ var el=document.getElementById("thlist"); if(!el) return; 
   L.forEach(function(x){ var k=thxK(x); if(x.d!==cur){ cur=x.d; h+='<div class="thd">'+esc(thxDay(x.d))+'</div>'; }
     var ka=k?' data-k="'+k+'"':'', ek=(x.ek!==undefined?x.ek:k);
     if(THXED===x.id) h+='<div class="thi"'+ka+' data-id="'+esc(x.id)+'"><div class="thtm">'+thxTime(x)+'</div><div class="thk" style="margin-bottom:8px"><span class="thkl">분류(선택)</span>'+thxChips(ek,"data-ek")+'</div><textarea class="thedit" rows="3">'+esc(x.t)+'</textarea><div class="thbtns"><button type="button" class="thb del" data-th="del">삭제</button><span class="sp"></span><button type="button" class="thb" data-th="cancel">취소</button><button type="button" class="thb pri" data-th="save">저장</button></div></div>';
-    else h+='<div class="thi"'+ka+' data-id="'+esc(x.id)+'"><div class="thtm">'+thxTime(x)+(k?' <span class="tag" data-k="'+k+'">'+k+'</span>':'')+'</div><div class="tht" data-th="edit">'+esc(x.t)+'</div></div>'; });
+    else h+='<div class="thi"'+ka+' data-id="'+esc(x.id)+'"><div class="thtm">'+thxTime(x)+(k?' <span class="tag" data-k="'+k+'">'+k+'</span>':'')+(x.u?' <span class="thu">수정됨</span>':'')+'<button type="button" class="thed" data-th="edit">✎ 수정</button></div><div class="tht" data-th="edit">'+esc(x.t)+'</div></div>'; });
   el.innerHTML=h;
-  var ta=el.querySelector(".thedit"); if(ta){ ta.focus(); ta.setSelectionRange(ta.value.length,ta.value.length); } }
+  var ta=el.querySelector(".thedit"); if(ta){ thxGrow(ta); ta.focus(); ta.setSelectionRange(ta.value.length,ta.value.length); } }
 function thxAdd(){ var inp=document.getElementById("thin"), t=inp.value.trim(); if(!t) return; if(!DB){ setStatus("저장소에 연결된 뒤에 적을 수 있습니다","err"); return; } if(!THX) THX=[];
   THX.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),d:thxToday(),t:t,c:new Date().toISOString()}); inp.value=""; THXF="전체"; thxSave(); renderThx(); }
-document.getElementById("thaddb").addEventListener("click",thxAdd);
+document.getElementById("thaddb").addEventListener("click",function(){ thxAdd(); thxGrow(document.getElementById("thin")); });
+function thxGrow(t){ if(!t) return; t.style.height="auto"; t.style.height=Math.max(t.scrollHeight+2,0)+"px"; }
+document.getElementById("thx").addEventListener("input",function(e){ if(e.target.tagName==="TEXTAREA") thxGrow(e.target); });
 document.getElementById("thin").addEventListener("keydown",function(e){ if(e.key==="Enter"&&(e.ctrlKey||e.metaKey)){ e.preventDefault(); thxAdd(); } });
 document.getElementById("thf").addEventListener("click",function(e){ var b=e.target.closest("[data-ff]"); if(!b) return; THXF=b.dataset.ff; renderThx(); });
 document.getElementById("thlist").addEventListener("click",function(e){ var b=e.target.closest("[data-th],[data-ek]"); if(!b) return; var row=b.closest(".thi"), id=row&&row.dataset.id, x=(THX||[]).find(function(y){return y.id===id;}); if(!x) return;
