@@ -188,6 +188,27 @@ body.mode-theo .modes .tb{background:#fffdf9;border-color:#e6dfd0;color:#6e6553}
 body.mode-theo .modes .status{color:#9b917e}
 #theo .wrap{max-width:760px;margin:0 auto;padding:0 16px 60px}
 #thx .wrap{max-width:640px;margin:0 auto;padding:0 16px 80px}
+#thx .thgrid{display:flex;flex-direction:column;gap:14px;margin-top:14px}
+#thx .thmain{min-width:0}
+#thx .thmain .thadd{margin-top:0}
+#thx .thps{background:#fffdf7;border:1px solid #eadfc8;border-radius:14px;padding:14px 16px 12px;position:relative}
+#thx .thps .pk{font-size:11.5px;font-weight:800;letter-spacing:.04em;color:#b9874a}
+#thx .thps h3{font-size:18px;margin:2px 0 4px;color:#2b2519;font-family:'Noto Serif KR',serif}
+#thx .thps .psup{font-size:12.5px;color:var(--muted);font-style:italic;margin-bottom:6px}
+#thx .thps .pbody{font-family:'Noto Serif KR',serif;font-size:15px;line-height:1.85;color:#3a3226;max-height:210px;overflow:hidden;position:relative}
+#thx .thps .pbody sup{font-family:inherit;font-size:10px;color:#b9874a;font-weight:700;margin-right:2px}
+#thx .thps:not(.open) .pbody::after{content:"";position:absolute;left:0;right:0;bottom:0;height:60px;background:linear-gradient(rgba(255,253,247,0),#fffdf7)}
+#thx .thps.open .pbody{max-height:none}
+#thx .thps .pbar{display:flex;gap:6px;justify-content:flex-end;margin-top:8px}
+@media(min-width:960px){
+ body.mode-thx #thx .wrap{max-width:1080px}
+ #thx .thgrid{flex-direction:row-reverse;align-items:flex-start;gap:22px}
+ #thx .thmain{flex:1}
+ #thx .thps{width:380px;flex:none;position:sticky;top:76px;max-height:calc(100vh - 96px);overflow:auto}
+ #thx .thps .pbody{max-height:none}
+ #thx .thps .pbody::after{display:none}
+ #thx .thps .pmore{display:none}
+}
 #thx header h1{font-size:24px;margin:18px 0 4px}
 #thx .ssub{font-size:13px;color:var(--muted);line-height:1.55}
 #thx .thadd{margin:16px 0 8px;display:flex;flex-direction:column;gap:8px}
@@ -196,7 +217,7 @@ body.mode-theo .modes .status{color:#9b917e}
 #thx .thbtns{display:flex;gap:6px;justify-content:flex-end;align-items:center}
 #thx .thbtns .sp{flex:1}
 #thx button.thb{font:inherit;font-size:13.5px;font-weight:700;padding:7px 14px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--body);cursor:pointer}
-#thx button.thb.pri{background:var(--ac);border-color:var(--ac);color:#10163a}
+#thx button.thb.pri{background:var(--ac);border-color:var(--ac)}
 #thx button.thb.del{color:var(--danger);border-color:transparent}
 #thx button.thb.del.arm{background:var(--danger);color:#fff}
 #thx .thd{font-size:12.5px;font-weight:800;color:var(--muted);margin:22px 0 6px;letter-spacing:.02em}
@@ -205,16 +226,29 @@ body.mode-theo .modes .status{color:#9b917e}
 #thx .thempty{color:var(--muted);font-size:14px;padding:24px 0;text-align:center}
 #thx .thnote{font-size:12px;color:var(--dim);margin-top:26px;line-height:1.6}
 body.site #modes a[data-mode="thx"]{display:none}
+body.mode-thx{--bg:#fbf8f2;--panel:#ffffff;--panel2:#ffffff;--line:#e8e1d3;--body:#2b2519;--muted:#6e6553;--dim:#9b917e;--ac:#b9874a;background:#fbf8f2;color:#2b2519}
+body.mode-thx .modes{background:#fbf8f2;border-color:#e8e1d3}
+body.mode-thx .modes a{color:#6e6553} body.mode-thx .modes a.on{background:#b9874a;color:#fff}
+body.mode-thx .modes .tb{background:#fff;border-color:#e8e1d3;color:#6e6553}
+body.mode-thx .modes .status{color:#9b917e}
+#thx button.thb.pri{color:#fff}
+#thx .tht{color:#2b2519}
+#thx .thi{box-shadow:0 1px 2px rgba(60,40,10,.05)}
+#thx .thtm{font-size:11.5px;color:var(--dim);font-weight:700;margin-bottom:3px;font-variant-numeric:tabular-nums}
+#thx .thk button.on{color:#2b2519}
+#thx .tag{color:#2b2519}
+#thx .thkl{font-size:12px;color:var(--dim);margin-right:2px;align-self:center}
 #thx .thk,#thx .thf{display:flex;flex-wrap:wrap;gap:6px}
 #thx .thf{margin:14px 0 2px}
 #thx .thk button,#thx .thf button{font:inherit;font-size:13px;font-weight:700;padding:5px 12px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer}
-#thx .thk button.on{color:#10163a;border-color:transparent;background:var(--kc)}
+#thx .thk button.on{color:#2b2519;border-color:transparent;background:var(--kc)}
 #thx .thf button.on{color:var(--body);border-color:var(--body)}
 #thx .thf small{font-weight:600;opacity:.7;margin-left:3px}
 #thx .thhint{font-size:12px;color:var(--dim)}
-#thx .tag{display:inline-block;font-size:11px;font-weight:800;padding:1px 8px;border-radius:999px;margin-bottom:5px;color:#10163a;background:var(--kc)}
-#thx [data-k="찬양"]{--kc:#E8C46A} #thx [data-k="감사"]{--kc:#7FD3A6} #thx [data-k="회개"]{--kc:#C7A6F0} #thx [data-k="간구"]{--kc:#8FC3F2} #thx [data-k="신뢰"]{--kc:#F2A98F}
+#thx .tag{display:inline-block;font-size:11px;font-weight:800;padding:1px 8px;border-radius:999px;margin-left:4px;vertical-align:1px;color:#2b2519;background:var(--kc)}
+#thx [data-k="찬양"]{--kc:#F6E2A8} #thx [data-k="감사"]{--kc:#CDEFD9} #thx [data-k="회개"]{--kc:#E6DAF7} #thx [data-k="간구"]{--kc:#D3E6F8} #thx [data-k="신뢰"]{--kc:#F8DCCF}
 #thx .thi{border-left:3px solid var(--kc,var(--line))}
+#thx .thi:not([data-k]){border-left-color:var(--line)}
 #theo header h1{font-size:24px;margin:18px 0 4px}
 #theo .ssub{font-size:13px;color:var(--muted);line-height:1.55}
 .tcards{display:grid;grid-template-columns:1fr;gap:10px;margin:16px 0}
@@ -950,12 +984,12 @@ body.site #dev .amnote-body p{font-size:13.5px}
 <div id="slist"></div>
 </div></section>
 <section id="thx"><div class="wrap">
-<header><h1>나의 고백</h1><div class="ssub">다윗의 시편처럼 — 찬양 · 감사 · 회개 · 간구 · 신뢰를 주님께 올려 드리는 나만의 기도 노트. 적은 글을 누르면 고치거나 지울 수 있습니다.</div></header>
-<div class="thadd"><div class="thk" id="thk"></div><textarea id="thin" rows="3"></textarea><div class="thbtns"><span class="thhint" id="thhint"></span><span class="sp"></span><button type="button" class="thb pri" id="thaddb">올려 드리기</button></div></div>
+<header><h1>나의 고백</h1><div class="ssub">마음속의 감사와 간구를 일기처럼 적어 두는 곳. 시간은 자동으로 기록됩니다. 적은 글을 누르면 고치거나, 나중에 찬양·감사·회개·간구·신뢰로 분류할 수 있습니다.</div></header><div class="thgrid"><aside class="thps" id="thps"></aside><div class="thmain">
+<div class="thadd"><textarea id="thin" rows="4" placeholder="지금 마음속의 감사와 간구를 적어 보세요…"></textarea><div class="thbtns"><span class="sp"></span><button type="button" class="thb pri" id="thaddb">저장</button></div></div>
 <div class="thf" id="thf"></div>
 <div id="thlist"></div>
 <div class="thnote" id="thnote"></div>
-</div></section>
+</div></div></div></section>
 <section id="theo"><div class="wrap">
 <div id="thome"></div>
 <div id="ttopic" hidden></div>
@@ -1630,7 +1664,7 @@ async function connect(){
       await DB.doc("prayer/meta").set(metaDoc());
       await DB.doc("devotion/meta").set(devDoc());
       for(var i=0;i<STATE.days.length;i++) await DB.doc("prayer/meta/days/"+STATE.days[i].no).set(STATE.days[i]);
-      setStatus("처음 저장됨","");
+      setStatus("처음 저장됨",""); if(VIEW==="thx") thxLoad();
     }
   }catch(e){ var code=(e&&(e.code||e.message))||"unknown"; setStatus("동기화 실패: "+code,"err"); if(code==="not_granted") showBanner('<b>데이터 접근이 허용되지 않았습니다.</b><br>페이지를 새로고침한 뒤 뜨는 <b>데이터 접근 허용</b>을 눌러 주세요. (허용 안 함을 눌렀다면 새로고침하면 다시 물어봅니다)'); }
   render();
@@ -1822,11 +1856,12 @@ function tShowRef(r){ tBooks(); TRE.lastIndex=0; var m=TRE.exec(" "+r); TRE.last
 document.getElementById("tpop").addEventListener("click",function(e){ if(e.target.id==="tpop"||e.target.closest("#tpx")) this.hidden=true; });
 document.addEventListener("keydown",function(e){ if(e.key==="Escape"){ var tpp=document.getElementById("tpop"); if(tpp&&!tpp.hidden) tpp.hidden=true; } });
 /* ---------- 나의 고백 (대시보드 전용) ---------- 저장소 thanks/notes · 사이트에서는 탭을 숨김 */
-var THX=null, THXED=null, THXK="감사", THXF="전체";
+var THX=null, THXED=null, THXF="전체";
 var THXKS=[["찬양","하나님이 어떤 분이신지 높여 드립니다…","시 8 · 103 · 145"],["감사","오늘 베푸신 은혜를 기억합니다…","시 30 · 34 · 138"],["회개","주 앞에 숨김없이 내려놓습니다…","시 32 · 51 · 139:23-24"],["간구","주께 구합니다 — 나와 이웃을 위해…","시 13 · 86 · 143"],["신뢰","그럼에도 주를 신뢰합니다…","시 23 · 27 · 62"]];
 function thxToday(){ var d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
 function thxDay(k){ var p=k.split("-"), d=new Date(+p[0],+p[1]-1,+p[2]); return p[0]+"년 "+(+p[1])+"월 "+(+p[2])+"일 ("+"일월화수목금토"[d.getDay()]+")"; }
-function thxK(x){ return x.k||"감사"; }
+function thxK(x){ return x.k||""; }
+function thxTime(x){ if(!x.c) return ""; var d=new Date(x.c); return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0"); }
 async function thxLoad(){
   if(DB){ try{ var sn=await DB.doc("thanks/notes").get(); var it=sn.exists&&sn.data()&&sn.data().items; THX=Array.isArray(it)?it.map(function(x){return Object.assign({},x);}):[]; }catch(e){ if(!THX) THX=[]; } }
   else if(!THX) THX=[];
@@ -1835,32 +1870,44 @@ function thxSave(){
   if(!DB){ setStatus("저장소에 연결되지 않아 저장되지 않았습니다","err"); return; }
   setStatus("저장 중…","busy"); DB.doc("thanks/notes").set({items:THX,updatedAt:new Date().toISOString()}).then(function(){ setStatus("저장됨",""); }).catch(function(e){ setStatus("저장 실패: "+((e&&(e.code||e.message))||""),"err"); }); }
 function thxChips(cur,attr){ return THXKS.map(function(k){ return '<button type="button" data-k="'+k[0]+'" '+attr+'="'+k[0]+'"'+(cur===k[0]?' class="on"':'')+'>'+k[0]+'</button>'; }).join(""); }
-function thxComposer(){ document.getElementById("thk").innerHTML=thxChips(THXK,"data-kk"); var k=THXKS.find(function(x){return x[0]===THXK;}); document.getElementById("thin").placeholder=k[1]; document.getElementById("thhint").textContent="참고: "+k[2]; }
-function renderThx(){ var el=document.getElementById("thlist"); if(!el) return; thxComposer();
-  var all=THX||[], cnt={}; all.forEach(function(x){ cnt[thxK(x)]=(cnt[thxK(x)]||0)+1; });
-  document.getElementById("thf").innerHTML=all.length?['전체'].concat(THXKS.map(function(k){return k[0];})).filter(function(k){ return k==="전체"||cnt[k]; }).map(function(k){ return '<button type="button" data-ff="'+k+'"'+(THXF===k?' class="on"':'')+'>'+k+'<small>'+(k==="전체"?all.length:cnt[k])+'</small></button>'; }).join(""):"";
+function thxComposer(){}
+function renderThx(){ var el=document.getElementById("thlist"); if(!el) return; thxComposer(); if(!THPS) renderThps();
+  var all=THX||[], cnt={}; all.forEach(function(x){ var k=thxK(x); if(k) cnt[k]=(cnt[k]||0)+1; });
+  document.getElementById("thf").innerHTML=Object.keys(cnt).length?['전체'].concat(THXKS.map(function(k){return k[0];})).filter(function(k){ return k==="전체"||cnt[k]; }).map(function(k){ return '<button type="button" data-ff="'+k+'"'+(THXF===k?' class="on"':'')+'>'+k+'<small>'+(k==="전체"?all.length:cnt[k])+'</small></button>'; }).join(""):"";
   document.getElementById("thnote").textContent=DB?"대시보드 저장소에 저장됩니다 — 대시보드를 여는 모든 기기에서 같은 노트가 보입니다.":"저장소에 연결된 뒤에 저장할 수 있습니다.";
   var L=all.filter(function(x){ return THXF==="전체"||thxK(x)===THXF; }).sort(function(a,b){ return (b.d+(b.c||"")).localeCompare(a.d+(a.c||"")); });
   if(!L.length){ el.innerHTML='<div class="thempty">'+(all.length?'이 항목에 적은 고백이 없습니다.':'아직 적은 고백이 없습니다.')+'</div>'; return; }
   var h="", cur=null;
   L.forEach(function(x){ var k=thxK(x); if(x.d!==cur){ cur=x.d; h+='<div class="thd">'+esc(thxDay(x.d))+'</div>'; }
-    if(THXED===x.id) h+='<div class="thi" data-k="'+k+'" data-id="'+esc(x.id)+'"><div class="thk" style="margin-bottom:8px">'+thxChips(x.ek||k,"data-ek")+'</div><textarea class="thedit" rows="3">'+esc(x.t)+'</textarea><div class="thbtns"><button type="button" class="thb del" data-th="del">삭제</button><span class="sp"></span><button type="button" class="thb" data-th="cancel">취소</button><button type="button" class="thb pri" data-th="save">저장</button></div></div>';
-    else h+='<div class="thi" data-k="'+k+'" data-id="'+esc(x.id)+'"><span class="tag" data-k="'+k+'">'+k+'</span><div class="tht" data-th="edit">'+esc(x.t)+'</div></div>'; });
+    var ka=k?' data-k="'+k+'"':'', ek=(x.ek!==undefined?x.ek:k);
+    if(THXED===x.id) h+='<div class="thi"'+ka+' data-id="'+esc(x.id)+'"><div class="thtm">'+thxTime(x)+'</div><div class="thk" style="margin-bottom:8px"><span class="thkl">분류(선택)</span>'+thxChips(ek,"data-ek")+'</div><textarea class="thedit" rows="3">'+esc(x.t)+'</textarea><div class="thbtns"><button type="button" class="thb del" data-th="del">삭제</button><span class="sp"></span><button type="button" class="thb" data-th="cancel">취소</button><button type="button" class="thb pri" data-th="save">저장</button></div></div>';
+    else h+='<div class="thi"'+ka+' data-id="'+esc(x.id)+'"><div class="thtm">'+thxTime(x)+(k?' <span class="tag" data-k="'+k+'">'+k+'</span>':'')+'</div><div class="tht" data-th="edit">'+esc(x.t)+'</div></div>'; });
   el.innerHTML=h;
   var ta=el.querySelector(".thedit"); if(ta){ ta.focus(); ta.setSelectionRange(ta.value.length,ta.value.length); } }
 function thxAdd(){ var inp=document.getElementById("thin"), t=inp.value.trim(); if(!t) return; if(!DB){ setStatus("저장소에 연결된 뒤에 적을 수 있습니다","err"); return; } if(!THX) THX=[];
-  THX.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),k:THXK,d:thxToday(),t:t,c:new Date().toISOString()}); inp.value=""; if(THXF!=="전체"&&THXF!==THXK) THXF="전체"; thxSave(); renderThx(); }
+  THX.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),d:thxToday(),t:t,c:new Date().toISOString()}); inp.value=""; THXF="전체"; thxSave(); renderThx(); }
 document.getElementById("thaddb").addEventListener("click",thxAdd);
 document.getElementById("thin").addEventListener("keydown",function(e){ if(e.key==="Enter"&&(e.ctrlKey||e.metaKey)){ e.preventDefault(); thxAdd(); } });
-document.getElementById("thk").addEventListener("click",function(e){ var b=e.target.closest("[data-kk]"); if(!b) return; THXK=b.dataset.kk; thxComposer(); document.getElementById("thin").focus(); });
 document.getElementById("thf").addEventListener("click",function(e){ var b=e.target.closest("[data-ff]"); if(!b) return; THXF=b.dataset.ff; renderThx(); });
 document.getElementById("thlist").addEventListener("click",function(e){ var b=e.target.closest("[data-th],[data-ek]"); if(!b) return; var row=b.closest(".thi"), id=row&&row.dataset.id, x=(THX||[]).find(function(y){return y.id===id;}); if(!x) return;
-  if(b.dataset.ek){ var v0=row.querySelector(".thedit").value; x.ek=b.dataset.ek; renderThx(); var t2=document.querySelector("#thlist .thedit"); if(t2) t2.value=v0; return; }
+  if(b.dataset.ek){ var v0=row.querySelector(".thedit").value; var curk=(x.ek!==undefined?x.ek:thxK(x)); x.ek=(curk===b.dataset.ek?"":b.dataset.ek); renderThx(); var t2=document.querySelector("#thlist .thedit"); if(t2) t2.value=v0; return; }
   var a=b.dataset.th;
   if(a==="edit"){ THXED=id; delete x.ek; renderThx(); }
   else if(a==="cancel"){ THXED=null; delete x.ek; renderThx(); }
-  else if(a==="save"){ var v=row.querySelector(".thedit").value.trim(); if(!v) return; x.t=v; if(x.ek){ x.k=x.ek; delete x.ek; } x.u=new Date().toISOString(); THXED=null; thxSave(); renderThx(); }
+  else if(a==="save"){ var v=row.querySelector(".thedit").value.trim(); if(!v) return; x.t=v; if(x.ek!==undefined){ if(x.ek) x.k=x.ek; else delete x.k; delete x.ek; } x.u=new Date().toISOString(); THXED=null; thxSave(); renderThx(); }
   else if(a==="del"){ if(!b.classList.contains("arm")){ b.classList.add("arm"); b.textContent="한 번 더 누르면 삭제"; return; } THX=THX.filter(function(y){return y.id!==id;}); THXED=null; thxSave(); renderThx(); } });
+var DAVID=[3,4,5,6,7,8,9,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,34,35,36,37,38,39,40,41,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,68,69,70,86,101,103,108,109,110,122,124,131,133,138,139,140,141,142,143,144,145];
+var THPS=null;
+function thpsToday(){ var t=thxToday(), h=0; for(var i=0;i<t.length;i++) h=(h*31+t.charCodeAt(i))>>>0; return DAVID[h%DAVID.length]; }
+function renderThps(n){ var el=document.getElementById("thps"); if(!el||typeof PSALMS==="undefined") return; if(n) THPS=n; if(!THPS) THPS=thpsToday();
+  var vs=PSALMS[String(THPS)]||[], sup="", body="";
+  vs.forEach(function(v,i){ var t=v[1]; if(i===0){ var m=/^<([^>]+)>\s*/.exec(t); if(m){ sup=m[1]; t=t.slice(m[0].length); } } body+='<sup>'+esc(v[0])+'</sup>'+esc(t)+' '; });
+  el.classList.remove("open");
+  el.innerHTML='<div class="pk">오늘의 다윗의 고백'+(THPS!==thpsToday()?' · 다른 시편':'')+'</div><h3>시편 '+THPS+'편</h3>'+(sup?'<div class="psup">'+esc(sup)+'</div>':'')+'<div class="pbody">'+body+'</div><div class="pbar"><button type="button" class="thb pmore" data-ps="more">펼치기</button><button type="button" class="thb" data-ps="next">다른 시편</button>'+(THPS!==thpsToday()?'<button type="button" class="thb" data-ps="today">오늘의 시편</button>':'')+'</div>'; }
+document.getElementById("thps").addEventListener("click",function(e){ var b=e.target.closest("[data-ps]"); if(!b) return; var a=b.dataset.ps;
+  if(a==="more"){ var o=this.classList.toggle("open"); b.textContent=o?"접기":"펼치기"; }
+  else if(a==="next"){ var n=THPS; while(n===THPS) n=DAVID[Math.floor(Math.random()*DAVID.length)]; renderThps(n); }
+  else if(a==="today"){ renderThps(thpsToday()); } });
 var PAINTED=false;
 function setView(v){ VIEW=v; document.body.classList.toggle("mode-dev",v==="dev"); document.body.classList.toggle("mode-pray",v==="pray"); document.body.classList.toggle("mode-song",v==="song"); document.body.classList.toggle("mode-theo",v==="theo"); document.body.classList.toggle("mode-thx",v==="thx");
   document.querySelectorAll("#modes a[data-mode]").forEach(function(a){ a.classList.toggle("on",a.dataset.mode===v); });
