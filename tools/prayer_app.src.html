@@ -180,13 +180,30 @@ body.mode-dev .btn.p{background:#8a6d3b;color:#fff} body.mode-dev .btn.g{backgro
   body.mode-dev .banner,body.mode-dev .settings{background:#2a2822;color:#e9e4d8;border-color:#35322b}
   body.mode-dev .settings input,body.mode-dev .settings textarea{background:#1c1b18;color:#e9e4d8;border-color:#35322b}
 }
-#dev,#prayer,#song,#theo{display:none} body.mode-dev #dev{display:block} body.mode-pray #prayer{display:block} body.mode-song #song{display:block} body.mode-theo #theo{display:block}
+#dev,#prayer,#song,#theo,#thx{display:none} body.mode-thx #thx{display:block} body.mode-dev #dev{display:block} body.mode-pray #prayer{display:block} body.mode-song #song{display:block} body.mode-theo #theo{display:block}
 body.mode-theo{--bg:#f6f3ec;--panel:#fffdf9;--panel2:#fffdf9;--line:#e6dfd0;--body:#2b2519;--muted:#6e6553;--dim:#9b917e;--ac:#7a5a2b;background:#f6f3ec;color:#2b2519}
 body.mode-theo .modes{background:#f6f3ec;border-color:#e6dfd0}
 body.mode-theo .modes a{color:#6e6553} body.mode-theo .modes a.on{background:#7a5a2b;color:#fff}
 body.mode-theo .modes .tb{background:#fffdf9;border-color:#e6dfd0;color:#6e6553}
 body.mode-theo .modes .status{color:#9b917e}
 #theo .wrap{max-width:760px;margin:0 auto;padding:0 16px 60px}
+#thx .wrap{max-width:640px;margin:0 auto;padding:0 16px 80px}
+#thx header h1{font-size:24px;margin:18px 0 4px}
+#thx .ssub{font-size:13px;color:var(--muted);line-height:1.55}
+#thx .thadd{margin:16px 0 8px;display:flex;flex-direction:column;gap:8px}
+#thx textarea{width:100%;box-sizing:border-box;min-height:64px;resize:vertical;font:inherit;font-size:15.5px;line-height:1.6;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--panel);color:var(--body)}
+#thx textarea:focus{outline:2px solid var(--ac);outline-offset:0}
+#thx .thbtns{display:flex;gap:6px;justify-content:flex-end;align-items:center}
+#thx .thbtns .sp{flex:1}
+#thx button.thb{font:inherit;font-size:13.5px;font-weight:700;padding:7px 14px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--body);cursor:pointer}
+#thx button.thb.pri{background:var(--ac);border-color:var(--ac);color:#10163a}
+#thx button.thb.del{color:var(--danger);border-color:transparent}
+#thx button.thb.del.arm{background:var(--danger);color:#fff}
+#thx .thd{font-size:12.5px;font-weight:800;color:var(--muted);margin:22px 0 6px;letter-spacing:.02em}
+#thx .thi{padding:10px 12px;border-radius:12px;background:var(--panel);border:1px solid var(--line);margin-bottom:6px}
+#thx .tht{font-size:15.5px;line-height:1.65;white-space:pre-wrap;word-break:keep-all;overflow-wrap:anywhere;cursor:text}
+#thx .thempty{color:var(--muted);font-size:14px;padding:24px 0;text-align:center}
+#thx .thnote{font-size:12px;color:var(--dim);margin-top:26px;line-height:1.6}
 #theo header h1{font-size:24px;margin:18px 0 4px}
 #theo .ssub{font-size:13px;color:var(--muted);line-height:1.55}
 .tcards{display:grid;grid-template-columns:1fr;gap:10px;margin:16px 0}
@@ -743,7 +760,7 @@ body.site #dev .amnote-body p{font-size:13.5px}
 <body>
 <header class="appbar" id="appbar"><div class="shbar" id="shbar"><a href="https://thestyner0.github.io/prayer/" target="_blank" rel="noopener">🔗 thestyner0.github.io/prayer</a><button class="tb" id="shareBtn" type="button">공유 · 주소 복사</button></div>
 <nav class="modes" id="modes"><div class="in">
-  <a data-mode="dev">묵상</a><a data-mode="pray">중보기도</a><a data-mode="song">찬양</a><a data-mode="theo">신학</a><span class="sp"></span>
+  <a data-mode="dev">묵상</a><a data-mode="pray">중보기도</a><a data-mode="song">찬양</a><a data-mode="theo">신학</a><a data-mode="thx">감사</a><span class="sp"></span>
   <div class="tools">
     <span class="status" id="status"></span>
     <button class="tb" id="thBtn" type="button" aria-label="밝기 전환">☾</button>
@@ -920,6 +937,12 @@ body.site #dev .amnote-body p{font-size:13.5px}
 <div class="sbar"><div class="schips" id="sfil"></div></div>
 <div id="spk"></div>
 <div id="slist"></div>
+</div></section>
+<section id="thx"><div class="wrap">
+<header><h1>감사</h1><div class="ssub">오늘 감사한 일을 적어 두세요. 적은 글을 누르면 고치거나 지울 수 있습니다.</div></header>
+<div class="thadd"><textarea id="thin" rows="2" placeholder="오늘 감사한 일…"></textarea><div class="thbtns"><button type="button" class="thb pri" id="thaddb">추가</button></div></div>
+<div id="thlist"></div>
+<div class="thnote" id="thnote"></div>
 </div></section>
 <section id="theo"><div class="wrap">
 <div id="thome"></div>
@@ -1450,7 +1473,7 @@ function initDevotion(){
   function setTab(w){ $("tab-med").classList.toggle("on",w==="med"); $("tab-am").classList.toggle("on",w==="am"); }
   function showSchedule(){ hideAll(); $("back").style.display="none"; $("schedule").style.display="block"; var row=document.querySelector("#dev .sched-row.today"); if(row) row.scrollIntoView({block:"center"}); }
   function showGuide(){ hideAll(); $("guide").style.display="block"; $("back").style.display="block"; window.scrollTo(0,0); }
-  function showReader(idx){ hideAll(); $("reader").style.display="block"; setTab("med"); render(idx); try{history.replaceState(null,"","#dev");}catch(e){} window.scrollTo(0,0); }
+  function showReader(idx){ hideAll(); $("reader").style.display="block"; setTab("med"); render(idx); if(typeof VIEW==="undefined"||VIEW==="dev"){ try{history.replaceState(null,"","#dev");}catch(e){} window.scrollTo(0,0); } }
   function buildSchedule(){
     $("totaldays").textContent=PLAN.length; var list=$("schedlist"); list.innerHTML="";
     var lastBook=null,lastCh=null;
@@ -1589,7 +1612,7 @@ async function connect(){
       q.docs.forEach(function(s){ var b=s.data(); if(b&&b.no) applyRemoteDay(b.no,b); });
       STATE.days.sort(function(a,b){return a.no-b.no;});
       var dv=await DB.doc("devotion/meta").get(); if(dv.exists) applyRemoteDev(dv.data()); else { var d0=devDoc(); await DB.doc("devotion/meta").set(d0); STATE.devotion.rev=d0.rev; }
-      setStatus("동기화됨","");
+      setStatus("동기화됨",""); if(VIEW==="thx") thxLoad();
     } else {
       // 저장소가 비어 있으면 현재 내용을 처음 기록합니다
       await DB.doc("prayer/meta").set(metaDoc());
@@ -1606,7 +1629,7 @@ async function connect(){
 }
 
 var h=/^#day([0-7])$/.exec(location.hash); SEL=h?+h[1]:todayWeek();
-if(h) VIEW="pray"; else if(location.hash==="#song") VIEW="song"; else if(/^#theo/.test(location.hash)) VIEW="theo"; else VIEW="dev";
+if(h) VIEW="pray"; else if(location.hash==="#song") VIEW="song"; else if(/^#theo/.test(location.hash)) VIEW="theo"; else if(location.hash==="#thx") VIEW="thx"; else VIEW="dev";
 /* ---------- 찬양 ---------- */
 var SFIL="all", SQ="";
 var CHO="ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ";
@@ -1786,10 +1809,40 @@ function tShowRef(r){ tBooks(); TRE.lastIndex=0; var m=TRE.exec(" "+r); TRE.last
   document.getElementById("tpt").textContent=r+(o.alt?" (개역한글)":""); document.getElementById("tpb").innerHTML='<div class="tv"><div class="tx">'+(o.vs.length?tVsHTML(o.vs):"본문을 찾지 못했습니다")+'</div></div>'; document.getElementById("tpop").hidden=false; }
 document.getElementById("tpop").addEventListener("click",function(e){ if(e.target.id==="tpop"||e.target.closest("#tpx")) this.hidden=true; });
 document.addEventListener("keydown",function(e){ if(e.key==="Escape"){ var tpp=document.getElementById("tpop"); if(tpp&&!tpp.hidden) tpp.hidden=true; } });
+/* ---------- 감사노트 ---------- 대시보드: 저장소(thanks/notes) · 사이트: 이 기기(localStorage) */
+var THX=null, THXED=null;
+function thxToday(){ var d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+function thxDay(k){ var p=k.split("-"), d=new Date(+p[0],+p[1]-1,+p[2]); return p[0]+"년 "+(+p[1])+"월 "+(+p[2])+"일 ("+"일월화수목금토"[d.getDay()]+")"; }
+function thxLocal(){ try{ var a=JSON.parse(localStorage.getItem("thx.v1")||"[]"); return Array.isArray(a)?a:[]; }catch(e){ return []; } }
+async function thxLoad(){
+  if(DB){ try{ var sn=await DB.doc("thanks/notes").get(); var it=sn.exists&&sn.data()&&sn.data().items; THX=Array.isArray(it)?it.map(function(x){return Object.assign({},x);}):[]; }catch(e){ if(!THX) THX=[]; } }
+  else THX=thxLocal();
+  renderThx(); }
+function thxSave(){
+  if(DB){ setStatus("저장 중…","busy"); DB.doc("thanks/notes").set({items:THX,updatedAt:new Date().toISOString()}).then(function(){ setStatus("저장됨",""); }).catch(function(e){ setStatus("저장 실패: "+((e&&(e.code||e.message))||""),"err"); }); }
+  else { try{ localStorage.setItem("thx.v1",JSON.stringify(THX)); }catch(e){} } }
+function renderThx(){ var el=document.getElementById("thlist"); if(!el) return; var L=(THX||[]).slice().sort(function(a,b){ return (b.d+(b.c||"")).localeCompare(a.d+(a.c||"")); });
+  document.getElementById("thnote").textContent=DB?"대시보드 저장소에 저장됩니다 — 대시보드를 여는 모든 기기에서 같은 노트가 보입니다.":"이 기기(브라우저)에만 저장됩니다.";
+  if(!L.length){ el.innerHTML='<div class="thempty">아직 적은 감사가 없습니다.</div>'; return; }
+  var h="", cur=null;
+  L.forEach(function(x){ if(x.d!==cur){ cur=x.d; h+='<div class="thd">'+esc(thxDay(x.d))+'</div>'; }
+    if(THXED===x.id) h+='<div class="thi" data-id="'+esc(x.id)+'"><textarea class="thedit" rows="3">'+esc(x.t)+'</textarea><div class="thbtns"><button type="button" class="thb del" data-th="del">삭제</button><span class="sp"></span><button type="button" class="thb" data-th="cancel">취소</button><button type="button" class="thb pri" data-th="save">저장</button></div></div>';
+    else h+='<div class="thi" data-id="'+esc(x.id)+'"><div class="tht" data-th="edit">'+esc(x.t)+'</div></div>'; });
+  el.innerHTML=h;
+  var ta=el.querySelector(".thedit"); if(ta){ ta.focus(); ta.setSelectionRange(ta.value.length,ta.value.length); } }
+function thxAdd(){ var inp=document.getElementById("thin"), t=inp.value.trim(); if(!t) return; if(!THX) THX=thxLocal();
+  THX.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),d:thxToday(),t:t,c:new Date().toISOString()}); inp.value=""; thxSave(); renderThx(); }
+document.getElementById("thaddb").addEventListener("click",thxAdd);
+document.getElementById("thin").addEventListener("keydown",function(e){ if(e.key==="Enter"&&(e.ctrlKey||e.metaKey)){ e.preventDefault(); thxAdd(); } });
+document.getElementById("thlist").addEventListener("click",function(e){ var b=e.target.closest("[data-th]"); if(!b) return; var row=b.closest(".thi"), id=row&&row.dataset.id, x=(THX||[]).find(function(y){return y.id===id;}); if(!x) return; var a=b.dataset.th;
+  if(a==="edit"){ THXED=id; renderThx(); }
+  else if(a==="cancel"){ THXED=null; renderThx(); }
+  else if(a==="save"){ var v=row.querySelector(".thedit").value.trim(); if(!v){ return; } x.t=v; x.u=new Date().toISOString(); THXED=null; thxSave(); renderThx(); }
+  else if(a==="del"){ if(!b.classList.contains("arm")){ b.classList.add("arm"); b.textContent="한 번 더 누르면 삭제"; return; } THX=THX.filter(function(y){return y.id!==id;}); THXED=null; thxSave(); renderThx(); } });
 var PAINTED=false;
-function setView(v){ VIEW=v; document.body.classList.toggle("mode-dev",v==="dev"); document.body.classList.toggle("mode-pray",v==="pray"); document.body.classList.toggle("mode-song",v==="song"); document.body.classList.toggle("mode-theo",v==="theo");
+function setView(v){ VIEW=v; document.body.classList.toggle("mode-dev",v==="dev"); document.body.classList.toggle("mode-pray",v==="pray"); document.body.classList.toggle("mode-song",v==="song"); document.body.classList.toggle("mode-theo",v==="theo"); document.body.classList.toggle("mode-thx",v==="thx");
   document.querySelectorAll("#modes a[data-mode]").forEach(function(a){ a.classList.toggle("on",a.dataset.mode===v); });
-  if(v==="dev"){ try{history.replaceState(null,"",location.hash==="#am"?"#am":"#dev");}catch(e){} } else if(v==="song"){ try{history.replaceState(null,"","#song");}catch(e){} renderSongs(); } else if(v==="theo"){ if(!/^#theo/.test(location.hash)){ try{history.replaceState(null,"","#theo");}catch(e){} } renderTheo(); } else { try{history.replaceState(null,"","#day"+SEL);}catch(e){} if(PAINTED) render(); }
+  if(v==="dev"){ try{history.replaceState(null,"",location.hash==="#am"?"#am":"#dev");}catch(e){} } else if(v==="song"){ try{history.replaceState(null,"","#song");}catch(e){} renderSongs(); } else if(v==="thx"){ try{history.replaceState(null,"","#thx");}catch(e){} thxLoad(); } else if(v==="theo"){ if(!/^#theo/.test(location.hash)){ try{history.replaceState(null,"","#theo");}catch(e){} } renderTheo(); } else { try{history.replaceState(null,"","#day"+SEL);}catch(e){} if(PAINTED) render(); }
   window.scrollTo({top:0}); }
 document.getElementById("modes").addEventListener("click",function(e){ var a=e.target.closest("a[data-mode]"); if(a) setView(a.dataset.mode); });
 document.getElementById("pcx").addEventListener("click",closeCard); document.getElementById("thBtn").addEventListener("click",function(){ PDARK=!PDARK; try{ localStorage.setItem("prayer.theme",PDARK?"dark":"light"); }catch(e){} applyTheme(); }); document.getElementById("pcsave").addEventListener("click",saveCard); document.getElementById("pcsave3").addEventListener("click",saveCard3);
