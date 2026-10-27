@@ -101,7 +101,7 @@ def blocks_of(doc):
         elif el.tag.endswith("}tbl"): yield Table(el, doc)
 def sty(p): return p.style.name if p.style is not None else ""
 def cells(row): return [c.text.strip() for c in row.cells]
-ROMAN = re.compile(r"^([ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩ])\.\s+(.+)$")
+ROMAN = re.compile(r"^([ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩⅪⅫ])\.\s+(.+)$")
 
 # ---------- 표형 문서: 하나님의 약속 / 기뻐하시는 것 ----------
 def verse_table_doc(path, tid, title_override=None):
