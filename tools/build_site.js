@@ -67,4 +67,15 @@ if(leak.length){ console.error("LEAK? day-7 names found in public html:", leak);
 const out=path.resolve(process.cwd(),outDir); fs.mkdirSync(out,{recursive:true});
 fs.writeFileSync(path.join(__dirname,"prayer_app.html"),html);
 fs.writeFileSync(path.join(out,"index.html"),html);
+// --- 개인 기록(고백·전도) 스냅샷: 대시보드 저장소의 thanks/notes · thanks/psalmnotes · evangel/main 을 개인 키로 암호화해 personal.enc.json 으로 따로 둠
+//     PERSONAL_KEY="<salt_b64>:<key_b64>" (PBKDF2-SHA256 600k로 개인 비밀번호에서 만든 키). 키나 문서가 없으면 기존 파일을 그대로 둔다.
+(function(){ const PK=process.env.PERSONAL_KEY; if(!PK){ console.log("personal: PERSONAL_KEY 없음 — personal.enc.json 유지"); return; }
+  const P={}, docs=[["thanks","notes"],["thanks","psalmnotes"],["evangel","main"]];
+  docs.forEach(([c,d])=>{ const f=path.join(dataDir,c,d+".json"); if(fs.existsSync(f)){ const j=JSON.parse(fs.readFileSync(f,"utf8")); delete j.version; P[c+"/"+d]=j; } });
+  if(!Object.keys(P).length){ console.log("personal: 문서 없음 — personal.enc.json 유지"); return; }
+  const [sb,kb]=PK.split(":"), key=Buffer.from(kb,"base64"), iv=crypto.randomBytes(12);
+  const at=Object.values(P).map(j=>j.updatedAt||"").sort().pop()||"";
+  const c=crypto.createCipheriv("aes-256-gcm",key,iv); const ct=Buffer.concat([c.update(JSON.stringify(P),"utf8"),c.final(),c.getAuthTag()]);
+  fs.writeFileSync(path.join(out,"personal.enc.json"),JSON.stringify({v:1,salt:sb,iter:600000,iv:iv.toString("base64"),ct:ct.toString("base64"),src:at,built:new Date().toISOString()}));
+  console.log("personal: personal.enc.json 갱신 ("+Object.keys(P).join(", ")+", src "+at+")"); })();
 console.log("public site built from rev",D.rev,"updated",D.updated,"| day7 encrypted",Math.round(ct.length/1024)+"KB | pub-inlined",inlined,"locked mirrors",locked,"hidden titles",hidden.length,"→",path.join(out,"index.html"),Math.round(html.length/1024)+"KB");

@@ -255,7 +255,6 @@ body.mode-theo .modes .status{color:#9b917e}
 #thx #thaddb{flex:1;max-width:none;padding:11px 0;font-size:15px;letter-spacing:.08em;border-radius:12px}
 #thx .tht{font-family:var(--thf);font-size:var(--ths2);font-weight:var(--thw);line-height:32px;color:#25304f;background-image:linear-gradient(transparent 31px,#efe7d6 31px,#efe7d6 32px);background-size:100% 32px;padding-bottom:2px}
 #thx .thd{font-family:var(--thf);font-size:var(--thd);font-weight:700;color:#8a6a3e;letter-spacing:0}
-body.site #modes a[data-mode="thx"]{display:none}
 #thx{--thf:'Noto Serif KR',serif;--ths:17.5px;--ths2:17px;--thd:15px;--thw:500}
 #thx.f-gowun{--thf:'Gowun Batang',serif;--ths:18px;--ths2:17.5px;--thd:15.5px;--thw:400}
 #thx.f-myeong{--thf:'Nanum Myeongjo',serif;--ths:18px;--ths2:17.5px;--thd:15.5px;--thw:700}
@@ -341,7 +340,16 @@ body.mode-thx .modes .status{color:#9b917e}
 #evg .thed{margin-left:auto;font:inherit;font-size:12px;font-weight:700;color:#a07a45;background:transparent;border:1px solid #eadfc8;border-radius:999px;padding:2px 10px;cursor:pointer}
 #evg .thed:hover{background:#fbf3e4}
 #evg .thi{border-left:3px solid var(--kc,var(--line))}
-/* ---------- 전도 (대시보드 전용) ---------- */
+/* ---------- 전도 ---------- */
+/* 사이트: 고백·전도는 개인 비밀번호로 풀어 읽기 전용 */
+.pvslot:empty{display:none}
+body.pvlocked #thx .thgrid,body.pvlocked #evg .evgrid,body.pvlocked #thfont,body.pvlocked #evfont,body.pvlocked #evverse{display:none}
+.pvlock input[type=password]{letter-spacing:.08em;font-size:18px}
+.pvlock button{background:#4f7d55!important;color:#fff!important}
+body.mode-thx .pvlock button{background:#b9874a!important}
+.pvnote{font-size:12px;color:var(--dim);margin:10px 0 0}
+body.site #thx .thadd,body.site #evg .thadd,body.site #thx .thed,body.site #evg .thed,body.site #evg .evadd,body.site #evg #evformw,body.site #thtrash,body.site #evtrash,body.site #psnin,body.site #thx .psn .thbtns,body.site #evg [data-ev="write"]{display:none!important}
+body.site #evg .evst button,body.site #evg [data-ev="pray"],body.site #thx .tht,body.site #evg .tht{pointer-events:none;cursor:default}
 #evg{display:none} body.mode-evg #evg{display:block}
 #evg header h1{font-size:24px;margin:18px 0 4px}
 body.mode-evg{--bg:#f7f8f3;--panel:#ffffff;--panel2:#ffffff;--line:#e2e5d8;--body:#24291f;--muted:#5f6656;--dim:#939a87;--ac:#4f7d55;background:#f7f8f3;color:#24291f}
@@ -349,7 +357,6 @@ body.mode-evg .modes{background:#f7f8f3;border-color:#e2e5d8}
 body.mode-evg .modes a{color:#5f6656} body.mode-evg .modes a.on{background:#4f7d55;color:#fff}
 body.mode-evg .modes .tb{background:#fff;border-color:#e2e5d8;color:#5f6656}
 body.mode-evg .modes .status{color:#939a87}
-body.site #modes a[data-mode="evg"]{display:none}
 #evg .wrap{max-width:640px;margin:0 auto;padding:0 16px 80px}
 #evg .evverse{margin-top:10px;font-family:'Noto Serif KR',serif;font-size:14px;line-height:1.7;color:#3d4a36;background:#f0f4ea;border-left:3px solid #4f7d55;border-radius:0 10px 10px 0;padding:8px 12px}
 #evg .evverse small{display:block;font-family:inherit;color:#7d8a72;font-size:12px;margin-top:2px}
@@ -1184,14 +1191,14 @@ body.site #dev .amnote-body p{font-size:13.5px}
 <div id="slist"></div>
 </div></section>
 <section id="thx"><div class="wrap">
-<header><h1>나의 고백</h1><div class="ssub">마음속의 감사와 간구를 일기처럼 적어 두는 곳. 시간은 자동으로 기록됩니다. 이미 쓴 일기는 ✎ 수정(또는 글을 누르기)으로 고치거나, 나중에 찬양·감사·회개·간구·신뢰로 분류할 수 있습니다.</div><div class="thfont" id="thfont">글씨체 <button type="button" data-ft="serif">명조</button><button type="button" data-ft="gowun">고운바탕</button><button type="button" data-ft="myeong">나눔명조</button><button type="button" data-ft="pen">손글씨</button></div></header><div class="thgrid"><aside class="thps" id="thps"></aside><div class="thmain">
+<header><h1>나의 고백</h1><div class="ssub">마음속의 감사와 간구를 일기처럼 적어 두는 곳. 시간은 자동으로 기록됩니다. 이미 쓴 일기는 ✎ 수정(또는 글을 누르기)으로 고치거나, 나중에 찬양·감사·회개·간구·신뢰로 분류할 수 있습니다.</div><div class="thfont" id="thfont">글씨체 <button type="button" data-ft="serif">명조</button><button type="button" data-ft="gowun">고운바탕</button><button type="button" data-ft="myeong">나눔명조</button><button type="button" data-ft="pen">손글씨</button></div></header><div class="pvslot"></div><div class="thgrid"><aside class="thps" id="thps"></aside><div class="thmain">
 <div class="thadd"><textarea id="thin" rows="4" placeholder="지금 마음속의 감사와 간구를 적어 보세요…"></textarea><div class="thbtns"><button type="button" class="thb thbold" data-bold="thin" title="굵게 (선택한 글자를 **굵게**)"><b>B</b></button><button type="button" class="thb pri" id="thaddb">저장하기</button></div></div>
 <div class="thf" id="thf"></div>
 <div id="thlist"></div>
 <div id="thtrash"></div><div class="thnote" id="thnote"></div><div id="thundo" hidden></div>
 </div></div></div></section>
 <section id="evg"><div class="wrap">
-<header><h1>전도</h1><div class="ssub">내가 품고 기도하며 복음을 전할 사람들, 그리고 전도하며 겪은 일과 깨달음을 적는 노트입니다. 대상자는 긴급 · 상시 · 장기로 나누고, 관계의 단계(기도 중 → 양육)를 눌러 표시합니다. 이 화면은 대시보드에만 있고 사이트에는 보이지 않습니다.</div><div class="evverse" id="evverse"></div><div class="thfont" id="evfont">글씨체 <button type="button" data-ft="serif">명조</button><button type="button" data-ft="gowun">고운바탕</button><button type="button" data-ft="myeong">나눔명조</button><button type="button" data-ft="pen">손글씨</button></div></header>
+<header><h1>전도</h1><div class="ssub">내가 품고 기도하며 복음을 전할 사람들, 그리고 전도하며 겪은 일과 깨달음을 적는 노트입니다. 대상자는 긴급 · 상시 · 장기로 나누고, 관계의 단계(기도 중 → 양육)를 눌러 표시합니다. 쓰고 고치는 것은 대시보드에서, 사이트에서는 개인 비밀번호로 열어 읽기만 합니다.</div><div class="evverse" id="evverse"></div><div class="thfont" id="evfont">글씨체 <button type="button" data-ft="serif">명조</button><button type="button" data-ft="gowun">고운바탕</button><button type="button" data-ft="myeong">나눔명조</button><button type="button" data-ft="pen">손글씨</button></div></header><div class="pvslot"></div>
 <div class="evgrid"><div class="evtg"><h2 class="evh">전도대상자 <small id="evcnt"></small></h2><div class="evf" id="evf"></div><div id="evformw"></div><div id="evtl"></div></div>
 <div class="evnt"><h2 class="evh">전도노트 · 일기</h2>
 <div class="thadd"><div class="evtags" id="evsel"></div><textarea id="evin" rows="4" placeholder="오늘 만난 사람, 나눈 대화, 기도한 것, 깨달은 것을 적어 보세요…"></textarea><div class="thbtns"><button type="button" class="thb thbold" data-evbold="evin" title="굵게"><b>B</b></button><button type="button" class="thb pri" id="evaddb">저장하기</button></div></div>
@@ -1851,7 +1858,7 @@ function showBanner(msg){
 async function connect(){
   setStatus("저장소 연결 중…","busy");
   var use=window.claude&&window.claude.use;
-  if(!use){ MODE="viewer"; document.body.classList.add("site"); if(VIEW==="thx"||VIEW==="evg") setView("dev"); setStatus("",""); document.getElementById("editBtn").hidden=true; document.getElementById("setBtn").hidden=true;
+  if(!use){ MODE="viewer"; document.body.classList.add("site");  setStatus("",""); document.getElementById("editBtn").hidden=true; document.getElementById("setBtn").hidden=true;
     if(STATE.locked7){ try{ await tryRemembered7(); }catch(e){} }
     if("serviceWorker" in navigator&&/^https?:/.test(location.protocol)){ try{ navigator.serviceWorker.register("sw.js").catch(function(){}); }catch(e){} }
     render(); return; }
@@ -2122,6 +2129,7 @@ function thxDay(k){ var p=k.split("-"), d=new Date(+p[0],+p[1]-1,+p[2]); return 
 function thxK(x){ return x.k||""; }
 function thxTime(x){ if(!x.c) return ""; var d=new Date(x.c); return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0"); }
 async function thxLoad(){
+  if(MODE==="viewer"&&!PV){ if(!(await pvGate("thx"))) return; }
   if(DB){ try{ var sn=await DB.doc("thanks/notes").get(); var it=sn.exists&&sn.data()&&sn.data().items; THX=Array.isArray(it)?it.map(function(x){return Object.assign({},x);}):[]; var tr=sn.exists&&sn.data()&&sn.data().trash; THXTR=Array.isArray(tr)?tr:[]; }catch(e){ if(!THX) THX=[]; }
     try{ var pn=await DB.doc("thanks/psalmnotes").get(); PSN=(pn.exists&&pn.data()&&pn.data().notes)||{}; PSNTR=(pn.exists&&pn.data()&&pn.data().trash)||[]; }catch(e){ if(!PSN) PSN={}; } renderPsn(); }
   else if(!THX) THX=[];
@@ -2171,7 +2179,32 @@ var THFT="serif"; try{ THFT=localStorage.getItem("thx.font")||"serif"; }catch(e)
 function thxFont(f){ THFT=f; ["thx","evg"].forEach(function(id){ var r=document.getElementById(id); if(r) ["gowun","myeong","pen"].forEach(function(k){ r.classList.toggle("f-"+k,f===k); }); }); document.querySelectorAll("#thfont [data-ft],#evfont [data-ft]").forEach(function(b){ b.classList.toggle("on",b.dataset.ft===f); }); try{ localStorage.setItem("thx.font",f); }catch(e){} document.querySelectorAll("#thx textarea,#evg textarea").forEach(function(t){ if(typeof thxGrow==="function") thxGrow(t); }); }
 document.getElementById("thfont").addEventListener("click",function(e){ var b=e.target.closest("[data-ft]"); if(b) thxFont(b.dataset.ft); });
 thxFont(THFT);
-/* ---------- 전도 (대시보드 전용) ---------- 저장소 evangel/main {targets, notes, trash} · 사이트에서는 탭을 숨김 */
+/* ---------- 개인 기록(고백·전도) — 사이트에서는 personal.enc.json 을 개인 비밀번호로 풀어 읽기 전용으로 보여 줌 ---------- */
+var PV=null, PVENC=null, LKP="prayer.keyP.v1";
+function pvApply(P){ PV=P; var t=P["thanks/notes"]||{}; THX=(t.items||[]).map(function(x){ return Object.assign({},x); }); THXTR=[];
+  var pn=P["thanks/psalmnotes"]||{}; PSN=pn.notes||{}; PSNTR=[]; var e=P["evangel/main"]||{}; EVG={targets:evArr(e.targets),notes:evArr(e.notes)}; EVGTR=[]; }
+async function pvFetch(){ if(PVENC) return PVENC; var r=await fetch("personal.enc.json",{cache:"no-store"}); if(!r.ok) throw new Error("nofile"); PVENC=await r.json(); return PVENC; }
+async function pvKeyFrom(pass){ var L=await pvFetch(), base=await crypto.subtle.importKey("raw",new TextEncoder().encode(pass),"PBKDF2",false,["deriveKey"]);
+  return crypto.subtle.deriveKey({name:"PBKDF2",salt:b64u8(L.salt),iterations:L.iter,hash:"SHA-256"},base,{name:"AES-GCM",length:256},true,["decrypt"]); }
+async function pvOpen(key){ var L=await pvFetch(), plain=await crypto.subtle.decrypt({name:"AES-GCM",iv:b64u8(L.iv)},key,b64u8(L.ct)); pvApply(JSON.parse(new TextDecoder().decode(plain))); }
+function pvNote(){ var d=PVENC&&(PVENC.src||PVENC.built)||"", t=""; if(d){ var x=new Date(d); t=(x.getMonth()+1)+"월 "+x.getDate()+"일 "+String(x.getHours()).padStart(2,"0")+":"+String(x.getMinutes()).padStart(2,"0"); }
+  document.querySelectorAll(".pvslot").forEach(function(el){ el.innerHTML='<div class="pvnote">🔓 읽기 전용 · 대시보드 기록'+(t?' ('+t+' 기준)':'')+' · 쓰고 고치는 것은 대시보드에서</div>'; }); }
+async function pvTryRemembered(){ try{ var jwk=JSON.parse(localStorage.getItem(LKP)||"null"); if(!jwk) return false; var key=await crypto.subtle.importKey("jwk",jwk,{name:"AES-GCM"},true,["decrypt"]); await pvOpen(key); return true; }
+  catch(e){ if(!(e&&e.message==="nofile")){ try{ localStorage.removeItem(LKP); }catch(_){} } return false; } }
+async function pvGate(v){ var sec=document.getElementById(v); if(!sec) return false;
+  if(PV||await pvTryRemembered()){ document.body.classList.remove("pvlocked"); pvNote(); return true; }
+  document.body.classList.add("pvlocked"); var box=sec.querySelector(".pvslot");
+  box.innerHTML='<form class="lockbox pvlock" autocomplete="off"><div class="lk">🔒</div><h2>나만 보는 기록입니다</h2><p>고백 일기와 전도 노트는 개인 비밀번호로 잠겨 있습니다. 사이트에서는 읽기만 할 수 있고, 쓰고 고치는 것은 대시보드에서 합니다.</p><input type="password" class="pvpw" placeholder="개인 비밀번호" autocomplete="current-password"><label class="row"><input type="checkbox" class="pvrem" checked> 이 기기에서 기억하기</label><button type="submit">열기</button><div class="err"></div></form>';
+  var f=box.querySelector("form"); pvFetch().catch(function(){ f.querySelector(".err").textContent="아직 사이트에 올라온 기록이 없습니다."; });
+  f.addEventListener("submit",async function(e){ e.preventDefault(); var pw=f.querySelector(".pvpw"), go=f.querySelector("button[type=submit]"), err=f.querySelector(".err"); err.textContent=""; go.disabled=true; go.textContent="확인 중…";
+    try{ var key=await pvKeyFrom(pw.value.trim()); await pvOpen(key); if(f.querySelector(".pvrem").checked){ try{ localStorage.setItem(LKP,JSON.stringify(await crypto.subtle.exportKey("jwk",key))); }catch(_){} }
+      document.body.classList.remove("pvlocked"); pvNote(); if(VIEW==="thx") thxLoad(); else if(VIEW==="evg") evgLoad(); }
+    catch(ex){ err.textContent=(!window.crypto||!crypto.subtle)?"이 브라우저는 지원되지 않습니다. 최신 Safari/Chrome으로 열어 주세요.":(ex&&ex.message==="nofile"?"아직 사이트에 올라온 기록이 없습니다.":"비밀번호가 맞지 않습니다."); pw.value=""; pw.focus(); go.disabled=false; go.textContent="열기"; } });
+  setTimeout(function(){ var pw=f.querySelector(".pvpw"); if(pw) pw.focus(); },50); return false; }
+["thx","evg"].forEach(function(id){ var el=document.getElementById(id); if(el) el.addEventListener("click",function(e){ if(MODE!=="viewer") return;
+  var b=e.target.closest('[data-th],[data-ek],[data-evn],[data-rs],[data-evrs],[data-evsel],[data-eves],[data-evep],[data-evfp],[data-bold],[data-evbold],[data-pn]'), ev=e.target.closest('[data-ev]');
+  if(b||(ev&&ev.dataset.ev!=="notes")){ e.stopPropagation(); e.preventDefault(); } },true); });
+/* ---------- 전도 ---------- 저장소 evangel/main {targets, notes, trash} · 사이트에서는 personal.enc.json(읽기 전용) */
 var EVG=null, EVGTR=[], EVF="전체", EVTED=null, EVNED=null, EVNF=null, EVSEL=[], EVFORM=false, EVFP="상시", EVU=null;
 var EVPS=["긴급","상시","장기"], EVS=["기도 중","관계 맺기","복음 전함","교회 초청","결신","양육"], EVFRUIT=4;
 var EVV=[["롬 10:14", "그런즉 저희가 믿지 아니하는 이를 어찌 부르리요 듣지도 못한 이를 어찌 믿으리요 전파하는 자가 없이 어찌 들으리요"], ["행 1:8", "오직 성령이 너희에게 임하시면 너희가 권능을 받고 예루살렘과 온 유대와 사마리아와 땅끝까지 이르러 내 증인이 되리라 하시니라"], ["고후 5:20", "이러므로 우리가 그리스도를 대신하여 사신이 되어 하나님이 우리로 너희를 권면하시는 것 같이 그리스도를 대신하여 간구하노니 너희는 하나님과 화목하라"], ["딤후 4:2", "너는 말씀을 전파하라 때를 얻든지 못 얻든지 항상 힘쓰라 범사에 오래 참음과 가르침으로 경책하며 경계하며 권하라"], ["벧전 3:15", "너희 마음에 그리스도를 주로 삼아 거룩하게 하고 너희 속에 있는 소망에 관한 이유를 묻는 자에게는 대답할 것을 항상 예비하되 온유와 두려움으로 하고"], ["마 9:37-38", "이에 제자들에게 이르시되 추수할 것은 많되 일군은 적으니 그러므로 추수하는 주인에게 청하여 추수할 일군들을 보내어 주소서 하라 하시니라"], ["롬 1:16", "내가 복음을 부끄러워하지 아니하노니 이 복음은 모든 믿는 자에게 구원을 주시는 하나님의 능력이 됨이라 첫째는 유대인에게요 또한 헬라인에게로다"], ["눅 15:7", "내가 너희에게 이르노니 이와 같이 죄인 하나가 회개하면 하늘에서는 회개할 것 없는 의인 아흔 아홉을 인하여 기뻐하는 것보다 더하리라"], ["골 4:3", "또한 우리를 위하여 기도하되 하나님이 전도할 문을 우리에게 열어주사 그리스도의 비밀을 말하게 하시기를 구하라 내가 이것을 인하여 매임을 당하였노라"], ["고전 9:22", "약한 자들에게는 내가 약한 자와 같이 된 것은 약한 자들을 얻고자 함이요 여러 사람에게 내가 여러 모양이 된 것은 아무쪼록 몇몇 사람들을 구원코자 함이니"], ["잠 11:30", "의인의 열매는 생명나무라 지혜로운 자는 사람을 얻느니라"], ["요 4:35", "너희가 넉달이 지나야 추수할 때가 이르겠다 하지 아니하느냐 내가 너희에게 이르노니 눈을 들어 밭을 보라 희어져 추수하게 되었도다"], ["행 16:31", "가로되 주 예수를 믿으라 그리하면 너와 네 집이 구원을 얻으리라 하고"], ["고전 3:6", "나는 심었고 아볼로는 물을 주었으되 오직 하나님은 자라나게 하셨나니"]];
@@ -2180,6 +2213,7 @@ function evArr(a){ return Array.isArray(a)?a.map(function(x){ return Object.assi
 function evT(id){ return (EVG&&EVG.targets||[]).find(function(x){ return x.id===id; }); }
 function evGroup(x){ return (x.s||0)>=EVFRUIT?"열매":(x.p||"상시"); }
 async function evgLoad(){
+  if(MODE==="viewer"&&!PV){ if(!(await pvGate("evg"))) return; }
   if(DB){ try{ var sn=await DB.doc("evangel/main").get(); var d=sn.exists?(sn.data()||{}):{}; EVG={targets:evArr(d.targets),notes:evArr(d.notes)}; EVGTR=evArr(d.trash); }catch(e){ if(!EVG) EVG={targets:[],notes:[]}; setStatus("전도 노트를 불러오지 못했습니다","err"); } }
   else if(!EVG) EVG={targets:[],notes:[]};
   renderEvg(); }
