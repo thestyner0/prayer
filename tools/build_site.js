@@ -35,15 +35,16 @@ function mirrorOf(it){
   if(out.length) return {t:first||"",d:out};
   return null;
 }
-const pubDays=days.filter(d=>d.no!==7).map(d=>JSON.parse(JSON.stringify(d)));
+const EVD=Math.max(...days.map(d=>d.no)); // 매주 함께 기도하는 긴급·중보 (가장 큰 번호)
+const pubDays=days.filter(d=>d.no!==EVD).map(d=>JSON.parse(JSON.stringify(d)));
 let inlined=0, locked=0; const hidden=[]; // 잠긴 연동 항목은 공개 원문에서 제목의 이름·연동 대상을 빼고, 원본은 7일차와 함께 암호화해 두었다가 풀리면 되돌림
 pubDays.forEach(d=>d.sections.forEach((s,si)=>s.items.forEach((it,i)=>{
-  if(!it.mirror||it.mirror.day!==7) return;
+  if(!it.mirror||it.mirror.day!==EVD) return;
   if(it.pub){ const src=mirrorOf(it); s.items[i]={t:it.t,d:src?src.d:(it.d||[])}; inlined++; }
   else { locked++; hidden.push({no:d.no,si,ii:i,it:JSON.parse(JSON.stringify(it))}); // 원본(연동 대상·label 포함)은 암호화 쪽에만
-    s.items[i]={t:/^사명자\s*:/.test(it.t)?"사명자 :":it.t, d:[], mirror:{day:7}}; }
+    s.items[i]={t:/^사명자\s*:/.test(it.t)?"사명자 :":it.t, d:[], mirror:{day:EVD}}; }
 })));
-const day7=days.find(d=>d.no===7);
+const day7=days.find(d=>d.no===EVD);
 if(!day7){ console.error("day 7 not found"); process.exit(1); }
 const SK=crypto.pbkdf2Sync(pw,"prayer-scores-v1",200000,32,"sha256"); // 악보 암호화 키(고정 salt) — 7일차 암호문 안에만 실림
 const secret=JSON.stringify({day:day7,hidden,sk:SK.toString("base64")});

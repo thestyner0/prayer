@@ -1026,11 +1026,11 @@ body.site #dev .amnote-body p{font-size:13.5px}
   <h3>순환 · 시편 설정</h3>
   <div class="grid">
     <div><label>기준 주일 (이 주에)</label><input id="s_am" type="date"></div>
-    <div><label>이 주차를 기도 (1~6)</label><input id="s_aw" type="number" min="1" max="6"></div>
+    <div><label>이 주차를 기도 (1~7)</label><input id="s_aw" type="number" min="1" max="7"></div>
     <div><label>시편 기준 주일</label><input id="s_pm" type="date"></div>
     <div><label>그 주 시편 편수</label><input id="s_ps" type="number" min="1" max="150"></div>
   </div>
-  <p>한 주는 주일에 시작합니다. 1~6주차는 매주 주일에 다음 주차로 넘어가고, 긴급·중보는 매주 함께 기도합니다. 시편은 기준 주에서 매주 1편씩 올라갑니다.</p>
+  <p>한 주는 주일에 시작합니다. 1~7주차는 매주 주일에 다음 주차로 넘어가고, 긴급·중보는 매주 함께 기도합니다. 시편은 기준 주에서 매주 1편씩 올라갑니다.</p>
   <div class="sect">묵상 설정</div>
   <div class="grid">
     <div><label>묵상 플랜 시작일 (1일째)</label><input id="d_start" type="date"></div>
@@ -1235,7 +1235,7 @@ body.site #dev .amnote-body p{font-size:13.5px}
 <script>
 (function(){
 "use strict";
-var CYCLE=6, WD=["일","월","화","수","목","금","토"];
+var CYCLE=7, EVD=8, WD=["일","월","화","수","목","금","토"];
 var STATE=JSON.parse(document.getElementById("seed").textContent);
 var DB=null, EDIT=false, SEL=null, DIRTY={}, saveTimer=null, editingKey=null, MODE="viewer", PSOFF=0;
 var VIEW="dev"; // 기본은 항상 묵상
@@ -1290,7 +1290,7 @@ function renderTabs(){
     if(d.no<=CYCLE) h+='<a class="tab'+(SEL===d.no?" on":"")+'" data-day="'+d.no+'"><span class="n">'+d.no+'</span>주차</a>';
     else h+='<a class="tab every'+(SEL===d.no?" on":"")+'" data-day="'+d.no+'">긴급 · 중보<span class="ev">매주</span></a>';
   });
-  if(STATE.locked7&&!dayByNo(7)) h+='<a class="tab every'+(SEL===7?" on":"")+'" data-day="7">긴급 · 중보<span class="ev">🔒</span></a>';
+  if(STATE.locked7&&!dayByNo(EVD)) h+='<a class="tab every'+(SEL===EVD?" on":"")+'" data-day="'+EVD+'">긴급 · 중보<span class="ev">🔒</span></a>';
   document.getElementById("tabs").innerHTML=h;
 }
 function ctl(kind,idx){ // 편집 컨트롤
@@ -1301,7 +1301,7 @@ function ctl(kind,idx){ // 편집 컨트롤
 }
 function mirrorOf(it){ // {mirror:{day,sec|secs,item?,line?,block?,match?,brief?}} → 다른 날짜의 기도제목을 그대로 가져와 항상 연동
   // item 없음: 그 주제의 기도제목 전체(match: 제목에 그 글자가 든 항목만 · brief: 각 항목의 b(짧은 사례) 만, secs가 여럿이면 주제명을 머리글로) / item 있음: 그 항목의 설명 줄(line: 그 글자가 든 줄만 · block: "block" 머리글 아래 "- " 하위 줄들만)
-  if(!it||!it.mirror) return null; var m=it.mirror, d=dayByNo(m.day); if(!d){ if(m.day===7&&STATE.locked7) return {locked:true}; return null; }
+  if(!it||!it.mirror) return null; var m=it.mirror, d=dayByNo(m.day); if(!d){ if(m.day===EVD&&STATE.locked7) return {locked:true}; return null; }
   var secs=m.secs||(m.sec?[m.sec]:null), out=[], first=null;
   for(var i=0;i<d.sections.length;i++){ var sc=d.sections[i];
     if(secs){ var ok=false; for(var q=0;q<secs.length;q++) if((sc.title||"").indexOf(secs[q])>=0) ok=true; if(!ok) continue; }
@@ -1316,7 +1316,7 @@ function mirrorOf(it){ // {mirror:{day,sec|secs,item?,line?,block?,match?,brief?
 function cardTxt(x){ x=String(x==null?"":x).replace(/^-\s+/,"").replace(/^!\s*/,""); return kwh(esc(x)).replace(/《([^》]+)》/g,'<span class="real">$1</span>'); }
 function cardPerson(s){ var k=s.kicker||"", m=/^(.+?)\s*·\s*\d+/.exec(k); return (m?m[1].trim():"")||(k.split("|")[1]||"").trim()||(s.title||"").split("—")[0].trim(); }
 function buildCard(si){
-  var d=dayByNo(SEL)||dayByNo(7); if(!d) return ""; var s0=d.sections[si]; if(!s0) return ""; var who=cardPerson(s0);
+  var d=dayByNo(SEL)||dayByNo(EVD); if(!d) return ""; var s0=d.sections[si]; if(!s0) return ""; var who=cardPerson(s0);
   var secs=d.sections.filter(function(x){ return cardPerson(x)===who; });
   var urgent=[], boxes=[], n=0;
   secs.forEach(function(sc){
@@ -1481,15 +1481,15 @@ function render(){ setTimeout(function(){ try{ fillPicks(); bgmBar(); }catch(e){
   renderHeader(); renderTabs();
   var main=document.getElementById("main");
   if(SEL===0) main.innerHTML=orderHTML();
-  else { var d=dayByNo(SEL); main.innerHTML=d?dayHTML(d):(SEL===7&&STATE.locked7?lockHTML():""); }
-  document.documentElement.style.setProperty("--ac", SEL===0?"#D8A94A":(dayByNo(SEL)||{}).accent||(SEL===7?"#D8A94A":"#9BD0E8"));
-  if(SEL===7&&!d&&STATE.locked7) bindLock();
+  else { var d=dayByNo(SEL); main.innerHTML=d?dayHTML(d):(SEL===EVD&&STATE.locked7?lockHTML():""); }
+  document.documentElement.style.setProperty("--ac", SEL===0?"#D8A94A":(dayByNo(SEL)||{}).accent||(SEL===EVD?"#D8A94A":"#9BD0E8"));
+  if(SEL===EVD&&!d&&STATE.locked7) bindLock();
   window.scrollTo({top:0});
 }
 /* ---------- 긴급·중보(7일차) 잠금 — 공개 사이트에서는 7일차만 AES-GCM으로 암호화되어 있고, 비밀번호를 넣으면 이 화면 안에서 풀립니다 ---------- */
 var LK7="prayer.key7.v1";
 function lockHTML(){
-  return '<section class="day on" data-day="7"><div class="dayhead"><div class="t">긴급 · 중보기도</div><div class="s">기도모임 식구들만 볼 수 있는 기도제목입니다</div></div>'
+  return '<section class="day on" data-day="'+EVD+'"><div class="dayhead"><div class="t">긴급 · 중보기도</div><div class="s">기도모임 식구들만 볼 수 있는 기도제목입니다</div></div>'
    +'<form class="lockbox" id="lock7" autocomplete="off"><div class="lk">🔒</div><h2>비밀번호를 입력해 주세요</h2><p>긴급기도 · 중보기도 · 선교사님 기도제목은 실명이 들어 있어 비밀번호로 보호합니다.<br>비밀번호는 기도모임에서 안내해 드립니다.</p>'
    +'<input type="password" id="pw7" inputmode="numeric" placeholder="비밀번호" autofocus><label class="row"><input type="checkbox" id="rem7" checked> 이 기기에서 기억하기</label>'
    +'<button type="submit" id="go7">열기</button><div class="err" id="err7"></div></form></section>';
@@ -1508,10 +1508,10 @@ async function key7From(pass){
 async function open7(key){
   var L=STATE.locked7, plain=await crypto.subtle.decrypt({name:"AES-GCM",iv:b64u8(L.iv)},key,b64u8(L.ct));
   var obj=JSON.parse(new TextDecoder().decode(plain)); apply7(obj);
-  try{ sessionStorage.setItem("prayer.p7",JSON.stringify(obj)); }catch(e){}
+  try{ sessionStorage.setItem("prayer.p8",JSON.stringify(obj)); }catch(e){}
 }
 async function tryRemembered7(){
-  try{ var c=sessionStorage.getItem("prayer.p7"); if(c){ apply7(JSON.parse(c)); return true; } }catch(e){}
+  try{ var c=sessionStorage.getItem("prayer.p8"); if(c){ apply7(JSON.parse(c)); return true; } }catch(e){}
   try{ var jwk=JSON.parse(localStorage.getItem(LK7)||"null"); if(!jwk) return false;
     var key=await crypto.subtle.importKey("jwk",jwk,{name:"AES-GCM"},true,["decrypt"]); await open7(key); return true;
   }catch(e){ try{localStorage.removeItem(LK7);}catch(_){} return false; }
@@ -1621,7 +1621,7 @@ function renumber(d){
 document.getElementById("main").addEventListener("click",function(e){
   var cd=e.target.closest("[data-card]"); if(cd){ e.preventDefault(); e.stopPropagation(); openCard(+cd.dataset.card); return; }
   var bb=e.target.closest('button[data-act="bgm"]'); if(bb){ e.preventDefault(); e.stopPropagation(); bgmToggle(bb.dataset.k); return; }
-  var pg=e.target.closest('[data-act="pick7"]'); if(pg){ e.preventDefault(); e.stopPropagation(); show(7); return; }
+  var pg=e.target.closest('[data-act="pick7"]'); if(pg){ e.preventDefault(); e.stopPropagation(); show(EVD); return; }
   var b=e.target.closest("button[data-act]"), t=e.target;
   if(b){
     e.preventDefault(); e.stopPropagation();
@@ -1646,7 +1646,7 @@ document.getElementById("main").addEventListener("click",function(e){
     return;
   }
   if(t.closest(".psbox")) return;
-  if(t.closest('[data-act="unlock7"]')){ e.preventDefault(); show(7); return; }
+  if(t.closest('[data-act="unlock7"]')){ e.preventDefault(); show(EVD); return; }
   var rg=t.closest('a[data-act="region"]'); if(rg){ e.preventDefault(); var el=document.getElementById("reg"+rg.dataset.r); if(el) el.scrollIntoView({behavior:"smooth",block:"start"}); return; }
   if(t.closest("#lock7")) return;
   if(!EDIT){ if(COMPACT){ var ci=t.closest(".it.hasd"); if(ci) ci.classList.toggle("show"); } return; }
@@ -1889,7 +1889,7 @@ async function connect(){
   DB.collection("prayer/meta/days").onSnapshot(function(q){ if(document.querySelector(".ed")) return; var ch=false; q.docChanges().forEach(function(c){ if(c.type==="removed") return; var b=c.doc.data(); if(b&&b.no){ if(JSON.stringify(dayByNo(b.no))!==JSON.stringify(b)){ applyRemoteDay(b.no,b); ch=true; } } }); if(ch){ STATE.days.sort(function(a,b){return a.no-b.no;}); render(); } });
 }
 
-var h=/^#day([0-7])$/.exec(location.hash); SEL=h?+h[1]:todayWeek();
+var h=/^#day([0-8])$/.exec(location.hash); SEL=h?+h[1]:todayWeek();
 if(h) VIEW="pray"; else if(location.hash==="#song") VIEW="song"; else if(/^#theo/.test(location.hash)) VIEW="theo"; else if(location.hash==="#thx") VIEW="thx"; else if(location.hash==="#evg") VIEW="evg"; else VIEW="dev";
 /* ---------- 찬양 ---------- */
 var SFIL="all", SQ="";
@@ -1944,7 +1944,7 @@ async function openSong(id){
   if(it.yt2) ft.innerHTML+='<a class="btn g" style="text-align:center;text-decoration:none;flex-basis:100%" href="https://www.youtube.com/watch?v='+esc(it.yt2)+'" target="_blank" rel="noopener">▶ '+esc(it.yt2l||"다른 버전")+'</a>';
   var sy=document.getElementById("syt"); if(sy) sy.onclick=function(){ var ex=bd.querySelector("iframe.yt"); if(ex){ ex.remove(); sy.textContent="▶ 영상"; return; } var f=document.createElement("iframe"); f.className="yt"; f.allow="autoplay; encrypted-media; picture-in-picture"; f.allowFullscreen=true; f.src="https://www.youtube-nocookie.com/embed/"+yid+"?autoplay=1&rel=0&playsinline=1"; bd.appendChild(f); f.scrollIntoView({behavior:"smooth"}); sy.textContent="■ 영상 닫기"; };
   if(!(it.sc&&it.sc.length)){ bd.innerHTML='<div class="sph">🎼 악보 준비 중입니다<br><span style="font-size:12.5px">악보가 들어오면 여기에 바로 뜹니다</span></div>'; return; }
-  if(!STATE.sk){ bd.innerHTML='<div class="sph">🔒 악보는 <b>긴급·중보 비밀번호</b>를 입력한 기기에서 보입니다<br><button class="btn p" type="button" id="sgo7" style="margin-top:12px">비밀번호 입력하러 가기</button></div>'; var g=document.getElementById("sgo7"); if(g) g.onclick=function(){ closeSong(); setView("pray"); show(7); }; return; }
+  if(!STATE.sk){ bd.innerHTML='<div class="sph">🔒 악보는 <b>긴급·중보 비밀번호</b>를 입력한 기기에서 보입니다<br><button class="btn p" type="button" id="sgo7" style="margin-top:12px">비밀번호 입력하러 가기</button></div>'; var g=document.getElementById("sgo7"); if(g) g.onclick=function(){ closeSong(); setView("pray"); show(EVD); }; return; }
   bd.innerHTML='<div class="sph">악보 여는 중…</div>';
   try{ var urls=[]; for(var i=0;i<it.sc.length;i++) urls.push(await loadScore(it.sc[i][0],it.sc[i][1]));
     bd.innerHTML=urls.map(function(u){return '<img class="'+(urls.length===1?"fit":"")+'" src="'+u+'" alt="악보">';}).join("");
